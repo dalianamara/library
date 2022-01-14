@@ -1,0 +1,72 @@
+.horizontal-menu{
+    overflow: hidden;
+    width: 60%;
+    height: 20%;
+    margin-left: 20%;
+    margin-right: 20%;
+    text-decoration: none;
+    background-color: #DC7633;
+}
+ 
+.horizontal-menu a {
+    display: block;
+    color: white;
+    float: left;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 6px 6px;
+    padding-right: 6px;
+} 
+
+ .horizontal-menu a:hover {
+    background-color: #A04000;
+    color: white;
+}
+
+ .horizontal-menu a.active {
+    background-color: #A04000;
+    color: white;
+}
+
+#login {
+    float: right;
+}
+
+.dropdownMenu { 
+    float: left;
+    overflow: hidden;
+}
+
+
+.dropdown-menu{
+    display: none;
+    position: absolute;
+    z-index: 1;
+    min-width: 160px; 
+    background-color: #DC7633;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 20px 30px;
+
+}
+.dropdown-menu a{
+    display: block;
+    text-decoration: none;
+    float: none;
+    color: white;
+    /* padding: 12px 16px; */
+    /* background-color: #B1D4E0; */
+
+}
+.dropdown-menu a:hover{
+    background-color: #A04000;
+    
+
+}
+.dropdownMenu:hover .dropdown-menu {display: block;}
+.dropdownbutton:hover { background-color: #A04000;}
+.dropdownbutton {
+    padding: 16px;
+    background-color: #DC7633;
+    border: none;
+    color: white;
+}
+

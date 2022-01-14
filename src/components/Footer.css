@@ -1,0 +1,17 @@
+.footer{  
+    background-color: #A04000; 
+    /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("library.jpg");; */
+    padding: 2px;
+    color: white;
+    width: 100%;
+    font-size: 10px;
+    text-align: left;
+  } 
+
+.links a{
+    display: block;
+    color: white;
+    float:none;
+    padding: 0px;
+    margin-left: 5px;
+  }
