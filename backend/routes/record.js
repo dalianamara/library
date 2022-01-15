@@ -30,7 +30,7 @@ record.route("/record/:id").get((req, res) => {
       username: req.body.username,
       password: req.body.password,
     };
-    dbConnection.collection("records").insertOne(myobj, function (err, res) {
+    dbConnection.collection("records").insertOne(myobj, (err, res) => {
       if (err) throw err;
       response.json(res);
     });
