@@ -10,6 +10,9 @@ import SignUp from "./pages/SignUp";
 import Online from "./pages/Online";
 import ViewUsers from "./pages/ViewUsers";
 import AddLibrarian from "./Admin/AddLibrarian";
+import AddBooks from "./Librarian/AddBooks";
+import ViewBooks from "./Librarian/ViewBooks";
+import ViewLibrarians from "./Admin/ViewLibrarians";
 export default function Menu() {
   return (
     <Router>
@@ -43,7 +46,10 @@ export default function Menu() {
           <Route path="/faq" element={<Faq />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/viewusers" element={<ViewUsers />} />
+          <Route path="/viewbooks" element={<ViewBooks />} />
+          <Route path="/viewlib" element={<ViewLibrarians />} />
           <Route path="/addlib" element={<AddLibrarian />} />
+          <Route path="/addbook" element={<AddBooks />} />
         </Routes>
       </div>
     </Router>

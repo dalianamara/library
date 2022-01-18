@@ -1,0 +1,12 @@
+th,
+td {
+  border-bottom: 1px solid #ddd;
+}
+
+tr:hover {
+  background-color: orange;
+}
+
+table {
+  width: 100%;
+}
