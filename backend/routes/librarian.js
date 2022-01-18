@@ -3,10 +3,10 @@ const record = express.Router();
 const db = require("../database/DatabaseConnection");
 const ObjectId = require("mongodb").ObjectId;
 
-record.route("/record").get((req, res) => {
-  let dbConnection = db.getDB("users");
+record.route("/librarian").get((req, res) => {
+  let dbConnection = db.getDB("librarians");
   dbConnection
-    .collection("users")
+    .collection("librarians")
     .find({})
     .toArray((err, result) => {
       if (err) throw err;
@@ -14,17 +14,17 @@ record.route("/record").get((req, res) => {
     });
 });
 
-record.route("/record/:id").get((req, res) => {
+record.route("/librarian/:id").get((req, res) => {
   let dbConnection = db.getDB();
   let myquery = { _id: ObjectId(req.params.id) };
-  dbConnection.collection("users").findOne(myquery, (err, result) => {
+  dbConnection.collection("librarians").findOne(myquery, (err, result) => {
     if (err) throw err;
     res.json(result);
   });
 });
 
 //create a new record.
-record.route("/record/add").post((req, response) => {
+record.route("/librarian/add").post((req, response) => {
   let dbConnection = db.getDB();
   let myobj = {
     first: req.body.first,
@@ -33,7 +33,7 @@ record.route("/record/add").post((req, response) => {
     username: req.body.username,
     password: req.body.password,
   };
-  dbConnection.collection("users").insertOne(myobj, (err, res) => {
+  dbConnection.collection("librarians").insertOne(myobj, (err, res) => {
     if (err) throw err;
     response.json(res);
   });
@@ -52,20 +52,22 @@ record.route("/update/:id").post((req, response) => {
       password: req.body.password,
     },
   };
-  dbConnection.collection("users").updateOne(myquery, newvalues, (err, res) => {
-    if (err) throw err;
-    console.log("1 user updated");
-    response.json(res);
-  });
+  dbConnection
+    .collection("librarians")
+    .updateOne(myquery, newvalues, (err, res) => {
+      if (err) throw err;
+      console.log("1 record updated");
+      response.json(res);
+    });
 });
 
 //delete a record
 record.route("/:id").delete((req, response) => {
   let dbConnection = db.getDB();
   let myquery = { _id: ObjectId(req.params.id) };
-  dbConnection.collection("users").deleteOne(myquery, (err, obj) => {
+  dbConnection.collection("librarians").deleteOne(myquery, (err, obj) => {
     if (err) throw err;
-    console.log("1 user deleted");
+    console.log("1 record deleted");
     response.status(obj);
   });
 });
