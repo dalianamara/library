@@ -42,6 +42,8 @@ record.route("/issue/add").post((req, response) => {
     fine: req.body.fine,
     issueDate: req.body.issueDate,
     dueDate: req.body.dueDate,
+    isReserved: req.body.isReserved,
+    receipt: req.body.receipt,
   };
   dbConnection.collection("issues").insertOne(myobj, (err, res) => {
     if (err) throw err;
@@ -70,6 +72,8 @@ record.route("/issue/edit/:id").post((req, response) => {
       fine: req.body.fine,
       issueDate: req.body.issueDate,
       dueDate: req.body.dueDate,
+      isReserved: req.body.isReserved,
+      receipt: req.body.receipt,
     },
   };
   dbConnection

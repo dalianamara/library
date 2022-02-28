@@ -6,10 +6,12 @@ import "../Content.css";
 import "../css/Issue.css";
 
 const View = (props) => {
-  const [visibility, setVisibility] = useState(false);
+  const [homeVisibility, setHomeVisibility] = useState(false);
+  const [pickupVisibility, setPickupVisibility] = useState(false);
   const [errorVisibility, setErrorVisibility] = useState(false);
   const [users, setUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState({});
+
   let today = new Date();
   let day = today.getDate();
   let month = today.toLocaleString("default", { month: "2-digit" });
@@ -24,7 +26,6 @@ const View = (props) => {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/record/`);
-
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
@@ -42,6 +43,7 @@ const View = (props) => {
   }, [users.length]);
 
   async function handleSubmitHome() {
+    console.log(currentUser);
     if (
       currentUser.city !== null &&
       currentUser.street !== null &&
@@ -63,6 +65,8 @@ const View = (props) => {
         fine: 0,
         issueDate: today.toString(),
         dueDate: dueDate,
+        isReserved: undefined,
+        receipt: undefined,
       };
       await fetch("http://localhost:5000/issue/add", {
         method: "POST",
@@ -82,7 +86,7 @@ const View = (props) => {
         window.alert(message);
         return;
       }
-      setVisibility(!visibility);
+      setHomeVisibility(!homeVisibility);
     } else {
       setErrorVisibility(!errorVisibility);
     }
@@ -105,6 +109,8 @@ const View = (props) => {
       fine: 0,
       issueDate: today.toString(),
       dueDate: dueDate,
+      isReserved: undefined,
+      receipt: undefined,
     };
     await fetch("http://localhost:5000/issue/add", {
       method: "POST",
@@ -116,10 +122,10 @@ const View = (props) => {
       window.alert(error);
       return;
     });
-    setVisibility(!visibility);
+    setPickupVisibility(!pickupVisibility);
   }
   const handleOk = (e) => {
-    setVisibility(e);
+    setPickupVisibility(e);
   };
   return (
     <>
@@ -206,7 +212,7 @@ const View = (props) => {
             Free delivery at home
           </button>
           <IssuePopup
-            isOpen={visibility}
+            isOpen={homeVisibility}
             title="Home Delivery"
             content={props.record}
             deliveryType={"Home"}
@@ -275,7 +281,7 @@ const View = (props) => {
               Free delivery at pickup
             </button>
             <IssuePopup
-              isOpen={visibility}
+              isOpen={pickupVisibility}
               title="Pickup Delivery"
               content={props.record}
               deliveryType={"Pickup"}

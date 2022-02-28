@@ -17,14 +17,15 @@ const View = (props) => {
   let mins1 = dueDate.getTime() - todday.getTime();
   let days = mins / (1000 * 3600 * 24);
   let days1 = mins1 / (1000 * 3600 * 24);
-  if (days1 < 0) {
-    fine = (0.8 * -days1).toFixed(2);
-  } else {
-    fine = 0;
-  }
+
   useEffect(() => {
+    if (days1 < 0) {
+      fine = (0.8 * -days1).toFixed(2);
+    } else {
+      fine = 0;
+    }
     props.updateFine(props.record, fine);
-  }, [days1]);
+  }, [days1, props.record.length]);
 
   return (
     <tr>
@@ -40,10 +41,10 @@ const View = (props) => {
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
       <td>{Math.round(days1)}</td>
-      <td>{fine + " lei"}</td>
+      <td>{props.record.fine + " lei"}</td>
       <td>
         <Link
-          id={fine > 0 ? "disabledButton" : "buttons"}
+          id={props.record.fine > 0 ? "disabledButton" : "buttons"}
           to={`/issue/edit/${props.record._id}`}
           style={{ color: "black", height: "21px" }}
         >
@@ -76,6 +77,7 @@ export default function ViewUsers() {
   });
 
   async function updateFine(props, fine) {
+    console.log(fine);
     const editedissue = {
       first: props.first,
       last: props.last,
@@ -92,6 +94,8 @@ export default function ViewUsers() {
       issueDate: props.issueDate,
       dueDate: props.dueDate,
       days: props.days,
+      receipt: props.receipt,
+      paid: props.paid,
     };
     await fetch(`http://localhost:5000/issue/edit/${props._id}`, {
       method: "POST",

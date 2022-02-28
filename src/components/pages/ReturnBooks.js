@@ -20,6 +20,11 @@ const View = (props) => {
       isApproved: props.record.isApproved,
       returnApproval: props.record.returnApproval,
       isReturned: approve,
+      fine: props.record.fine,
+      issueDate: props.record.issueDate,
+      dueDate: props.record.dueDate,
+      isReserved: undefined,
+      paid: props.record.paid,
     };
     await fetch(`http://localhost:5000/issue/edit/${props.record._id}`, {
       method: "POST",

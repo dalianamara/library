@@ -33,3 +33,16 @@ table {
   padding: 0px;
   padding-top: 4px;
 }
+
+#disabled {
+  border-radius: 2px;
+  background-color: transparent;
+  border: none;
+  pointer-events: none;
+  font-size: 15px;
+  width: 45px;
+  text-align: center;
+  filter: grayscale();
+  padding: 0px;
+  padding-top: 4px;
+}

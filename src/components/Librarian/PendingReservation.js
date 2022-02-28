@@ -17,10 +17,10 @@ const View = (props) => {
       bookId: props.record.bookId,
       bookTitle: props.record.bookTitle,
       deliveryType: props.record.deliveryType,
-      isApproved: props.record.isApproved,
+      returnApproval: props.record.returnApproval,
       isReturned: props.record.isReturned,
-      returnApproval: approve,
       fine: props.record.fine,
+      isApproved: approve,
       issueDate: props.record.issueDate,
       dueDate: props.record.dueDate,
       isReserved: false,
@@ -36,6 +36,7 @@ const View = (props) => {
       window.alert(error);
       return;
     });
+
     const response = await fetch(
       `http://localhost:5000/book/${props.record.bookId.toString()}`
     );
@@ -51,7 +52,6 @@ const View = (props) => {
       window.alert(message);
       return;
     }
-
     const editedBook = {
       title: user.title,
       author: user.author,
@@ -60,7 +60,7 @@ const View = (props) => {
       year: user.year,
       description: user.description,
       pages: user.pages,
-      stock: approve === "true" ? user.stock + 1 : user.stock,
+      stock: approve === "true" ? user.stock - 1 : user.stock,
       publisher: user.publisher,
     };
     await fetch(`http://localhost:5000/book/edit/${props.record.bookId}`, {
@@ -86,18 +86,32 @@ const View = (props) => {
       <td>{props.record.deliveryType}</td>
       <td>
         <button
-          id="buttons"
+          id={
+            props.book === undefined || props.book.stock === 0
+              ? "disabled"
+              : "buttons"
+          }
           onClick={async () => handleApproval("true")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={approve} className="image" style={{ width: "20px" }} />
+          <img
+            src={approve}
+            alt="approve"
+            className="image"
+            style={{ width: "20px" }}
+          />
         </button>
         <button
           id="buttons"
           onClick={async () => handleApproval("false")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={reject} className="image" style={{ width: "20px" }} />
+          <img
+            src={reject}
+            alt="reject"
+            className="image"
+            style={{ width: "20px" }}
+          />
         </button>
       </td>
     </tr>
@@ -106,6 +120,7 @@ const View = (props) => {
 
 export default function ViewUsers() {
   const [records, setRecords] = useState([]);
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
     async function getRecords() {
@@ -117,9 +132,7 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const pendingIssues = records.filter(
-        (el) =>
-          el.isReturned === "true" &&
-          (el.returnApproval === null || el.returnApproval === "false")
+        (el) => el.isApproved === null || el.isReserved === "true"
       );
       setRecords(pendingIssues);
     }
@@ -127,16 +140,41 @@ export default function ViewUsers() {
     return;
   });
 
+  useEffect(() => {
+    const getBooks = async () => {
+      const response = await fetch(`http://localhost:5000/book/`);
+      if (!response.ok) {
+        const message = `An error occured: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
+      const books = await response.json();
+      setBooks(books);
+    };
+    getBooks();
+    return;
+  }, [books.length]);
+
+  const getBook = (id) => {
+    return books.filter((book) => book._id === id);
+  };
+
   function recordList() {
     return records.map((record) => {
-      return <View record={record} key={record._id} />;
+      return (
+        <View
+          record={record}
+          key={record._id}
+          book={getBook(record.bookId)[0]}
+        />
+      );
     });
   }
 
   return (
     <>
       <div className="content">
-        <h1 style={{ marginBlockEnd: "0em" }}>Return approvals</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Reservation approvals</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>

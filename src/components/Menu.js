@@ -26,6 +26,7 @@ import PrivateLibrarianRoute from "./Librarian/PrivateLibrarianRoute";
 import EditAddressDetails from "./pages/EditAddressDetails";
 import EditBookDetails from "./Librarian/EditBookDetails";
 import PendingBooks from "./Librarian/PendingBooks";
+import PendingReservation from "./Librarian/PendingReservation";
 import ReturnedBooks from "./Librarian/ReturnedBooks";
 import ViewIssuedBooksByUser from "./pages/ViewIssuedBooksByUser";
 import ReturnBooks from "./pages/ReturnBooks";
@@ -33,6 +34,8 @@ import AddReview from "./pages/AddReview";
 import PendingReviews from "./Admin/PendingReviews";
 import EditUser from "./pages/EditUser";
 import RenewBook from "./pages/RenewBook";
+import ViewReservedBooksByUser from "./pages/ViewReservedBooksByUser";
+import ViewFines from "./pages/ViewFines";
 
 function checkUser() {
   const user = localStorage.getItem("user");
@@ -90,6 +93,9 @@ class Menu extends Component {
                   <a>
                     <Link to="/returned">PENDING RETURNING BOOKS</Link>
                   </a>
+                  <a>
+                    <Link to="/reserve">RESERVED BOOKS</Link>
+                  </a>
                 </div>
               </div>
             ) : (
@@ -107,6 +113,12 @@ class Menu extends Component {
                   </a>
                   <a>
                     <Link to="/return">Returned books</Link>
+                  </a>
+                  <a>
+                    <Link to="/reserved">Reserved books</Link>
+                  </a>
+                  <a>
+                    <Link to="/fines">Fines</Link>
                   </a>
                 </div>
               </div>
@@ -275,6 +287,15 @@ class Menu extends Component {
             />
 
             <Route
+              path="/reserve"
+              element={
+                <PrivateLibrarianRoute>
+                  <PendingReservation />
+                </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
               path="/returned"
               element={
                 <PrivateLibrarianRoute>
@@ -376,6 +397,24 @@ class Menu extends Component {
               element={
                 <PrivateRoute>
                   <ViewIssuedBooksByUser />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={`/reserved`}
+              element={
+                <PrivateRoute>
+                  <ViewReservedBooksByUser />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={`/fines`}
+              element={
+                <PrivateRoute>
+                  <ViewFines />
                 </PrivateRoute>
               }
             />

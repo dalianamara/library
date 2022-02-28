@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
-import { Link, Navigate, useHref } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "../Content.css";
 import "../css/ViewBooks.css";
-import { useNavigate } from "react-router-dom";
 
 const View = (props) => (
   <tr>
-    <td>{<img src={props.record.cover} style={{ width: "100px" }} />}</td>
+    <td>
+      {<img src={props.record.cover} alt="cover" style={{ width: "100px" }} />}
+    </td>
     <td>{props.record.title}</td>
     <td>{props.record.author}</td>
     <td>{props.record.genre}</td>
