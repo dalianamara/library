@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import Footer from "../Footer";
 import "../css/SignUp.css";
-const AddLibrarian = () => {
+const EditLibrarian = () => {
   const [model, setModel] = useState({
     first: "",
     last: "",
     email: "",
     username: "",
     password: "",
-    user: "librarian",
   });
   const update = (value) => {
     return setModel((prev) => {
@@ -18,7 +17,7 @@ const AddLibrarian = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const newUser = { ...model };
-    await fetch("http://localhost:5000/record/add", {
+    await fetch("http://localhost:5000/librarian/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,14 +27,7 @@ const AddLibrarian = () => {
       window.alert(error);
       return;
     });
-    setModel({
-      first: "",
-      last: "",
-      email: "",
-      username: "",
-      password: "",
-      user: "librarian",
-    });
+    setModel({ first: "", last: "", email: "", username: "", password: "" });
   }
 
   return (
@@ -132,4 +124,4 @@ const AddLibrarian = () => {
   );
 };
 
-export default AddLibrarian;
+export default EditLibrarian;

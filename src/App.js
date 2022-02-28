@@ -6,7 +6,7 @@ function App() {
   return (
     <div className="app-settings">
       <LibraryBanner />
-      <Menu/>
+      <Menu />
       <div id="portalContainer"></div>
     </div>
   );

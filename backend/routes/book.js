@@ -30,6 +30,12 @@ record.route("/book/add").post((req, response) => {
     title: req.body.title,
     author: req.body.author,
     genre: req.body.genre,
+    cover: req.body.cover,
+    year: req.body.year,
+    description: req.body.description,
+    pages: req.body.pages,
+    publisher: req.body.publisher,
+    stock: req.body.stock,
   };
   dbConnection.collection("books").insertOne(myobj, (err, res) => {
     if (err) throw err;
@@ -38,7 +44,7 @@ record.route("/book/add").post((req, response) => {
 });
 
 //update a record by id.
-record.route("/update/:id").post((req, response) => {
+record.route("/book/edit/:id").post((req, response) => {
   let dbConnection = db.getDB();
   let myquery = { _id: ObjectId(req.params.id) };
   let newvalues = {
@@ -46,6 +52,12 @@ record.route("/update/:id").post((req, response) => {
       title: req.body.title,
       author: req.body.author,
       genre: req.body.genre,
+      cover: req.body.cover,
+      year: req.body.year,
+      description: req.body.description,
+      pages: req.body.pages,
+      publisher: req.body.publisher,
+      stock: req.body.stock,
     },
   };
   dbConnection.collection("books").updateOne(myquery, newvalues, (err, res) => {
@@ -56,7 +68,7 @@ record.route("/update/:id").post((req, response) => {
 });
 
 //delete a record
-record.route("/:id").delete((req, response) => {
+record.route("/book/delete/:id").delete((req, response) => {
   let dbConnection = db.getDB();
   let myquery = { _id: ObjectId(req.params.id) };
   dbConnection.collection("books").deleteOne(myquery, (err, obj) => {

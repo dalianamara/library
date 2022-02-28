@@ -1,26 +1,26 @@
-.content{  
-    margin-top: 50px;
-    /* background-color: #B1D4E0;  */
-    background-color: #fff; 
-    /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("library.jpg");; */
-    padding: 2px;
-    color: rgb(0, 0, 0);
-    width: 100%;
-    margin-left: 0%;
-    margin-right: 0%;
-    height: 90%;
-    text-align: left;
-  } 
+.content {
+  margin-top: 45px;
+  /* background-color: #B1D4E0;  */
+  background-color: #fff;
+  /* background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("library.jpg");; */
+  padding: 2px;
+  color: rgb(0, 0, 0);
+  width: 100%;
+  margin-left: 0%;
+  margin-right: 0%;
+  height: 90%;
+  text-align: left;
+}
 
-  .divider{
-      height: 5px;
-      background-color: black;
-  }
+.divider {
+  height: 5px;
+  background-color: black;
+}
 
-  .title{
-      font-size: 20px;
-  }
-  .mainTitle{
-    font-size: 30px;
-    margin-bottom: 0px;
+.title {
+  font-size: 20px;
+}
+.mainTitle {
+  font-size: 30px;
+  margin-bottom: 0px;
 }

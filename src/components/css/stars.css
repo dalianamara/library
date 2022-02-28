@@ -1,0 +1,19 @@
+.starButton {
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+.on {
+  color: white;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}
+
+.off {
+  color: black;
+  background-color: transparent;
+  border: 0px;
+  cursor: pointer;
+}

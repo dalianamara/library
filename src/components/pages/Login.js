@@ -3,17 +3,12 @@ import "./Login.css";
 import Footer from "../Footer";
 import { Link, Navigate } from "react-router-dom";
 
-const Login = () => {
+const Login = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
-  const [error, setError] = useState({});
   const [records, setRecords] = useState([]);
   const users = records.map((record) => record);
-  const errorMessages = {
-    uname: "invalid username",
-    pass: "invalid password",
-  };
 
   const valid = () => {
     return username.length > 0 && password.length > 0;
@@ -26,7 +21,6 @@ const Login = () => {
         window.alert(message);
         return;
       }
-
       const records = await response.json();
       setRecords(records);
     }
@@ -39,10 +33,21 @@ const Login = () => {
     let { uname, pass } = document.forms[0];
     const userdata = users.find((user) => user.username === uname.value);
     if (userdata) {
-      if (userdata.password !== pass.value) {
+      if (userdata.password === pass.value) {
+        localStorage.setItem("isLoggedIn", true);
+        localStorage.setItem("username", userdata.username);
+        localStorage.setItem("firstName", userdata.first);
+        localStorage.setItem("lastName", userdata.last);
+        localStorage.setItem("city", userdata.city);
+        localStorage.setItem("street", userdata.street);
+        localStorage.setItem("phone", userdata.phone);
+        localStorage.setItem("user", userdata.user);
+        localStorage.setItem("email", userdata.email);
+        localStorage.setItem("id", userdata._id);
+        props.rerenderCallback();
+        setSuccess(true);
       } else {
         console.log("wrong password");
-        setSuccess(true);
       }
     } else {
       console.log("wrong username");
@@ -55,7 +60,7 @@ const Login = () => {
         <div className="content">
           <center>
             <br />
-            <h1 style={{ "margin-block-end": "0em" }}>Login</h1>
+            <h1 style={{ marginBlockEnd: "0em" }}>Login</h1>
             <hr
               style={{ border: "1px solid black", borderColor: "#A04000" }}
             ></hr>
@@ -112,7 +117,6 @@ const Login = () => {
       </>
     );
   };
-  return <div>{success ? <Navigate to="/services" /> : renderForm()}</div>;
+  return <div>{success ? <Navigate to="/" /> : renderForm()}</div>;
 };
-
 export default Login;

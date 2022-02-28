@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
 import "../css/SignUp.css";
-import { render } from "@testing-library/react";
 const SignUp = () => {
   const [model, setModel] = useState({
     first: "",
@@ -9,11 +8,31 @@ const SignUp = () => {
     email: "",
     username: "",
     password: "",
+    user: "user",
   });
 
   const [validPass, setValidPass] = useState(true);
   const [validUname, setValidUname] = useState(true);
+  const [nonExistent, setNotExistent] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
+  const [records, setRecords] = useState([]);
+
+  useEffect(() => {
+    async function getUsers() {
+      const response = await fetch(`http://localhost:5000/record/`);
+
+      if (!response.ok) {
+        const message = `An error occured: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
+
+      const records = await response.json();
+      setRecords(records);
+    }
+    getUsers();
+    return;
+  }, [records.length]);
 
   const update = (value) => {
     return setModel((prev) => {
@@ -26,7 +45,7 @@ const SignUp = () => {
     const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
     const validEmailB = validateEmail(email);
-    console.log(validPassword, validEmailB, validUsername);
+
     if (validPassword && validEmailB && validUsername === true) {
       const newUser = { ...model };
       await fetch("http://localhost:5000/record/add", {
@@ -39,7 +58,14 @@ const SignUp = () => {
         window.alert(error);
         return;
       });
-      setModel({ first: "", last: "", email: "", username: "", password: "" });
+      setModel({
+        first: "",
+        last: "",
+        email: "",
+        username: "",
+        password: "",
+        user: "user",
+      });
     }
   }
 
@@ -68,11 +94,18 @@ const SignUp = () => {
 
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
-    if (uname.value.match(username)) {
-      setValidUname(true);
-      return true;
+    const existent = records.filter((user) => user.username === uname.value);
+    if (existent.length === 0) {
+      setNotExistent(true);
+      if (uname.value.match(username)) {
+        setValidUname(true);
+        return true;
+      } else {
+        setValidUname(false);
+        return false;
+      }
     } else {
-      setValidUname(false);
+      setNotExistent(false);
       return false;
     }
   };
@@ -83,7 +116,7 @@ const SignUp = () => {
         <div className="content">
           <center>
             <br />
-            <h1 style={{ "margin-block-end": "0em" }}>Sign up</h1>
+            <h1 style={{ marginBlockEnd: "0em" }}>Sign up</h1>
             <hr
               style={{ border: "1px solid black", borderColor: "#A04000" }}
             ></hr>
@@ -132,9 +165,14 @@ const SignUp = () => {
                   style={{ width: "100%" }}
                   onChange={(e) => update({ username: e.target.value })}
                 />
-                {!validUname ? (
+                {console.log(nonExistent, validUname)}
+                {!nonExistent ? (
                   <span className="error" style={{ color: "red" }}>
-                    eroare user
+                    this username already exists
+                  </span>
+                ) : !validUname ? (
+                  <span className="error" style={{ color: "red" }}>
+                    username error
                   </span>
                 ) : (
                   ""

@@ -32,6 +32,10 @@ record.route("/record/add").post((req, response) => {
     email: req.body.email,
     username: req.body.username,
     password: req.body.password,
+    street: req.body.street,
+    phoneNumber: req.body.phoneNumber,
+    city: req.body.city,
+    user: req.body.user,
   };
   dbConnection.collection("users").insertOne(myobj, (err, res) => {
     if (err) throw err;
@@ -40,7 +44,7 @@ record.route("/record/add").post((req, response) => {
 });
 
 //update a record by id.
-record.route("/update/:id").post((req, response) => {
+record.route("/record/update/:id").post((req, response) => {
   let dbConnection = db.getDB();
   let myquery = { _id: ObjectId(req.params.id) };
   let newvalues = {
@@ -50,6 +54,10 @@ record.route("/update/:id").post((req, response) => {
       email: req.body.email,
       username: req.body.username,
       password: req.body.password,
+      street: req.body.street,
+      phoneNumber: req.body.phoneNumber,
+      city: req.body.city,
+      user: req.body.user,
     },
   };
   dbConnection.collection("users").updateOne(myquery, newvalues, (err, res) => {

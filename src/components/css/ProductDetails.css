@@ -1,0 +1,15 @@
+.bookCover {
+  width: 100%;
+  height: 100%;
+}
+
+.detailsContainer {
+  width: 80%;
+  margin-left: 230px;
+  margin-right: 0px;
+  display: flex;
+}
+
+.reviewContainer {
+  border: solid 1px rgba(0, 0, 0, 0.2);
+}

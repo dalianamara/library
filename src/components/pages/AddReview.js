@@ -2,43 +2,41 @@ import React, { useState } from "react";
 import Footer from "../Footer";
 import "../css/SignUp.css";
 import blank from "../images/blank.jpg";
-import addBooks from "../functions/addBooks";
-const AddBook = () => {
+const AddReview = (props) => {
   const [model, setModel] = useState({
-    title: "",
-    author: "",
-    genre: "",
-    cover: "",
-    year: 0,
-    description: "",
-    pages: 0,
-    publisher: "",
-    stock: 0,
+    firstName: "",
+    lastName: "",
+    date: "",
+    content: props.content,
+    stars: 0,
   });
-  const [cover, setCover] = useState(false);
+
   const update = (value) => {
-    if (value.cover && value.cover !== "") setCover(true);
-    else setCover(false);
     return setModel((prev) => {
       return { ...prev, ...value };
     });
   };
+  console.log(props);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const newUser = { ...model };
-    addBooks(newUser);
-    setCover(false);
+    const newReview = { ...model };
+    await fetch("http://localhost:5000/review/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newReview),
+    }).catch((error) => {
+      window.alert(error);
+      return;
+    });
     setModel({
-      title: "",
-      author: "",
-      genre: "",
-      cover: "",
-      year: 0,
-      description: "",
-      pages: 0,
-      publisher: "",
-      stock: 0,
+      firstName: "",
+      lastName: "",
+      date: "",
+      content: "",
+      stars: 0,
     });
   }
 
@@ -54,31 +52,6 @@ const AddBook = () => {
           <form onSubmit={handleSubmit}>
             {/* input for description */}
             <div className="form-group" style={{ float: "left" }}>
-              <label htmlFor="cover" style={{ float: "left" }}>
-                Cover
-              </label>
-              {cover === false ? (
-                <img
-                  id="coverImage"
-                  src={blank}
-                  style={{
-                    maxWidth: "270px",
-                    border: "2px solid grey",
-                    maxHeight: "405px",
-                    height: "405px",
-                  }}
-                />
-              ) : (
-                <img
-                  id="coverImage"
-                  src={model.cover}
-                  style={{
-                    maxWidth: "270px",
-                    border: "2px solid grey",
-                    maxHeight: "405px",
-                  }}
-                />
-              )}
               <br />
               <input
                 type="file"
@@ -250,4 +223,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default AddReview;

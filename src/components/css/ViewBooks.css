@@ -3,10 +3,33 @@ td {
   border-bottom: 1px solid #ddd;
 }
 
-tr:hover {
+tr:hover #buttons {
   background-color: orange;
 }
 
 table {
   width: 100%;
+}
+
+#buttons {
+  border-radius: 2px;
+  background-color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  width: 45px;
+  text-align: center;
+  padding: 0px;
+  padding-top: 4px;
+}
+
+#disabledButton {
+  border-radius: 2px;
+  border: none;
+  font-size: 15px;
+  pointer-events: none;
+  width: 45px;
+  text-align: center;
+  padding: 0px;
+  padding-top: 4px;
 }

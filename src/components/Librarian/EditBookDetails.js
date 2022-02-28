@@ -1,24 +1,45 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../Footer";
-import "../css/SignUp.css";
-import blank from "../images/blank.jpg";
-import addBooks from "../functions/addBooks";
-const AddBook = () => {
+const EditDetails = () => {
   const [model, setModel] = useState({
     title: "",
     author: "",
     genre: "",
     cover: "",
-    year: 0,
+    year: "",
     description: "",
-    pages: 0,
+    pages: "",
     publisher: "",
-    stock: 0,
   });
-  const [cover, setCover] = useState(false);
+  const url = useParams();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchBooks() {
+      const id = url.id.toString();
+      const response = await fetch(
+        `http://localhost:5000/book/${url.id.toString()}`
+      );
+      if (!response.ok) {
+        const message = `An error occured: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
+
+      const user = await response.json();
+      if (!user) {
+        const message = `Record ${id} does not exist`;
+        window.alert(message);
+        navigate(-1);
+        return;
+      }
+      setModel(user);
+    }
+    fetchBooks();
+    return;
+  }, [url.id, navigate]);
   const update = (value) => {
-    if (value.cover && value.cover !== "") setCover(true);
-    else setCover(false);
     return setModel((prev) => {
       return { ...prev, ...value };
     });
@@ -26,20 +47,28 @@ const AddBook = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const newUser = { ...model };
-    addBooks(newUser);
-    setCover(false);
-    setModel({
-      title: "",
-      author: "",
-      genre: "",
-      cover: "",
-      year: 0,
-      description: "",
-      pages: 0,
-      publisher: "",
-      stock: 0,
+    const editedUser = {
+      title: model.title,
+      author: model.author,
+      genre: model.genre,
+      cover: model.cover,
+      year: model.year,
+      description: model.description,
+      pages: model.pages,
+      publisher: model.publisher,
+      stock: model.stock,
+    };
+    await fetch(`http://localhost:5000/book/edit/${url.id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedUser),
+    }).catch((error) => {
+      window.alert(error);
+      return;
     });
+    navigate(-1);
   }
 
   return (
@@ -57,28 +86,15 @@ const AddBook = () => {
               <label htmlFor="cover" style={{ float: "left" }}>
                 Cover
               </label>
-              {cover === false ? (
-                <img
-                  id="coverImage"
-                  src={blank}
-                  style={{
-                    maxWidth: "270px",
-                    border: "2px solid grey",
-                    maxHeight: "405px",
-                    height: "405px",
-                  }}
-                />
-              ) : (
-                <img
-                  id="coverImage"
-                  src={model.cover}
-                  style={{
-                    maxWidth: "270px",
-                    border: "2px solid grey",
-                    maxHeight: "405px",
-                  }}
-                />
-              )}
+              <img
+                id="coverImage"
+                src={model.cover}
+                style={{
+                  maxWidth: "270px",
+                  border: "2px solid grey",
+                  maxHeight: "405px",
+                }}
+              />
               <br />
               <input
                 type="file"
@@ -101,11 +117,10 @@ const AddBook = () => {
               style={{ float: "right", height: "200px" }}
             >
               <label htmlFor="description" style={{ float: "left" }}>
-                Description<span style={{ color: "red" }}>*</span>
+                Description
               </label>
               <br />
               <textarea
-                required
                 className="form-control"
                 id="description"
                 value={model.description}
@@ -116,11 +131,10 @@ const AddBook = () => {
             {/* input for title */}
             <div className="form-group">
               <label htmlFor="title" style={{ float: "left" }}>
-                Title<span style={{ color: "red" }}>*</span>
+                Title
               </label>
               <br />
               <input
-                required
                 type="text"
                 className="form-control"
                 id="title"
@@ -131,11 +145,10 @@ const AddBook = () => {
             {/* input for author */}
             <div className="form-group">
               <label htmlFor="author" style={{ float: "left" }}>
-                Author<span style={{ color: "red" }}>*</span>
+                Author
               </label>
               <br />
               <input
-                required
                 type="text"
                 className="form-control"
                 id="author"
@@ -147,11 +160,10 @@ const AddBook = () => {
             {/* input for publication date */}
             <div className="form-group">
               <label htmlFor="publication_date" style={{ float: "left" }}>
-                Publication date<span style={{ color: "red" }}>*</span>
+                Publication date
               </label>
               <br />
               <input
-                required
                 type="date"
                 className="form-control"
                 id="year"
@@ -163,11 +175,10 @@ const AddBook = () => {
             {/* input for pages */}
             <div className="form-group">
               <label htmlFor="print_length" style={{ float: "left" }}>
-                Print length<span style={{ color: "red" }}>*</span>
+                Print length
               </label>
               <br />
               <input
-                required
                 type="text"
                 className="form-control"
                 id="pages"
@@ -176,30 +187,13 @@ const AddBook = () => {
                 onChange={(e) => update({ pages: e.target.value })}
               />
             </div>
-            {/* input for stock */}
-            <div className="form-group">
-              <label htmlFor="stock" style={{ float: "left" }}>
-                Stock<span style={{ color: "red" }}>*</span>
-              </label>
-              <br />
-              <input
-                required
-                type="text"
-                className="form-control"
-                id="stock"
-                value={model.stock}
-                style={{ width: "100%" }}
-                onChange={(e) => update({ stock: e.target.value })}
-              />
-            </div>
             {/* input for publisher */}
             <div className="form-group">
               <label htmlFor="publisher" style={{ float: "left" }}>
-                Publisher<span style={{ color: "red" }}>*</span>
+                Publisher
               </label>
               <br />
               <input
-                required
                 type="text"
                 className="form-control"
                 id="publisher"
@@ -208,29 +202,43 @@ const AddBook = () => {
                 onChange={(e) => update({ publisher: e.target.value })}
               />
             </div>
+            {/* input for stock */}
+            <div className="form-group">
+              <label htmlFor="stock" style={{ float: "left" }}>
+                Stock
+              </label>
+              <br />
+              <input
+                type="text"
+                className="form-control"
+                id="stock"
+                value={model.stock}
+                onChange={(e) => update({ stock: e.target.value })}
+              />
+            </div>
             {/* input for genre */}
             <div className="form-group">
               <label htmlFor="genre" style={{ float: "left" }}>
-                Genre<span style={{ color: "red" }}>*</span>
+                Genre
               </label>
               <br />
               <select
                 id="genre"
                 style={{ width: "103%" }}
-                required
                 onChange={(e) => update({ genre: e.target.value })}
               >
-                <option value="" selected disabled hidden></option>
+                <option value="" selected disabled hidden>
+                  {model.genre}
+                </option>
                 <option value="Romance">Romance</option>
                 <option value="Drama">Drama</option>
                 <option value="Children">Children</option>
               </select>
             </div>
-            {/* button for submit */}
             <div className="form-group">
               <input
                 type="submit"
-                value="Add book"
+                value="Edit book"
                 className="btn btn-primary"
               />
             </div>
@@ -250,4 +258,4 @@ const AddBook = () => {
   );
 };
 
-export default AddBook;
+export default EditDetails;

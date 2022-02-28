@@ -10,6 +10,7 @@ const View = (props) => (
     <td>{props.record.username}</td>
     <td>
       <Link
+        id="buttons"
         className="btn btn-link"
         to={`/edit/${props.record._id}`}
         style={{ color: "black" }}
@@ -18,10 +19,12 @@ const View = (props) => (
       </Link>
       |
       <button
+        id="buttons"
         className="btn btn-link"
         onClick={() => {
           props.deleteRecord(props.record._id);
         }}
+        style={{ color: "black", height: "25px", paddingLeft: "5px" }}
       >
         Delete
       </button>
@@ -40,13 +43,14 @@ export default function ViewUsers() {
         window.alert(message);
         return;
       }
-
       const records = await response.json();
-      setRecords(records);
+      const users = records.filter((user) => user.user === "user");
+
+      setRecords(users);
     }
     getRecords();
     return;
-  }, [records.length]);
+  });
 
   async function deleteUser(id) {
     await fetch(`http://localhost:5000/${id}`, {
@@ -72,15 +76,18 @@ export default function ViewUsers() {
   return (
     <>
       <div className="content">
-        <h1 style={{ "margin-block-end": "0em" }}>Users</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Users</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Username</th>
+            <tr>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Username</th>
+              <th></th>
+            </tr>
           </thead>
-          {recordList()}
+          <tbody>{recordList()}</tbody>
         </table>
       </div>
       <Footer></Footer>

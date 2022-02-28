@@ -2,27 +2,33 @@ import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
 import { Link } from "react-router-dom";
 import "../Content.css";
-import "../css/ViewUsers.css";
+import "../css/ViewBooks.css";
+
 const View = (props) => (
   <tr>
+    <td>{props.record.bookTitle}</td>
     <td>{props.record.first}</td>
     <td>{props.record.last}</td>
-    <td>{props.record.email}</td>
-    <td>{props.record.username}</td>
+    <td>
+      {props.record.street}, {props.record.city}
+    </td>
+    <td>{props.record.phoneNumber}</td>
+    <td>{props.record.deliveryType}</td>
     <td>
       <Link
-        className="btn btn-link"
-        to={`/edit/${props.record._id}`}
-        style={{ color: "black" }}
+        id="buttons"
+        to={`/book/edit/${props.record._id}`}
+        style={{ color: "black", height: "21px" }}
       >
         Edit
       </Link>
       |
       <button
-        className="btn btn-link"
+        id="buttons"
         onClick={() => {
           props.deleteRecord(props.record._id);
         }}
+        style={{ color: "black", height: "25px" }}
       >
         Delete
       </button>
@@ -32,60 +38,61 @@ const View = (props) => (
 
 export default function ViewUsers() {
   const [records, setRecords] = useState([]);
+
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
-
+      const response = await fetch(`http://localhost:5000/issue/`);
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
       }
-
       const records = await response.json();
-      setRecords(records);
+      const issuedBooks = records.filter((el) => el.isApproved === "true");
+      setRecords(issuedBooks);
     }
     getRecords();
     return;
-  }, [records.length]);
+  });
 
   async function deleteUser(id) {
-    await fetch(`http://localhost:5000/${id}`, {
+    await fetch(`http://localhost:5000/book/delete/${id}`, {
       method: "DELETE",
     });
-
     const newRecords = records.filter((el) => el._id !== id);
     setRecords(newRecords);
   }
 
   function recordList() {
-    let librarians = [];
-    records.map((record) => {
-      if (record.user === "librarian") librarians.push(record);
+    return records.map((record) => {
+      return (
+        <View
+          record={record}
+          deleteRecord={() => deleteUser(record._id)}
+          key={record._id}
+        />
+      );
     });
-    return librarians.map((librarian) => (
-      <View
-        record={librarian}
-        deleteRecord={() => deleteUser(librarian._id)}
-        key={librarian._id}
-      />
-    ));
   }
 
   return (
     <>
       <div className="content">
-        <h1 style={{ marginBlockEnd: "0em" }}>Librarians</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Catalogue</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Email</th>
-            <th>Username</th>
-            <th></th>
+            <tr>
+              <th>Title</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Address</th>
+              <th>Phone Number</th>
+              <th>Delivery Type</th>
+              <th></th>
+            </tr>
           </thead>
-          {recordList()}
+          <tbody>{recordList()}</tbody>
         </table>
       </div>
       <Footer></Footer>
