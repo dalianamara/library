@@ -6,8 +6,6 @@ import approve from "../images/approve.png";
 import reject from "../images/reject.png";
 
 const View = (props) => {
-  const [book, setBook] = useState([]);
-
   const handleApproval = async (approve) => {
     const editedbook = {
       first: props.record.first,
@@ -69,7 +67,7 @@ const View = (props) => {
         {props.record.street}, {props.record.city}
       </td>
       <td>{props.record.phoneNumber}</td>
-      <td>{book.stock}</td>
+      <td>{props.record.deliveryType}</td>
       <td>
         <button
           id={
