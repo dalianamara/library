@@ -18,6 +18,7 @@ const View = (props) => (
       >
         <img
           src={`${props.record.cover}`}
+          alt="cover"
           style={{
             width: "150px",
           }}

@@ -4,7 +4,6 @@ import Footer from "../Footer";
 import "../Content.css";
 import "../css/ProductDetails.css";
 import document from "../images/document.png";
-import AddReview from "./AddReview";
 import { getBooks } from "../functions/getBooks";
 import addReview from "../functions/addReview";
 import { getUser } from "../functions/getUsers";
@@ -58,6 +57,7 @@ const DisplayLayout = (props) => (
     <div className="bookCover" style={{ marginRight: "20px" }}>
       <img
         src={`${props.record.cover}`}
+        alt="cover"
         style={{ width: "222px", marginTop: "10px", float: "left" }}
       />
       <span
@@ -92,7 +92,11 @@ const DisplayLayout = (props) => (
         >
           Print length
           <br />
-          <img src={document} style={{ width: "40px", marginLeft: "30px" }} />
+          <img
+            src={document}
+            alt="document"
+            style={{ width: "40px", marginLeft: "30px" }}
+          />
           <br />
           <span style={{ marginLeft: "15px", fontSize: "15px" }}>
             {props.record.pages} pages
@@ -110,7 +114,11 @@ const DisplayLayout = (props) => (
         >
           Publication date
           <br />
-          <img src={document} style={{ width: "40px", marginLeft: "40px" }} />
+          <img
+            src={document}
+            alt="document"
+            style={{ width: "40px", marginLeft: "40px" }}
+          />
           <br />
           <span style={{ marginLeft: "24px", fontSize: "15px" }}>
             {props.record.year}
@@ -129,7 +137,11 @@ const DisplayLayout = (props) => (
         >
           <span style={{ marginLeft: "15px" }}>Publisher</span>
           <br />
-          <img src={document} style={{ width: "40px", marginLeft: "30px" }} />
+          <img
+            src={document}
+            alt="document"
+            style={{ width: "40px", marginLeft: "30px" }}
+          />
           <br />
           <span style={{ fontSize: "15px" }}>{props.record.publisher}</span>
         </span>
@@ -145,7 +157,11 @@ const DisplayLayout = (props) => (
         >
           <span style={{ marginLeft: "20px" }}>Genre</span>
           <br />
-          <img src={document} style={{ width: "40px", marginLeft: "30px" }} />
+          <img
+            src={document}
+            alt="document"
+            style={{ width: "40px", marginLeft: "30px" }}
+          />
           <br />
           <span style={{ marginLeft: "15px", fontSize: "15px" }}>
             {props.record.genre}
@@ -163,7 +179,11 @@ const DisplayLayout = (props) => (
         >
           <span style={{ marginLeft: "10px" }}>Language</span>
           <br />
-          <img src={document} style={{ width: "40px", marginLeft: "30px" }} />
+          <img
+            src={document}
+            alt="document"
+            style={{ width: "40px", marginLeft: "30px" }}
+          />
           <br />
           <span style={{ marginLeft: "15px", fontSize: "15px" }}>
             {props.record.genre}
@@ -294,7 +314,7 @@ export default function ProductPage(id) {
       <br />
       <textarea
         placeholder={`${localStorage.firstName}, share your opinion!`}
-        style={{ width: "70%" }}
+        style={{ width: "99%" }}
         onChange={(e) => setReviewContent(e.target.value)}
       ></textarea>
       <br />

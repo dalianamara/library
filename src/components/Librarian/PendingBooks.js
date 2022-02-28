@@ -6,8 +6,10 @@ import approve from "../images/approve.png";
 import reject from "../images/reject.png";
 
 const View = (props) => {
+  const [book, setBook] = useState([]);
+
   const handleApproval = async (approve) => {
-    const editedUser = {
+    const editedbook = {
       first: props.record.first,
       last: props.record.last,
       email: props.record.email,
@@ -22,43 +24,30 @@ const View = (props) => {
       isApproved: approve,
       issueDate: props.record.issueDate,
       dueDate: props.record.dueDate,
+      receipt: props.record.receipt,
+      paid: props.record.paid,
     };
     await fetch(`http://localhost:5000/issue/edit/${props.record._id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(editedUser),
+      body: JSON.stringify(editedbook),
     }).catch((error) => {
       window.alert(error);
       return;
     });
 
-    const response = await fetch(
-      `http://localhost:5000/book/${props.record.bookId.toString()}`
-    );
-    if (!response.ok) {
-      const message = `An error occured: ${response.statusText}`;
-      window.alert(message);
-      return;
-    }
-
-    const user = await response.json();
-    if (!user) {
-      const message = `Record ${props.record.bookId} does not exist`;
-      window.alert(message);
-      return;
-    }
     const editedBook = {
-      title: user.title,
-      author: user.author,
-      genre: user.genre,
-      cover: user.cover,
-      year: user.year,
-      description: user.description,
-      pages: user.pages,
-      stock: approve === "true" ? user.stock - 1 : user.stock,
-      publisher: user.publisher,
+      title: props.book.title,
+      author: props.book.author,
+      genre: props.book.genre,
+      cover: props.book.cover,
+      year: props.book.year,
+      description: props.book.description,
+      pages: props.book.pages,
+      stock: approve === "true" ? props.book.stock - 1 : props.book.stock,
+      publisher: props.book.publisher,
     };
     await fetch(`http://localhost:5000/book/edit/${props.record.bookId}`, {
       method: "POST",
@@ -80,29 +69,44 @@ const View = (props) => {
         {props.record.street}, {props.record.city}
       </td>
       <td>{props.record.phoneNumber}</td>
-      <td>{props.record.deliveryType}</td>
+      <td>{book.stock}</td>
       <td>
         <button
-          id="buttons"
+          id={
+            props.book === undefined || props.book.stock === 0
+              ? "disabled"
+              : "buttons"
+          }
           onClick={async () => handleApproval("true")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={approve} className="image" style={{ width: "20px" }} />
+          <img
+            src={approve}
+            alt="approve"
+            className="image"
+            style={{ width: "20px" }}
+          />
         </button>
         <button
           id="buttons"
           onClick={async () => handleApproval("false")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={reject} className="image" style={{ width: "20px" }} />
+          <img
+            src={reject}
+            alt="reject"
+            className="image"
+            style={{ width: "20px" }}
+          />
         </button>
       </td>
     </tr>
   );
 };
 
-export default function ViewUsers() {
+export default function Viewbooks() {
   const [records, setRecords] = useState([]);
+  const [books, setBooks] = useState([]);
 
   useEffect(() => {
     async function getRecords() {
@@ -120,9 +124,34 @@ export default function ViewUsers() {
     return;
   });
 
+  useEffect(() => {
+    const getBooks = async () => {
+      const response = await fetch(`http://localhost:5000/book/`);
+      if (!response.ok) {
+        const message = `An error occured: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
+      const books = await response.json();
+      setBooks(books);
+    };
+    getBooks();
+    return;
+  }, [books]);
+
+  const getBook = (id) => {
+    return books.filter((book) => book._id === id);
+  };
+
   function recordList() {
     return records.map((record) => {
-      return <View record={record} key={record._id} />;
+      return (
+        <View
+          record={record}
+          key={record._id}
+          book={getBook(record.bookId)[0]}
+        />
+      );
     });
   }
 

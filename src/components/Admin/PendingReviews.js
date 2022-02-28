@@ -40,14 +40,24 @@ const View = (props) => {
           onClick={async () => handleApproval("true")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={approve} className="image" style={{ width: "20px" }} />
+          <img
+            src={approve}
+            alt="approve"
+            className="image"
+            style={{ width: "20px" }}
+          />
         </button>
         <button
           id="buttons"
           onClick={async () => handleApproval("false")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={reject} className="image" style={{ width: "20px" }} />
+          <img
+            src={reject}
+            alt="approve"
+            className="image"
+            style={{ width: "20px" }}
+          />
         </button>
       </td>
     </tr>

@@ -36,6 +36,7 @@ import EditUser from "./pages/EditUser";
 import RenewBook from "./pages/RenewBook";
 import ViewReservedBooksByUser from "./pages/ViewReservedBooksByUser";
 import ViewFines from "./pages/ViewFines";
+import ViewPaidFines from "./Librarian/ViewPaidFines";
 
 function checkUser() {
   const user = localStorage.getItem("user");
@@ -173,12 +174,49 @@ class Menu extends Component {
             </>
           )}
 
-          {checkUser() === "admin" &&
+          {/* {checkUser() === "admin" &&
             localStorage.getItem("isLoggedIn") === "true" && (
               <a>
                 <Link to="/pendingReviews">VIEW REVIEWS</Link>
               </a>
-            )}
+            )} */}
+
+          {checkUser() === "admin" &&
+          localStorage.getItem("isLoggedIn") === "true" ? (
+            <a>
+              <Link to="/pendingReviews">VIEW REVIEWS</Link>
+            </a>
+          ) : checkUser() === "librarian" ? (
+            <div className="dropdownMenu">
+              <button className="dropdownbutton">FINES</button>
+              <div className="dropdown-menu">
+                <a>
+                  <Link to="/paidfines">PAID FINES</Link>
+                </a>
+              </div>
+            </div>
+          ) : (
+            <>
+              <a>
+                <Link to="/services">SERVICES</Link>
+              </a>
+              <Link
+                // id="buttons"
+                to="/record/edit"
+                // onClick={async () => handleApproval("false")}
+                style={{
+                  background: "transparent",
+                  border: "0px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                  marginLeft: "780px",
+                  padding: "0px",
+                }}
+              >
+                <img src={settings} style={{ width: "20px" }} />
+              </Link>
+            </>
+          )}
 
           {/* check if user is logged in then show logout button instead of login  */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
@@ -309,6 +347,15 @@ class Menu extends Component {
               element={
                 <PrivateLibrarianRoute>
                   <ViewUsers />
+                </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
+              path="/paidfines"
+              element={
+                <PrivateLibrarianRoute>
+                  <ViewPaidFines />
                 </PrivateLibrarianRoute>
               }
             />
