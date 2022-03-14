@@ -65,7 +65,7 @@ const View = (props) => {
         fine: 0,
         issueDate: today.toString(),
         dueDate: dueDate,
-        isReserved: undefined,
+        isReserved: props.type === "reserve" ? "true" : "false",
         receipt: undefined,
       };
       await fetch("http://localhost:5000/issue/add", {
@@ -294,7 +294,7 @@ const View = (props) => {
   );
 };
 
-export default function ProductPage(id) {
+export default function Issue(props) {
   const [records, setRecords] = useState([]);
   const location = useLocation().pathname.split("/");
 
@@ -331,7 +331,7 @@ export default function ProductPage(id) {
               getRecord={() => getBook(record._id)}
               key={record._id}
               isSet={false}
-              isLonger={record.description.split(" ").length > 400}
+              type={props.type}
             />
           </>
         );

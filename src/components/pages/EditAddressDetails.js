@@ -19,9 +19,7 @@ const EditDetails = () => {
   useEffect(() => {
     async function fetchUsers() {
       const id = url.id.toString();
-      const response = await fetch(
-        `http://localhost:5000/record/${url.id.toString()}`
-      );
+      const response = await fetch(`http://localhost:5000/record/${id}`);
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
@@ -59,7 +57,7 @@ const EditDetails = () => {
       password: model.password,
       user: model.user,
     };
-    await fetch(`http://localhost:5000/update/${url.id}`, {
+    await fetch(`http://localhost:5000/record/update/${url.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -77,7 +75,7 @@ const EditDetails = () => {
       <div className="content">
         <center>
           <br />
-          <h1 style={{ marginBlockEnd: "0em" }}>Sign up</h1>
+          <h1 style={{ marginBlockEnd: "0em" }}>Change address</h1>
           <hr
             style={{ border: "1px solid black", borderColor: "#A04000" }}
           ></hr>

@@ -32,13 +32,14 @@ const IssuePopup = (props) => {
         <br />
         <img
           src={`${props.content.cover}`}
+          alt={"cover"}
           style={{ width: "120px", float: "left" }}
         />
         <div style={{ float: "left", marginLeft: "30px" }}>
-          <h3 style={{ marginBottom: "0px" }}>{props.content.title}</h3>
-          <span style={{ marginLeft: "-80px" }}>
-            A book by {props.content.author}
-          </span>
+          <h3 style={{ marginBottom: "0px", marginLeft: "-60px" }}>
+            {props.content.title}
+          </h3>
+          <span>A book by {props.content.author}</span>
         </div>
         <hr
           style={{

@@ -20,7 +20,7 @@ const View = (props) => {
 
   useEffect(() => {
     if (days1 < 0) {
-      fine = (0.8 * -days1).toFixed(2);
+      fine = (0.3 * -days1).toFixed(2);
     } else {
       fine = 0;
     }
@@ -77,13 +77,13 @@ export default function ViewUsers() {
   });
 
   async function updateFine(props, fine) {
-    console.log(fine);
     const editedissue = {
       first: props.first,
       last: props.last,
       email: props.email,
       phoneNumber: props.phoneNumber,
       city: props.city,
+      street: props.street,
       bookId: props.bookId,
       bookTitle: props.bookTitle,
       deliveryType: props.deliveryType,

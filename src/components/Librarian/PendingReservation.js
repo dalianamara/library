@@ -23,7 +23,7 @@ const View = (props) => {
       isApproved: approve,
       issueDate: props.record.issueDate,
       dueDate: props.record.dueDate,
-      isReserved: false,
+      isReserved: !approve,
       receipt: undefined,
     };
     await fetch(`http://localhost:5000/issue/edit/${props.record._id}`, {
@@ -132,7 +132,7 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const pendingIssues = records.filter(
-        (el) => el.isApproved === null || el.isReserved === "true"
+        (el) => el.isApproved === null && el.isReserved === "true"
       );
       setRecords(pendingIssues);
     }

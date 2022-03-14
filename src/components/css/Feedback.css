@@ -1,0 +1,16 @@
+#button:hover {
+  background-color: rgb(255, 190, 68);
+}
+#button {
+  border-radius: 2px;
+  background-color: orange;
+  border: none;
+  cursor: pointer;
+  font-size: 15px;
+  width: 150px;
+  height: 30px;
+  text-align: center;
+  margin-left: 150%;
+  padding: 0px;
+  padding-top: 2px;
+}

@@ -12,7 +12,8 @@ const Online = () => {
           access to the section "Fine and Fees" where you can see if you have
           any penalties, access to your personal details, where you can edit the
           information.
-          <br />• You can search books by author, title, subject, etc.
+          <br />• You can search books by title.
+          <br />• You can filter books by genre.
           <br />• You can view the whole catalogue.
         </p>
       </div>

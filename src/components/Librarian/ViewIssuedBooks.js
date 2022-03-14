@@ -17,7 +17,7 @@ const View = (props) => (
     <td>
       <Link
         id="buttons"
-        to={`/book/edit/${props.record._id}`}
+        to={`/issue/update/${props.record._id}`}
         style={{ color: "black", height: "21px" }}
       >
         Edit
@@ -56,7 +56,7 @@ export default function ViewIssuedBooks() {
   });
 
   async function deleteUser(id) {
-    await fetch(`http://localhost:5000/book/delete/${id}`, {
+    await fetch(`http://localhost:5000/issue/delete/${id}`, {
       method: "DELETE",
     });
     const newRecords = records.filter((el) => el._id !== id);
@@ -78,7 +78,7 @@ export default function ViewIssuedBooks() {
   return (
     <>
       <div className="content">
-        <h1 style={{ marginBlockEnd: "0em" }}>Catalogue</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Issued Books</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>

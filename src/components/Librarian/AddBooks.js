@@ -60,6 +60,7 @@ const AddBook = () => {
               {cover === false ? (
                 <img
                   id="coverImage"
+                  alt="coverImage"
                   src={blank}
                   style={{
                     maxWidth: "270px",
@@ -71,6 +72,7 @@ const AddBook = () => {
               ) : (
                 <img
                   id="coverImage"
+                  alt="coverImage"
                   src={model.cover}
                   style={{
                     maxWidth: "270px",

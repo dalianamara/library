@@ -1,13 +1,15 @@
 import React from "react";
 import "./Image.css";
-import image from "./library.jpg";
+import { Link } from "react-router-dom";
 const Image = (props) => {
   return (
     <div className="images">
-      <img src={"images/" + props.image} className="image" />
-      <div className="overlay_text">
-        <div className="text">ABOUT</div>
-      </div>
+      <Link className="main" to={props.link}>
+        <img src={"images/" + props.image} className="image" alt={"main"} />
+        <div className="overlay_text">
+          <div className="text">{props.text}</div>
+        </div>
+      </Link>
     </div>
   );
 };

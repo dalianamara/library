@@ -7,7 +7,6 @@ import Main from "./Main";
 import Services from "./pages/Services";
 import ProductPage from "./pages/ProductPage";
 import Issue from "./pages/Issue";
-import IssuePopup from "./pages/IssuePopup";
 import Faq from "./pages/Faq";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -37,6 +36,12 @@ import RenewBook from "./pages/RenewBook";
 import ViewReservedBooksByUser from "./pages/ViewReservedBooksByUser";
 import ViewFines from "./pages/ViewFines";
 import ViewPaidFines from "./Librarian/ViewPaidFines";
+import EditUserAdmin from "./Librarian/EditUser";
+import EditIssue from "./Librarian/EditIssue";
+import Feedback from "./Feedback";
+import Borrows from "./pages/Borrows";
+import Extend from "./pages/Extend";
+import Fees from "./pages/Fees";
 
 function checkUser() {
   const user = localStorage.getItem("user");
@@ -119,7 +124,7 @@ class Menu extends Component {
                     <Link to="/reserved">Reserved books</Link>
                   </a>
                   <a>
-                    <Link to="/fines">Fines</Link>
+                    <Link to="/fines">Fine and Fees</Link>
                   </a>
                 </div>
               </div>
@@ -142,7 +147,8 @@ class Menu extends Component {
             <a>
               <Link to="/viewlib">VIEW LIBRARIANS</Link>
             </a>
-          ) : checkUser() === "librarian" ? (
+          ) : checkUser() === "librarian" &&
+            localStorage.getItem("isLoggedIn") === "true" ? (
             <div className="dropdownMenu">
               <button className="dropdownbutton">USERS</button>
               <div className="dropdown-menu">
@@ -151,11 +157,23 @@ class Menu extends Component {
                 </a>
               </div>
             </div>
-          ) : (
+          ) : localStorage.getItem("isLoggedIn") === "true" &&
+            checkUser() === "user" ? (
             <>
-              <a>
-                <Link to="/services">SERVICES</Link>
-              </a>
+              <div className="dropdownMenu">
+                <button className="dropdownbutton">SERVICES</button>
+                <div className="dropdown-menu">
+                  <a>
+                    <Link to="/borrows">Borrows and returns</Link>
+                  </a>
+                  <a>
+                    <Link to="/finesandfees">Fees</Link>
+                  </a>
+                  <a>
+                    <Link to="/extend">Extend due date</Link>
+                  </a>
+                </div>
+              </div>
               <Link
                 // id="buttons"
                 to="/record/edit"
@@ -165,12 +183,18 @@ class Menu extends Component {
                   border: "0px",
                   cursor: "pointer",
                   marginTop: "10px",
-                  marginLeft: "780px",
+                  marginLeft: "770px",
                   padding: "0px",
                 }}
               >
-                <img src={settings} style={{ width: "20px" }} />
+                <img src={settings} alt="settings" style={{ width: "20px" }} />
               </Link>
+            </>
+          ) : (
+            <>
+              <a>
+                <Link to="/services">SERVICES</Link>
+              </a>
             </>
           )}
 
@@ -186,7 +210,8 @@ class Menu extends Component {
             <a>
               <Link to="/pendingReviews">VIEW REVIEWS</Link>
             </a>
-          ) : checkUser() === "librarian" ? (
+          ) : checkUser() === "librarian" &&
+            localStorage.getItem("isLoggedIn") === "true" ? (
             <div className="dropdownMenu">
               <button className="dropdownbutton">FINES</button>
               <div className="dropdown-menu">
@@ -196,26 +221,7 @@ class Menu extends Component {
               </div>
             </div>
           ) : (
-            <>
-              <a>
-                <Link to="/services">SERVICES</Link>
-              </a>
-              <Link
-                // id="buttons"
-                to="/record/edit"
-                // onClick={async () => handleApproval("false")}
-                style={{
-                  background: "transparent",
-                  border: "0px",
-                  cursor: "pointer",
-                  marginTop: "10px",
-                  marginLeft: "780px",
-                  padding: "0px",
-                }}
-              >
-                <img src={settings} style={{ width: "20px" }} />
-              </Link>
-            </>
+            ""
           )}
 
           {/* check if user is logged in then show logout button instead of login  */}
@@ -307,6 +313,24 @@ class Menu extends Component {
             />
 
             <Route
+              path="/issue/update/:id"
+              element={
+                <PrivateLibrarianRoute>
+                  <EditIssue />
+                </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
+              path="/record/edit/:id"
+              element={
+                <PrivateLibrarianRoute>
+                  <EditUserAdmin />
+                </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
               path="/viewbook"
               element={
                 <PrivateLibrarianRoute>
@@ -368,6 +392,7 @@ class Menu extends Component {
                 </PrivateLibrarianRoute>
               }
             />
+
             {/* private user routes */}
             <Route
               path="/viewbooksuser"
@@ -417,6 +442,15 @@ class Menu extends Component {
               element={
                 <PrivateRoute>
                   <Issue id={window.location} />
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path={`/:id/reserve`}
+              element={
+                <PrivateRoute>
+                  <Issue id={window.location} type="reserve" />
                 </PrivateRoute>
               }
             />
@@ -472,7 +506,11 @@ class Menu extends Component {
               element={<Login rerenderCallback={this.rerenderCallback} />}
             />
             <Route path="/faq" element={<Faq />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="/signup" element={<SignUp />} />
+            <Route path="/finesandfees" element={<Fees />} />
+            <Route path="/extend" element={<Extend />} />
+            <Route path="/borrows" element={<Borrows />} />
           </Routes>
         </div>
       </Router>

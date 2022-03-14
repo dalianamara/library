@@ -32,9 +32,13 @@ const View = (props) => (
 
     {props.record.stock === 0 ? (
       <>
-        <button id="issueButton" style={{ color: "white" }} value="Reserve">
+        <Link
+          to={`/${props.record._id}/reserve`}
+          id="issueButton"
+          value="Reserve"
+        >
           Reserve
-        </button>
+        </Link>
       </>
     ) : (
       <Link

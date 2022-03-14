@@ -10,6 +10,7 @@ app.use(require("./routes/librarian"));
 app.use(require("./routes/book"));
 app.use(require("./routes/issues"));
 app.use(require("./routes/reviews"));
+app.use(require("./routes/feedback"));
 const dbo = require("./database/DatabaseConnection"); //driver connection
 
 app.listen(PORT, () => {
