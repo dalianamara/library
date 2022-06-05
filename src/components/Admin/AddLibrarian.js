@@ -18,7 +18,7 @@ const AddLibrarian = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const newUser = { ...model };
-    await fetch("http://localhost:5000/record/add", {
+    await fetch("http://localhost:5000/user/add", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -24,7 +24,7 @@ const EditUser = () => {
   };
   useEffect(() => {
     async function getUsers() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
 
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
@@ -68,7 +68,7 @@ const EditUser = () => {
     };
 
     if (validPassword && validEmailB && validUsername === true) {
-      await fetch(`http://localhost:5000/record/update/${model._id}`, {
+      await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

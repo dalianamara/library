@@ -8,6 +8,8 @@ const Login = (props) => {
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [records, setRecords] = useState([]);
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
   const users = records.map((record) => record);
 
   const valid = () => {
@@ -15,7 +17,7 @@ const Login = (props) => {
   };
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
@@ -32,25 +34,23 @@ const Login = (props) => {
     event.preventDefault();
     let { uname, pass } = document.forms[0];
     const userdata = users.find((user) => user.username === uname.value);
-    if (userdata) {
-      if (userdata.password === pass.value) {
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("username", userdata.username);
-        localStorage.setItem("firstName", userdata.first);
-        localStorage.setItem("lastName", userdata.last);
-        localStorage.setItem("city", userdata.city);
-        localStorage.setItem("street", userdata.street);
-        localStorage.setItem("phone", userdata.phone);
-        localStorage.setItem("user", userdata.user);
-        localStorage.setItem("email", userdata.email);
-        localStorage.setItem("id", userdata._id);
-        props.rerenderCallback();
-        setSuccess(true);
-      } else {
-        console.log("wrong password");
-      }
-    } else {
-      console.log("wrong username");
+      if (userdata) {
+          if (userdata.password === pass.value) {
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("username", userdata.username);
+            localStorage.setItem("firstName", userdata.first);
+            localStorage.setItem("user", userdata.user);
+            localStorage.setItem("email", userdata.email);
+            localStorage.setItem("id", userdata._id);
+            props.rerenderCallback();
+            setSuccess(true);
+            setPasswordError(false);
+        } else {
+          setPasswordError(true);
+        }
+        setUsernameError(false);
+    }else {
+      setUsernameError(true);
     }
   };
 
@@ -75,6 +75,14 @@ const Login = (props) => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
               />
+              {usernameError ? (
+                  <><br/>
+                  <span className="error" style={{ color: "red" }}>
+                    Incorrect username!
+                  </span></>
+                ) : (
+                  ""
+                )}
               <br />
               <label>Password</label>
               <br />
@@ -85,6 +93,13 @@ const Login = (props) => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              {passwordError ? (
+                   <><br/><span className="error" style={{ color: "red" }}>
+                    Incorrect password!
+                  </span></>
+                ) : (
+                  ""
+                )}
               <br />
               <br />
               <button

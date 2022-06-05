@@ -3,9 +3,25 @@ import Footer from "../Footer";
 import { Link } from "react-router-dom";
 import "../Content.css";
 import "../css/ViewBooks.css";
+let fine = 0;
+const View = (props) => {
+  let today = new Date();
+  const dueDate = new Date(props.record.dueDate);
+  let todays_date = new Date(today);
+  let mins = dueDate.getTime() - todays_date.getTime();
+  let days = mins / (1000 * 3600 * 24);
+  console.log(mins, days)
 
-const View = (props) => (
-  <tr>
+  useEffect(() => {
+    if (days < 0) {
+      fine = (0.3 * -days).toFixed(2);
+    } else {
+      fine = 0;
+    }
+    props.updateFine(props.record, fine);
+  }, [days, props]);
+  
+  return ( <tr>
     <td>{props.record.bookTitle}</td>
     <td>{props.record.first}</td>
     <td>{props.record.last}</td>
@@ -13,7 +29,7 @@ const View = (props) => (
       {props.record.street}, {props.record.city}
     </td>
     <td>{props.record.phoneNumber}</td>
-    <td>{props.record.deliveryType}</td>
+    <td>{props.record.fine}</td>
     <td>
       <Link
         id="buttons"
@@ -33,42 +49,75 @@ const View = (props) => (
         Delete
       </button>
     </td>
-  </tr>
-);
+  </tr>)
+};
 
 export default function ViewIssuedBooks() {
-  const [records, setRecords] = useState([]);
+  const [issues, setIssues] = useState([]);
 
   useEffect(() => {
-    async function getRecords() {
+    async function getIssues() {
       const response = await fetch(`http://localhost:5000/issue/`);
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
       }
-      const records = await response.json();
-      const issuedBooks = records.filter((el) => el.isApproved === "true");
-      setRecords(issuedBooks);
+      const issues = await response.json();
+      const issuedBooks = issues.filter((el) => el.isApproved === "true");
+      setIssues(issuedBooks);
     }
-    getRecords();
+    getIssues();
     return;
   });
+  async function updateFine(props, fine) {
+    const editedIssue = {
+      first: props.first,
+      last: props.last,
+      email: props.email,
+      phoneNumber: props.phoneNumber,
+      city: props.city,
+      street: props.street,
+      bookId: props.bookId,
+      bookTitle: props.bookTitle,
+      deliveryType: props.deliveryType,
+      isApproved: props.isApproved,
+      isReturned: props.isReturned,
+      returnApproval: props.returnApproval,
+      fine: fine,
+      issueDate: props.issueDate,
+      dueDate: props.dueDate,
+      days: props.days,
+      receipt: props.receipt,
+      paid: props.paid,
+    };
+    await fetch(`http://localhost:5000/issue/edit/${props._id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(editedIssue),
+    }).catch((error) => {
+      window.alert(error);
+      return;
+    });
+  }
 
-  async function deleteUser(id) {
+  async function deleteIssue(id) {
     await fetch(`http://localhost:5000/issue/delete/${id}`, {
       method: "DELETE",
     });
-    const newRecords = records.filter((el) => el._id !== id);
-    setRecords(newRecords);
+    const newIssues = issues.filter((el) => el._id !== id);
+    setIssues(newIssues);
   }
 
-  function recordList() {
-    return records.map((record) => {
+  function issueList() {
+    return issues.map((record) => {
       return (
         <View
           record={record}
-          deleteRecord={() => deleteUser(record._id)}
+          deleteRecord={() => deleteIssue(record._id)}
+          updateFine={() => updateFine(record, fine)}
           key={record._id}
         />
       );
@@ -92,7 +141,7 @@ export default function ViewIssuedBooks() {
               <th></th>
             </tr>
           </thead>
-          <tbody>{recordList()}</tbody>
+          <tbody>{issueList()}</tbody>
         </table>
       </div>
       <Footer></Footer>

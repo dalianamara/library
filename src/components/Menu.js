@@ -60,13 +60,12 @@ class Menu extends Component {
     localStorage.setItem("isLoggedIn", false);
     this.forceUpdate();
   }
-  useForceUpdate() {}
 
   render() {
     return (
       <Router>
         <div className="horizontal-menu">
-          <a>
+          <a href={() => false} >
             <Link to="/">HOME</Link>
           </a>
           {/* check if user is admin then show admin related menu */}
@@ -75,7 +74,7 @@ class Menu extends Component {
               <div className="dropdownMenu">
                 <button className="dropdownbutton">LIBRARIANS</button>
                 <div className="dropdown-menu">
-                  <a>
+                  <a href={() => false} >
                     <Link to="/addlib">ADD LIBRARIAN</Link>
                   </a>
                 </div>
@@ -84,22 +83,22 @@ class Menu extends Component {
               <div className="dropdownMenu">
                 <button className="dropdownbutton">BOOKS</button>
                 <div className="dropdown-menu">
-                  <a>
+                  <a href={() => false} >
                     <Link to="/addbook">ADD BOOK</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/viewbook">VIEW BOOKS</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/viewIssuedBooks">VIEW ISSUED BOOKS</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/pending">PENDING ISSUE BOOKS</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/returned">PENDING RETURNING BOOKS</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/reserve">RESERVED BOOKS</Link>
                   </a>
                 </div>
@@ -108,22 +107,22 @@ class Menu extends Component {
               <div className="dropdownMenu">
                 <button className="dropdownbutton">MY LIBRARY</button>
                 <div className="dropdown-menu">
-                  <a>
+                  <a href={() => false} >
                     <Link to="/online">Online Public Acces Catalogue</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/viewbooksuser">Catalogue</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/issuedBooks">Issued books</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/return">Returned books</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/reserved">Reserved books</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/fines">Fine and Fees</Link>
                   </a>
                 </div>
@@ -133,18 +132,18 @@ class Menu extends Component {
             <div className="dropdownMenu">
               <button className="dropdownbutton">MY LIBRARY</button>
               <div className="dropdown-menu">
-                <a>
+                <a href={() => false} >
                   <Link to="/online">Online Public Acces Catalogue</Link>
                 </a>
-                <a href="#">Access </a>
-                <a href="#">LINK</a>
+                <a  href={() => false} >Access </a>
+                <a  href={() => false} >LINK</a>
               </div>
             </div>
           )}
 
           {checkUser() === "admin" &&
           localStorage.getItem("isLoggedIn") === "true" ? (
-            <a>
+            <a href={() => false} >
               <Link to="/viewlib">VIEW LIBRARIANS</Link>
             </a>
           ) : checkUser() === "librarian" &&
@@ -152,7 +151,7 @@ class Menu extends Component {
             <div className="dropdownMenu">
               <button className="dropdownbutton">USERS</button>
               <div className="dropdown-menu">
-                <a>
+                <a href={() => false} >
                   <Link to="/viewusers">VIEW USERS</Link>
                 </a>
               </div>
@@ -163,20 +162,20 @@ class Menu extends Component {
               <div className="dropdownMenu">
                 <button className="dropdownbutton">SERVICES</button>
                 <div className="dropdown-menu">
-                  <a>
+                  <a href={() => false} >
                     <Link to="/borrows">Borrows and returns</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/finesandfees">Fees</Link>
                   </a>
-                  <a>
+                  <a href={() => false} >
                     <Link to="/extend">Extend due date</Link>
                   </a>
                 </div>
               </div>
               <Link
                 // id="buttons"
-                to="/record/edit"
+                to="/user/edit"
                 // onClick={async () => handleApproval("false")}
                 style={{
                   background: "transparent",
@@ -192,7 +191,7 @@ class Menu extends Component {
             </>
           ) : (
             <>
-              <a>
+              <a href={() => false} >
                 <Link to="/services">SERVICES</Link>
               </a>
             </>
@@ -207,7 +206,7 @@ class Menu extends Component {
 
           {checkUser() === "admin" &&
           localStorage.getItem("isLoggedIn") === "true" ? (
-            <a>
+            <a href={() => false} >
               <Link to="/pendingReviews">VIEW REVIEWS</Link>
             </a>
           ) : checkUser() === "librarian" &&
@@ -215,7 +214,7 @@ class Menu extends Component {
             <div className="dropdownMenu">
               <button className="dropdownbutton">FINES</button>
               <div className="dropdown-menu">
-                <a>
+                <a href={() => false} >
                   <Link to="/paidfines">PAID FINES</Link>
                 </a>
               </div>
@@ -226,7 +225,7 @@ class Menu extends Component {
 
           {/* check if user is logged in then show logout button instead of login  */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
-            <a id="login">
+            <a href={() => false} id="login">
               <button
                 style={{
                   background: "none",
@@ -238,8 +237,7 @@ class Menu extends Component {
                   fontSize: "15px",
                   paddingBottom: "7px",
                   paddingTop: "7px",
-                  // padding: "7px 7px",
-                  // paddingRight: "6px",
+                  cursor: "pointer",
                   borderStyle: "none",
                 }}
                 onClick={this.rerenderSignupCallback}
@@ -248,7 +246,7 @@ class Menu extends Component {
               </button>
             </a>
           ) : (
-            <a id="login">
+            <a href={() => false} id="login">
               <Link to="/login">LOGIN</Link>
             </a>
           )}
@@ -322,7 +320,7 @@ class Menu extends Component {
             />
 
             <Route
-              path="/record/edit/:id"
+              path="/user/edit/:id"
               element={
                 <PrivateLibrarianRoute>
                   <EditUserAdmin />
@@ -404,7 +402,7 @@ class Menu extends Component {
             />
 
             <Route
-              path="/record/edit"
+              path="/user/edit"
               element={
                 <PrivateRoute>
                   <EditUser />

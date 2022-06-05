@@ -15,11 +15,12 @@ const SignUp = () => {
   const [validUname, setValidUname] = useState(true);
   const [nonExistent, setNotExistent] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
+  const [nonExistentEmail, setNotExistentEmail] = useState(true);
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
     async function getUsers() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
 
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
@@ -48,7 +49,7 @@ const SignUp = () => {
 
     if (validPassword && validEmailB && validUsername === true) {
       const newUser = { ...model };
-      await fetch("http://localhost:5000/record/add", {
+      await fetch("http://localhost:5000/user/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +71,7 @@ const SignUp = () => {
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z]\w{6,14}$/;
+    const password = /^(?=.*[0-9])[A-Za-z0-9]\w{6,14}$/;
     if (pass.value.match(password)) {
       setValidPass(true);
       return true;
@@ -84,9 +85,11 @@ const SignUp = () => {
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
     if (email.value.match(emailExpression)) {
+      setNotExistentEmail(true);
       setValidEmail(true);
       return true;
     } else {
+      setNotExistentEmail(false);
       setValidEmail(false);
       return false;
     }
@@ -192,13 +195,17 @@ const SignUp = () => {
                   value={model.email}
                   onChange={(e) => update({ email: e.target.value })}
                 />
-                {!validEmail ? (
-                  <span className="error" style={{ color: "red" }}>
-                    eroare email
-                  </span>
-                ) : (
-                  ""
-                )}
+                {!nonExistentEmail ? (
+                <span className="error" style={{ color: "red" }}>
+                  An account with this email is already in use
+                </span>
+              ) : !validEmail ? (
+                <span className="error" style={{ color: "red" }}>
+                  This email is not valid
+                </span>
+              ) : (
+                ""
+              )}
               </div>
               <div className="form-group">
                 <label htmlFor="password" style={{ float: "left" }}>

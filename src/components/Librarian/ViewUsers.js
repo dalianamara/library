@@ -12,7 +12,7 @@ const View = (props) => (
       <Link
         id="buttons"
         className="btn btn-link"
-        to={`/record/edit/${props.record._id}`}
+        to={`/user/edit/${props.record._id}`}
         style={{ color: "black" }}
       >
         Edit
@@ -36,7 +36,7 @@ export default function ViewUsers() {
   const [records, setRecords] = useState([]);
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
 
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;

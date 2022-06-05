@@ -25,7 +25,7 @@ const EditDetails = () => {
     async function fetchUsers() {
       const id = url.id.toString();
       const response = await fetch(
-        `http://localhost:5000/record/${url.id.toString()}`
+        `http://localhost:5000/user/${url.id.toString()}`
       );
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
@@ -34,7 +34,7 @@ const EditDetails = () => {
       }
       const user = await response.json();
       if (!user) {
-        const message = `Record ${id} does not exist`;
+        const message = `User ${id} does not exist`;
         window.alert(message);
         navigate(-1);
         return;
@@ -47,7 +47,7 @@ const EditDetails = () => {
 
   useEffect(() => {
     async function fetchUsers() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
       if (!response.ok) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
@@ -55,7 +55,7 @@ const EditDetails = () => {
       }
       const users = await response.json();
       if (!users) {
-        const message = `Records does not exist`;
+        const message = `User does not exist`;
         window.alert(message);
         return;
       }
@@ -89,7 +89,7 @@ const EditDetails = () => {
         user: "user",
       };
 
-      await fetch(`http://localhost:5000/record/update/${url.id}`, {
+      await fetch(`http://localhost:5000/user/update/${url.id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

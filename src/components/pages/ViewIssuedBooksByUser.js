@@ -5,27 +5,19 @@ import "../Content.css";
 import "../css/ViewBooks.css";
 let fine = 0;
 const View = (props) => {
-  const issueDate = new Date(props.record.issueDate);
-  const dueDate = new Date(props.record.dueDate);
+  
   let today = new Date();
   let day = today.getDate();
   let month = today.toLocaleString("default", { month: "numeric" });
   let year = today.getFullYear();
   today = month + "/" + day + "/" + year;
-  let todday = new Date(today);
-  let mins = dueDate.getTime() - issueDate.getTime();
-  let mins1 = dueDate.getTime() - todday.getTime();
-  let days = mins / (1000 * 3600 * 24);
-  let days1 = mins1 / (1000 * 3600 * 24);
 
-  useEffect(() => {
-    if (days1 < 0) {
-      fine = (0.3 * -days1).toFixed(2);
-    } else {
-      fine = 0;
-    }
-    props.updateFine(props.record, fine);
-  }, [days1, props.record.length]);
+  const dueDate = new Date(props.record.dueDate);
+  let todays_date = new Date(today);
+  let mins = dueDate.getTime() - todays_date.getTime();
+  let days = mins / (1000 * 3600 * 24);
+  console.log(mins, days)
+
 
   return (
     <tr>
@@ -40,7 +32,7 @@ const View = (props) => {
       <td>{props.record.returnApproval === "true" ? "yes" : "no"}</td>
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
-      <td>{Math.round(days1)}</td>
+      <td>{Math.round(days)}</td>
       <td>{props.record.fine + " lei"}</td>
       <td>
         <Link
@@ -114,7 +106,6 @@ export default function ViewUsers() {
       return (
         <View
           record={record}
-          updateFine={() => updateFine(record, fine)}
           key={record._id}
         />
       );

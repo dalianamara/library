@@ -1,0 +1,185 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Login page tests Given any input the login page loads 1`] = `
+<div>
+  <div
+    class="app-settings"
+  >
+    <div
+      class="banner"
+    >
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <h1>
+        Library Management
+      </h1>
+    </div>
+    <div
+      class="horizontal-menu"
+    >
+      <a>
+        <a
+          href="/"
+        >
+          HOME
+        </a>
+      </a>
+      <div
+        class="dropdownMenu"
+      >
+        <button
+          class="dropdownbutton"
+        >
+          MY LIBRARY
+        </button>
+        <div
+          class="dropdown-menu"
+        >
+          <a>
+            <a
+              href="/online"
+            >
+              Online Public Acces Catalogue
+            </a>
+          </a>
+          <a>
+            Access 
+          </a>
+          <a>
+            LINK
+          </a>
+        </div>
+      </div>
+      <a>
+        <a
+          href="/services"
+        >
+          SERVICES
+        </a>
+      </a>
+      
+      <a
+        id="login"
+      >
+        <a
+          href="/login"
+        >
+          LOGIN
+        </a>
+      </a>
+      <div>
+        <div
+          class="content"
+        >
+          <center>
+            <br />
+            <h1
+              style="margin-block-end: 0em;"
+            >
+              Login
+            </h1>
+            <hr
+              style="border: 1px solid black; border-color: #a04000;"
+            />
+            <form>
+              <label>
+                Username
+              </label>
+              <br />
+              <input
+                id="username"
+                name="uname"
+                required=""
+                type="text"
+                value="ss"
+              />
+              <br />
+              <span
+                class="error"
+                style="color: red;"
+              >
+                Incorrect username!
+              </span>
+              <br />
+              <label>
+                Password
+              </label>
+              <br />
+              <input
+                id="password"
+                name="pass"
+                type="password"
+                value="ss"
+              />
+              
+              <br />
+              <br />
+              <button
+                id="submit"
+                type="submit"
+              >
+                Login
+              </button>
+              <br />
+              <a
+                href="/signup"
+                style="color: black; margin-left: 52%; background-color: transparent;"
+              >
+                Don't have an account?
+              </a>
+            </form>
+            <br />
+             
+            <br />
+          </center>
+        </div>
+        <div
+          class="footer"
+        >
+          <p
+            style="font-size: 15px;"
+          >
+            Useful information:
+          </p>
+          <div
+            class="links"
+          >
+            <a>
+              <a
+                href="/faq"
+              >
+                Frequent Asked Questions
+              </a>
+            </a>
+            <hr
+              style="border: 0.1px solid black; border-color: rgba(190,190,190, 0.4); width: 200px; margin: 5px 0px 0px 9px;"
+            />
+            <a>
+              <a
+                href="/terms"
+              >
+                Terms and Conditions
+              </a>
+            </a>
+            <hr
+              style="border: 0.1px solid black; border-color: rgba(190,190,190, 0.4); width: 200px; margin: 5px 0px 0px 9px;"
+            />
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="portalContainer"
+    />
+  </div>
+</div>
+`;

@@ -88,6 +88,7 @@ const EditDetails = () => {
               </label>
               <img
                 id="coverImage"
+                alt="cover"
                 src={model.cover}
                 style={{
                   maxWidth: "270px",
