@@ -19,8 +19,8 @@ const EditDetails = () => {
   useEffect(() => {
     async function fetchUsers() {
       const id = url.id.toString();
-      const response = await fetch(`http://localhost:5000/record/${id}`);
-      if (!response.ok) {
+      const response = await fetch(`http://localhost:5000/user/${id}`);
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -57,7 +57,7 @@ const EditDetails = () => {
       password: model.password,
       user: model.user,
     };
-    await fetch(`http://localhost:5000/record/update/${url.id}`, {
+    await fetch(`http://localhost:5000/user/update/${url.id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

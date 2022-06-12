@@ -16,6 +16,7 @@ const RenewBook = () => {
     returnApproval: "",
     fine: "",
     issueDate: "",
+    returnDate: "",
     dueDate: "",
     days: "",
   });
@@ -28,7 +29,7 @@ const RenewBook = () => {
       const response = await fetch(
         `http://localhost:5000/issue/${url.id.toString()}`
       );
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -70,6 +71,7 @@ const RenewBook = () => {
       fine: model.fine,
       issueDate: model.issueDate,
       dueDate: model.dueDate,
+      returnDate: model.returnDate,
       days: model.days,
     };
     await fetch(`http://localhost:5000/issue/edit/${url.id}`, {

@@ -4,10 +4,10 @@ const db = require("../database/DatabaseConnection");
 const ObjectId = require("mongodb").ObjectId;
 
 review.route("/review").get((req, res) => {
-  let dbConnection = db.getDB("reviews");
+  let dbConnection = db.getDatabase("reviews");
   dbConnection
     .collection("reviews")
-    .find({})
+    .find()
     .toArray((err, result) => {
       if (err) throw err;
       res.json(result);
@@ -15,7 +15,7 @@ review.route("/review").get((req, res) => {
 });
 
 review.route("/review/:id").get((req, res) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
   dbConnection.collection("reviews").findOne(myquery, (err, result) => {
     if (err) throw err;
@@ -25,7 +25,7 @@ review.route("/review/:id").get((req, res) => {
 
 //create a new review.
 review.route("/review/add").post((req, response) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myobj = {
     bookId: req.body.bookId,
     userId: req.body.userId,
@@ -44,7 +44,7 @@ review.route("/review/add").post((req, response) => {
 
 //update a review by id.
 review.route("/review/edit/:id").post((req, response) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
   let newvalues = {
     $set: {
@@ -69,7 +69,7 @@ review.route("/review/edit/:id").post((req, response) => {
 
 //delete a review
 review.route("/review/delete/:id").delete((req, response) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
   dbConnection.collection("reviews").deleteOne(myquery, (err, obj) => {
     if (err) throw err;

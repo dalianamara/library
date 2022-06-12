@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./Login.css";
 import Footer from "../Footer";
 import { Link, Navigate } from "react-router-dom";
-
+import bcrypt from "bcryptjs";
 const Login = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
   const [records, setRecords] = useState([]);
+  const [validPass, setValidPass] = useState(true);
+  const [validUsername, setValidUsername] = useState(true);
   const users = records.map((record) => record);
 
   const valid = () => {
@@ -15,8 +17,8 @@ const Login = (props) => {
   };
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
-      if (!response.ok) {
+      const response = await fetch(`http://localhost:5000/user/`);
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -28,30 +30,38 @@ const Login = (props) => {
     return;
   }, [records.length]);
 
+  const findUser = (username) => {
+    const userdata = users.find((user) => user.username === username);
+    localStorage.setItem("id", userdata._id);
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    let { uname, pass } = document.forms[0];
-    const userdata = users.find((user) => user.username === uname.value);
-    if (userdata) {
-      if (userdata.password === pass.value) {
-        localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("username", userdata.username);
-        localStorage.setItem("firstName", userdata.first);
-        localStorage.setItem("lastName", userdata.last);
-        localStorage.setItem("city", userdata.city);
-        localStorage.setItem("street", userdata.street);
-        localStorage.setItem("phone", userdata.phone);
-        localStorage.setItem("user", userdata.user);
-        localStorage.setItem("email", userdata.email);
-        localStorage.setItem("id", userdata._id);
-        props.rerenderCallback();
-        setSuccess(true);
+    const userdata = users.find((user) => user.username === username);
+    try {
+      if (userdata) {
+        if (bcrypt.compareSync(password, userdata.password)) {
+          localStorage.setItem("isLoggedIn", true);
+          localStorage.setItem("username", userdata.username);
+          localStorage.setItem("firstName", userdata.first);
+          localStorage.setItem("email", userdata.email);
+          localStorage.setItem("user", userdata.user);
+          setSuccess(true);
+
+          setValidPass(true);
+          setValidUsername(true);
+          props.rerenderCallback();
+        } else {
+          throw Error("Wrong password");
+        }
       } else {
-        console.log("wrong password");
+        throw Error("Wrong username");
       }
-    } else {
-      console.log("wrong username");
+    } catch (err) {
+      if (err.message === "Wrong username") setValidUsername(false);
+      else if (err.message === "Wrong password") setValidPass(false);
     }
+    window.location.href = "/";
   };
 
   const renderForm = () => {
@@ -70,28 +80,58 @@ const Login = (props) => {
               <input
                 type="text"
                 name="uname"
+                data-testid="username"
                 required
                 id={"username"}
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                  findUser(e.target.value);
+                }}
               />
+              <br />
+              {!validUsername ? (
+                <span
+                  className="error"
+                  data-testid="error"
+                  style={{ color: "red" }}
+                >
+                  Sorry, your username is inccorect.
+                </span>
+              ) : (
+                ""
+              )}
               <br />
               <label>Password</label>
               <br />
               <input
                 id={"password"}
+                data-testid="password"
                 name="pass"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <br />
+              {!validPass ? (
+                <span
+                  className="error"
+                  data-testid="error"
+                  style={{ color: "red" }}
+                >
+                  Sorry, your password is inccorect.
+                </span>
+              ) : (
+                ""
+              )}
               <br />
               <button
                 type="submit"
                 block
+                id="loginButton"
                 size="lg"
-                id={"submit"}
+                data-testid={"loginButton"}
+                // id={"submit"}
                 disabled={!valid()}
                 submit={handleSubmit}
               >
@@ -103,11 +143,11 @@ const Login = (props) => {
                 to="/signup"
                 style={{
                   color: "black",
-                  marginLeft: "52%",
+                  marginLeft: "60.5%",
                   backgroundColor: "transparent",
                 }}
               >
-                Don't have an account?
+                Register
               </Link>
             </form>
             <br /> <br />
@@ -117,6 +157,7 @@ const Login = (props) => {
       </>
     );
   };
+
   return <div>{success ? <Navigate to="/" /> : renderForm()}</div>;
 };
 export default Login;

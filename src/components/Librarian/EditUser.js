@@ -1,69 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Footer from "../Footer";
-const EditDetails = () => {
+import "../css/SignUp.css";
+import "../css/EditUser.css";
+const EditUser = () => {
   const [model, setModel] = useState({
     first: "",
     last: "",
     email: "",
-    city: "",
     username: "",
     password: "",
-    phoneNumber: "",
-    street: "",
     user: "user",
   });
   const url = useParams();
-  const navigate = useNavigate();
+  const [validPass, setValidPass] = useState(true);
   const [validUname, setValidUname] = useState(true);
   const [nonExistent, setNotExistent] = useState(true);
   const [nonExistentEmail, setNotExistentEmail] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
-  const [users, setUsers] = useState([]);
+  const [records, setRecords] = useState([]);
+  const [showPass, setShowPass] = useState(false);
 
+  const togglePassword = () => {
+    setShowPass(!showPass);
+  };
   useEffect(() => {
-    async function fetchUsers() {
+    async function getUsers() {
       const id = url.id.toString();
-      const response = await fetch(
-        `http://localhost:5000/record/${url.id.toString()}`
-      );
-      if (!response.ok) {
+      const response = await fetch(`http://localhost:5000/user/`);
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
       }
-      const user = await response.json();
-      if (!user) {
-        const message = `Record ${id} does not exist`;
-        window.alert(message);
-        navigate(-1);
-        return;
-      }
-      setModel(user);
-    }
-    fetchUsers();
-    return;
-  }, [url.id, navigate]);
 
-  useEffect(() => {
-    async function fetchUsers() {
-      const response = await fetch(`http://localhost:5000/record/`);
-      if (!response.ok) {
-        const message = `An error occured: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
-      const users = await response.json();
-      if (!users) {
-        const message = `Records does not exist`;
-        window.alert(message);
-        return;
-      }
-      setUsers(users);
+      const records = await response.json();
+      records.map((record) => (record._id === id ? setModel(record) : ""));
+      setRecords(records);
     }
-    fetchUsers();
+    getUsers();
+
     return;
-  }, [users]);
+  }, [records.length]);
 
   const update = (value) => {
     return setModel((prev) => {
@@ -73,23 +51,24 @@ const EditDetails = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const { uname, email } = document.forms[0];
+    const { uname, pass, email } = document.forms[0];
+    const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
     const validEmailB = validateEmail(email);
-    if (validEmailB && validUsername === true) {
-      const editedUser = {
-        first: model.first,
-        last: model.last,
-        email: model.email,
-        city: model.city,
-        username: model.username,
-        password: model.password,
-        phoneNumber: model.phoneNumber,
-        street: model.street,
-        user: "user",
-      };
+    const editedUser = {
+      first: model.first,
+      last: model.last,
+      email: model.email,
+      username: model.username,
+      street: model.street,
+      city: model.city,
+      phoneNumber: model.phoneNumber,
+      password: model.password,
+      user: model.user,
+    };
 
-      await fetch(`http://localhost:5000/record/update/${url.id}`, {
+    if (validPassword && validEmailB && validUsername === true) {
+      await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,14 +78,26 @@ const EditDetails = () => {
         window.alert(error);
         return;
       });
-      navigate(-1);
     }
   }
 
+  const validatePassword = (pass) => {
+    const password = /^[A-Za-z]\w{6,14}$/;
+    if (pass.value.match(password)) {
+      setValidPass(true);
+      return true;
+    } else {
+      setValidPass(false);
+
+      return false;
+    }
+  };
+
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    const existent = users.filter(
-      (user) => user.email === email.value && user._id !== model._id
+    const existent = records.filter(
+      (user) =>
+        (user.email === email.value && url.id.toString() !== user._id) === true
     );
     if (existent.length === 0) {
       setNotExistentEmail(true);
@@ -125,8 +116,10 @@ const EditDetails = () => {
 
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
-    const existent = users.filter(
-      (user) => user.username === uname.value && user._id !== model._id
+    const existent = records.filter(
+      (user) =>
+        (user.username === uname.value && url.id.toString() !== user._id) ===
+        true
     );
     if (existent.length === 0) {
       setNotExistent(true);
@@ -142,13 +135,12 @@ const EditDetails = () => {
       return false;
     }
   };
-
   return (
     <>
       <div className="content">
         <center>
           <br />
-          <h1 style={{ marginBlockEnd: "0em" }}>Edit user</h1>
+          <h1 style={{ marginBlockEnd: "0em" }}>Edit User</h1>
           <hr
             style={{ border: "1px solid black", borderColor: "#A04000" }}
           ></hr>
@@ -180,51 +172,6 @@ const EditDetails = () => {
                 onChange={(e) => update({ last: e.target.value })}
               />
             </div>
-            <div className="form-group">
-              <label htmlFor="city" style={{ float: "left" }}>
-                City
-              </label>
-              <br />
-              <input
-                type="text"
-                className="form-control"
-                id="city"
-                value={model.city}
-                style={{ width: "100%" }}
-                onChange={(e) => update({ city: e.target.value })}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="street" style={{ float: "left" }}>
-                Street
-              </label>
-              <br />
-              <input
-                type="text"
-                className="form-control"
-                id="street"
-                value={model.street}
-                style={{ width: "100%" }}
-                onChange={(e) => update({ street: e.target.value })}
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="phoneNumber" style={{ float: "left" }}>
-                Phone Number
-              </label>
-              <br />
-              <input
-                type="text"
-                className="form-control"
-                id="phoneNumber"
-                value={model.phoneNumber}
-                style={{ width: "100%" }}
-                onChange={(e) => update({ phoneNumber: e.target.value })}
-              />
-            </div>
-
             <div className="form-group">
               <label htmlFor="username" style={{ float: "left" }}>
                 Username
@@ -276,14 +223,31 @@ const EditDetails = () => {
                 ""
               )}
             </div>
-            <div className="form-group"></div>
             <div className="form-group">
+              <label htmlFor="password" style={{ float: "left" }}>
+                Password
+              </label>
+              <br />
               <input
-                type="submit"
-                value="Edit user"
-                style={{ marginTop: "10px" }}
-                className="btn btn-primary"
+                type={showPass ? "text" : "password"}
+                className="form-control"
+                id="password"
+                name="pass"
+                value={model.password}
+                style={{ width: "100%" }}
+                onChange={(e) => update({ password: e.target.value })}
               />
+              {!validPass ? (
+                <span className="error" style={{ color: "red" }}>
+                  Password error
+                  <br />
+                </span>
+              ) : (
+                ""
+              )}
+            </div>
+            <div className="form-group">
+              <input type="submit" value="Edit user" className="editButton" />
             </div>
           </form>
           <br />
@@ -294,4 +258,4 @@ const EditDetails = () => {
   );
 };
 
-export default EditDetails;
+export default EditUser;

@@ -3,6 +3,7 @@ import Footer from "../Footer";
 import "../Content.css";
 import "../css/ViewBooks.css";
 let receipt = "";
+let imageChosed = false;
 const View = (props) => {
   return (
     <tr>
@@ -14,10 +15,12 @@ const View = (props) => {
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
       <td>{props.record.fine}</td>
+      <td>{props.record.verified === true ? "yes" : "no"}</td>
       <td>
         <input
           type="file"
           id="receipt"
+          accept=".png, .jpg, .jpeg"
           style={{ width: "186px", display: "none" }}
           onChange={(e) => {
             let fileReader = new FileReader();
@@ -28,6 +31,7 @@ const View = (props) => {
               base64URL = fileReader.result;
               receipt = base64URL;
             };
+            imageChosed = true;
           }}
         ></input>
         <button>
@@ -35,8 +39,23 @@ const View = (props) => {
         </button>
         <button
           id={"buttons"}
+          disabled={!imageChosed}
           onClick={() => props.updateReceipt(props, receipt)}
-          style={{ color: "black", width: "91px", height: "21px" }}
+          style={
+            imageChosed
+              ? {
+                  color: "black",
+                  width: "91px",
+                  height: "21px",
+                  pointerEvents: "auto",
+                }
+              : {
+                  color: "black",
+                  width: "91px",
+                  height: "21px",
+                  pointerEvents: "none",
+                }
+          }
         >
           Send receipt
         </button>
@@ -61,9 +80,11 @@ async function updateReceipt(props, receipt) {
     fine: props.fine,
     issueDate: props.issueDate,
     dueDate: props.dueDate,
+    returnDate: props.returnDate,
     days: props.days,
     receipt: receipt,
     paid: props.paid,
+    verified: !props.verified,
   };
   await fetch(`http://localhost:5000/issue/edit/${props._id}`, {
     method: "POST",
@@ -83,7 +104,7 @@ export default function ViewUsers() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -94,6 +115,7 @@ export default function ViewUsers() {
           el.isApproved === "true" &&
           el.email === localStorage.email &&
           el.fine !== 0 &&
+          (el.paid === null || el.paid === "false") &&
           el.receipt === null
       );
       setRecords(issuedBooks);
@@ -130,6 +152,7 @@ export default function ViewUsers() {
               <th>Issue Date</th>
               <th>Due Date</th>
               <th>Fine</th>
+              <th>Verified</th>
               <th></th>
             </tr>
           </thead>

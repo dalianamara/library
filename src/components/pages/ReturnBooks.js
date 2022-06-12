@@ -7,6 +7,11 @@ import reject from "../images/reject.png";
 
 const View = (props) => {
   const handleApproval = async (approve) => {
+    let today = new Date();
+    let day = today.getDate();
+    let month = today.toLocaleString("default", { month: "2-digit" });
+    let year = today.getFullYear();
+    today = year + "-" + month + "-" + day;
     const editedUser = {
       first: props.record.first,
       last: props.record.last,
@@ -22,6 +27,7 @@ const View = (props) => {
       isReturned: approve,
       fine: props.record.fine,
       issueDate: props.record.issueDate,
+      returnDate: today,
       dueDate: props.record.dueDate,
       isReserved: undefined,
       paid: props.record.paid,
@@ -40,7 +46,7 @@ const View = (props) => {
 
   return (
     <tr>
-      <td>{props.record.bookTitle}</td>
+      <td style={{ width: "400px" }}>{props.record.bookTitle}</td>
       <td>{props.record.first}</td>
       <td>{props.record.last}</td>
       <td>
@@ -54,14 +60,12 @@ const View = (props) => {
           onClick={async () => handleApproval("true")}
           style={{ color: "black", height: "21px" }}
         >
-          <img src={approve} className="image" style={{ width: "20px" }} />
-        </button>
-        <button
-          id="buttons"
-          onClick={async () => handleApproval("false")}
-          style={{ color: "black", height: "21px" }}
-        >
-          <img src={reject} className="image" style={{ width: "20px" }} />
+          <img
+            src={approve}
+            className="image"
+            style={{ width: "20px" }}
+            alt={"approve"}
+          />
         </button>
       </td>
     </tr>
@@ -74,17 +78,20 @@ export default function ReturnBooks() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
       }
       const records = await response.json();
+
       const pendingIssues = records.filter(
         (el) =>
           el.isReturned === null &&
           el.isApproved !== null &&
-          el.isApproved !== "false"
+          el.isApproved !== undefined &&
+          el.isApproved !== "false" &&
+          el.email === localStorage.email
       );
       setRecords(pendingIssues);
     }

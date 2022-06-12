@@ -1,9 +1,9 @@
-import { Navigate, useEffect, useState } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-export default function PrivateAdminRoute({ children }) {
+export default function PrivateAdminRoute({ children, type }) {
   const auth = localStorage.isLoggedIn;
-  const user = localStorage.user;
-  return auth === "true" && user === "admin" ? (
+
+  return auth === "true" && type === "admin" ? (
     children
   ) : (
     <Navigate to="/signup" />

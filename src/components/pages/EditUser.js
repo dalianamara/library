@@ -8,6 +8,9 @@ const EditUser = () => {
     email: "",
     username: "",
     password: "",
+    city: "",
+    street: "",
+    phoneNumber: "",
     user: "user",
   });
 
@@ -24,9 +27,9 @@ const EditUser = () => {
   };
   useEffect(() => {
     async function getUsers() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -68,7 +71,7 @@ const EditUser = () => {
     };
 
     if (validPassword && validEmailB && validUsername === true) {
-      await fetch(`http://localhost:5000/record/update/${model._id}`, {
+      await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,13 +98,22 @@ const EditUser = () => {
 
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    if (email.value.match(emailExpression)) {
+    const existent = records.filter(
+      (user) =>
+        (user.email === email.value && localStorage.email !== email.value) ===
+        true
+    );
+    if (existent.length === 0) {
       setNotExistentEmail(true);
-      setValidEmail(true);
-      return true;
+      if (email.value.match(emailExpression)) {
+        setValidEmail(true);
+        return true;
+      } else {
+        setValidEmail(false);
+        return false;
+      }
     } else {
       setNotExistentEmail(false);
-      setValidEmail(false);
       return false;
     }
   };
@@ -109,7 +121,9 @@ const EditUser = () => {
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
     const existent = records.filter(
-      (user) => (user.username === uname.value) === true
+      (user) =>
+        (user.username === uname.value &&
+          localStorage.username !== uname.value) === true
     );
     if (existent.length === 0) {
       setNotExistent(true);
@@ -160,6 +174,45 @@ const EditUser = () => {
                 value={model.last}
                 style={{ width: "100%" }}
                 onChange={(e) => update({ last: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="city" style={{ float: "left" }}>
+                City
+              </label>
+              <br />
+              <input
+                type="text"
+                className="form-control"
+                id="city"
+                value={model.city}
+                onChange={(e) => update({ city: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="street" style={{ float: "left" }}>
+                Street
+              </label>
+              <br />
+              <input
+                type="text"
+                className="form-control"
+                id="street"
+                value={model.street}
+                onChange={(e) => update({ street: e.target.value })}
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="phoneNumber" style={{ float: "left" }}>
+                Phone number
+              </label>
+              <br />
+              <input
+                type="text"
+                className="form-control"
+                id="phoneNumber"
+                value={model.phoneNumber}
+                onChange={(e) => update({ phoneNumber: e.target.value })}
               />
             </div>
             <div className="form-group">
@@ -242,11 +295,7 @@ const EditUser = () => {
               )}
             </div>
             <div className="form-group">
-              <input
-                type="submit"
-                value="Edit user"
-                className="btn btn-primary"
-              />
+              <input type="submit" value="Save" className="editButton" />
             </div>
           </form>
           <br />

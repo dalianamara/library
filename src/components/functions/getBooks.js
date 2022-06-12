@@ -1,6 +1,6 @@
 export const getBooks = async () => {
   const response = await fetch(`http://localhost:5000/book/`);
-  if (!response.ok) {
+  if (response.status !== 200) {
     const message = `An error occured: ${response.statusText}`;
     window.alert(message);
     return;
@@ -17,6 +17,4 @@ export const getBook = async (bookId) => {
   await fetch(`http://localhost:5000/${bookId}`, {
     method: "GET",
   });
-  //   const newRecords = records.filter((el) => el._id !== bookId);
-  //   return newRecords;
 };

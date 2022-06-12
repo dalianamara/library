@@ -5,31 +5,45 @@ import "../Content.css";
 import "../css/ViewBooks.css";
 let fine = 0;
 const View = (props) => {
-  const issueDate = new Date(props.record.issueDate);
+  const [dayss, setdayss] = useState(0);
   const dueDate = new Date(props.record.dueDate);
   let today = new Date();
   let day = today.getDate();
   let month = today.toLocaleString("default", { month: "numeric" });
   let year = today.getFullYear();
   today = month + "/" + day + "/" + year;
-  let todday = new Date(today);
-  let mins = dueDate.getTime() - issueDate.getTime();
-  let mins1 = dueDate.getTime() - todday.getTime();
-  let days = mins / (1000 * 3600 * 24);
-  let days1 = mins1 / (1000 * 3600 * 24);
+  let todayDate = new Date(today);
+  let returnDate = new Date(props.record.returnDate);
+  let mili = dueDate.getTime() - todayDate.getTime();
+  let miliReturnDate = dueDate.getTime() - returnDate.getTime();
+  let days = mili / (1000 * 3600 * 24);
+  let daysReturn = miliReturnDate / (1000 * 3600 * 24);
+  if (props.record.returnDate !== null && daysReturn > 0) {
+    days = 0;
+  }
 
+  // console.log(daysReturn, days, dueDate.getTime(), mili);
   useEffect(() => {
-    if (days1 < 0) {
-      fine = (0.3 * -days1).toFixed(2);
-    } else {
+    setdayss(days);
+    if (daysReturn < 0) {
+      fine = (0.3 * -daysReturn).toFixed(2);
+      setdayss(daysReturn);
+    } else if (
+      (days < 0 && props.record.isReturned === "false") ||
+      props.record.isReturned === null
+    ) {
+      fine = (0.3 * -days).toFixed(2);
+    } else if (days === 0 && props.record.isReturned === "true") {
+      fine = 0;
+    } else if (days > 0) {
       fine = 0;
     }
     props.updateFine(props.record, fine);
-  }, [days1, props.record.length]);
-
+  }, [days, daysReturn, dayss, props]);
+  console.log(daysReturn, days, dayss);
   return (
     <tr>
-      <td>{props.record.bookTitle}</td>
+      <td style={{ width: "200px" }}>{props.record.bookTitle}</td>
       <td>{props.record.first}</td>
       <td>{props.record.last}</td>
       <td>
@@ -40,11 +54,15 @@ const View = (props) => {
       <td>{props.record.returnApproval === "true" ? "yes" : "no"}</td>
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
-      <td>{Math.round(days1)}</td>
+      <td>{Math.round(dayss)}</td>
       <td>{props.record.fine + " lei"}</td>
       <td>
         <Link
-          id={props.record.fine > 0 ? "disabledButton" : "buttons"}
+          id={
+            props.record.fine > 0 || props.record.returnApproval === "true"
+              ? "disabledButton"
+              : "buttons"
+          }
           to={`/issue/edit/${props.record._id}`}
           style={{ color: "black", height: "21px" }}
         >
@@ -61,7 +79,7 @@ export default function ViewUsers() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -74,7 +92,7 @@ export default function ViewUsers() {
     }
     getRecords();
     return;
-  });
+  }, []);
 
   async function updateFine(props, fine) {
     const editedissue = {
@@ -93,6 +111,7 @@ export default function ViewUsers() {
       fine: fine,
       issueDate: props.issueDate,
       dueDate: props.dueDate,
+      returnDate: props.returnDate,
       days: props.days,
       receipt: props.receipt,
       paid: props.paid,

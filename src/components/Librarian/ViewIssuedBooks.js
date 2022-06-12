@@ -22,7 +22,7 @@ const View = (props) => (
       >
         Edit
       </Link>
-      |
+      |{" "}
       <button
         id="buttons"
         onClick={() => {
@@ -42,7 +42,7 @@ export default function ViewIssuedBooks() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -55,7 +55,7 @@ export default function ViewIssuedBooks() {
     return;
   });
 
-  async function deleteUser(id) {
+  async function deleteIssue(id) {
     await fetch(`http://localhost:5000/issue/delete/${id}`, {
       method: "DELETE",
     });
@@ -68,7 +68,7 @@ export default function ViewIssuedBooks() {
       return (
         <View
           record={record}
-          deleteRecord={() => deleteUser(record._id)}
+          deleteRecord={() => deleteIssue(record._id)}
           key={record._id}
         />
       );

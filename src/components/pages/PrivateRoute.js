@@ -1,6 +1,11 @@
 import { Navigate } from "react-router-dom";
 
-export default function PrivateRoute({ children }) {
+export default function PrivateRoute({ children, type }) {
   const auth = localStorage.isLoggedIn;
-  return auth === "true" ? children : <Navigate to="/signup" />;
+
+  return auth === "true" && type === "user" ? (
+    children
+  ) : (
+    <Navigate to="/signup" />
+  );
 }

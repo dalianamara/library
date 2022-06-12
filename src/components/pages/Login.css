@@ -33,3 +33,19 @@
     background-color: rgba(0,0,0,0.4);
     padding-top: 60px;
 }
+
+#loginButton {
+    border-radius: 2px;
+    background-color: coral;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    width: 350px;
+    height: 27px;
+    margin-left: 120px;
+    margin-right: 120px;
+    text-align: center;
+    padding: 0px;
+    padding-top: 4px;
+    color: white
+  }

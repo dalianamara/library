@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
 import "../css/SignUp.css";
+
 const SignUp = () => {
   const [model, setModel] = useState({
     first: "",
@@ -16,12 +17,13 @@ const SignUp = () => {
   const [nonExistent, setNotExistent] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
   const [records, setRecords] = useState([]);
+  const [nonExistentEmail, setNotExistentEmail] = useState(true);
 
   useEffect(() => {
     async function getUsers() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -48,7 +50,7 @@ const SignUp = () => {
 
     if (validPassword && validEmailB && validUsername === true) {
       const newUser = { ...model };
-      await fetch("http://localhost:5000/record/add", {
+      await fetch("http://localhost:5000/user/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -83,17 +85,26 @@ const SignUp = () => {
 
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    if (email.value.match(emailExpression)) {
-      setValidEmail(true);
-      return true;
+    const existent = records.filter(
+      (user) => (user.email === email.value) === true
+    );
+    if (existent.length === 0) {
+      setNotExistentEmail(true);
+      if (email.value.match(emailExpression)) {
+        setValidEmail(true);
+        return true;
+      } else {
+        setValidEmail(false);
+        return false;
+      }
     } else {
-      setValidEmail(false);
+      setNotExistentEmail(false);
       return false;
     }
   };
 
   const validateUsername = (uname) => {
-    const username = /^[A-Za-z]\w{5,30}$/;
+    const username = /^[A-Za-z0-9]\w{5,30}$/;
     const existent = records.filter((user) => user.username === uname.value);
     if (existent.length === 0) {
       setNotExistent(true);
@@ -130,6 +141,7 @@ const SignUp = () => {
                   type="text"
                   className="form-control"
                   id="firstname"
+                  key={"firstname"}
                   required
                   value={model.first}
                   onChange={(e) => update({ first: e.target.value })}
@@ -165,14 +177,15 @@ const SignUp = () => {
                   style={{ width: "100%" }}
                   onChange={(e) => update({ username: e.target.value })}
                 />
-                {console.log(nonExistent, validUname)}
+
                 {!nonExistent ? (
                   <span className="error" style={{ color: "red" }}>
-                    this username already exists
+                    Sorry, this username already exists.
                   </span>
                 ) : !validUname ? (
                   <span className="error" style={{ color: "red" }}>
-                    username error
+                    Sorry, this username is invalid. <br />
+                    Use only letters and decimals.
                   </span>
                 ) : (
                   ""
@@ -192,9 +205,13 @@ const SignUp = () => {
                   value={model.email}
                   onChange={(e) => update({ email: e.target.value })}
                 />
-                {!validEmail ? (
+                {!nonExistentEmail ? (
                   <span className="error" style={{ color: "red" }}>
-                    eroare email
+                    Sorry, this email already exists.
+                  </span>
+                ) : !validEmail ? (
+                  <span className="error" style={{ color: "red" }}>
+                    Sorry, this email is invalid.
                   </span>
                 ) : (
                   ""
@@ -227,7 +244,7 @@ const SignUp = () => {
                 <input
                   type="submit"
                   value="Create user"
-                  className="btn btn-primary"
+                  className="registerButton"
                 />
               </div>
             </form>

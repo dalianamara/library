@@ -16,7 +16,6 @@ const AddReview = (props) => {
       return { ...prev, ...value };
     });
   };
-  console.log(props);
 
   async function handleSubmit(e) {
     e.preventDefault();

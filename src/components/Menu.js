@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./Menu.css";
 import MyLibrary from "./pages/MyLibrary";
@@ -36,96 +36,150 @@ import RenewBook from "./pages/RenewBook";
 import ViewReservedBooksByUser from "./pages/ViewReservedBooksByUser";
 import ViewFines from "./pages/ViewFines";
 import ViewPaidFines from "./Librarian/ViewPaidFines";
-import EditUserAdmin from "./Librarian/EditUser";
+import EditUserAdmin from "./Admin/EditLibrarian";
+import EditUserLibrarian from "./Librarian/EditLibrarian";
+import EditUserByLibrarian from "./Librarian/EditUser";
 import EditIssue from "./Librarian/EditIssue";
 import Feedback from "./Feedback";
 import Borrows from "./pages/Borrows";
 import Extend from "./pages/Extend";
 import Fees from "./pages/Fees";
+import Terms from "./pages/Terms";
+import About from "./About";
+import Contact from "./Contact";
 
-function checkUser() {
-  const user = localStorage.getItem("user");
-  return user;
-}
 class Menu extends Component {
   constructor(props) {
     super(props);
     this.rerenderCallback = this.rerenderCallback.bind(this);
     this.rerenderSignupCallback = this.rerenderSignupCallback.bind(this);
+    this.state = {
+      user: [],
+    };
   }
+
+  checkUser() {
+    if (this.state.user === undefined) return "none";
+    else return this.state.user.user;
+  }
+
+  componentDidMount() {
+    fetch(`http://localhost:5000/user/`)
+      .then((response) => response.json())
+      .then((user) => {
+        const users = user.find((user) => user._id === localStorage.id);
+        this.setState({ user: users });
+      })
+      .catch((e) => {
+        this.setState({ user: [{ user: "none" }] });
+        console.log("The user does not exist");
+        return;
+      });
+  }
+
   rerenderCallback() {
     this.forceUpdate();
   }
+
+  useForceUpdate() {}
+
   rerenderSignupCallback() {
     localStorage.setItem("isLoggedIn", false);
+    localStorage.setItem("username", null);
+    localStorage.setItem("firstName", null);
+    localStorage.setItem("user", null);
+    localStorage.setItem("email", null);
+    localStorage.setItem("id", null);
     this.forceUpdate();
   }
-  useForceUpdate() {}
 
   render() {
     return (
       <Router>
         <div className="horizontal-menu">
-          <a>
-            <Link to="/">HOME</Link>
-          </a>
+          <Link to="/" className={"menuButton"}>
+            HOME
+          </Link>
+          {console.log(this.checkUser())}
           {/* check if user is admin then show admin related menu */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
-            checkUser() === "admin" ? (
+            this.checkUser() === "admin" ? (
               <div className="dropdownMenu">
                 <button className="dropdownbutton">LIBRARIANS</button>
                 <div className="dropdown-menu">
-                  <a>
-                    <Link to="/addlib">ADD LIBRARIAN</Link>
-                  </a>
+                  <Link to="/addlib" className={"menuButton"}>
+                    ADD LIBRARIAN
+                  </Link>
+                  <Link to="/viewlib" className={"menuButton"}>
+                    VIEW LIBRARIANS
+                  </Link>
                 </div>
               </div>
-            ) : checkUser() === "librarian" ? (
+            ) : this.checkUser() === "librarian" ? (
               <div className="dropdownMenu">
                 <button className="dropdownbutton">BOOKS</button>
                 <div className="dropdown-menu">
-                  <a>
-                    <Link to="/addbook">ADD BOOK</Link>
-                  </a>
-                  <a>
-                    <Link to="/viewbook">VIEW BOOKS</Link>
-                  </a>
-                  <a>
-                    <Link to="/viewIssuedBooks">VIEW ISSUED BOOKS</Link>
-                  </a>
-                  <a>
-                    <Link to="/pending">PENDING ISSUE BOOKS</Link>
-                  </a>
-                  <a>
-                    <Link to="/returned">PENDING RETURNING BOOKS</Link>
-                  </a>
-                  <a>
-                    <Link to="/reserve">RESERVED BOOKS</Link>
-                  </a>
+                  <Link to="/addbook" className={"menuButton"}>
+                    ADD BOOK
+                  </Link>
+
+                  <Link to="/viewbook" className={"menuButton"}>
+                    VIEW BOOKS
+                  </Link>
+
+                  <Link to="/viewIssuedBooks" className={"menuButton"}>
+                    VIEW ISSUED BOOKS
+                  </Link>
+
+                  <Link to="/pending" className={"menuButton"}>
+                    PENDING ISSUE BOOKS
+                  </Link>
+
+                  <Link to="/returned" className={"menuButton"}>
+                    PENDING RETURNING BOOKS
+                  </Link>
+
+                  <Link to="/reserve" className={"menuButton"}>
+                    PENDING RESERVED BOOKS
+                  </Link>
+                </div>
+              </div>
+            ) : this.checkUser() === "user" ? (
+              <div className="dropdownMenu">
+                <button className="dropdownbutton">MY LIBRARY</button>
+                <div className="dropdown-menu">
+                  <Link to="/online" className={"menuButton"}>
+                    Online Public Acces Catalogue
+                  </Link>
+
+                  <Link to="/viewbooksuser" className={"menuButton"}>
+                    Catalogue
+                  </Link>
+
+                  <Link to="/issuedBooks" className={"menuButton"}>
+                    Issued books
+                  </Link>
+
+                  <Link to="/return" className={"menuButton"}>
+                    Returned books
+                  </Link>
+
+                  <Link to="/reserved" className={"menuButton"}>
+                    Reserved books
+                  </Link>
+
+                  <Link to="/fines" className={"menuButton"}>
+                    Fine and Fees
+                  </Link>
                 </div>
               </div>
             ) : (
               <div className="dropdownMenu">
                 <button className="dropdownbutton">MY LIBRARY</button>
                 <div className="dropdown-menu">
-                  <a>
-                    <Link to="/online">Online Public Acces Catalogue</Link>
-                  </a>
-                  <a>
-                    <Link to="/viewbooksuser">Catalogue</Link>
-                  </a>
-                  <a>
-                    <Link to="/issuedBooks">Issued books</Link>
-                  </a>
-                  <a>
-                    <Link to="/return">Returned books</Link>
-                  </a>
-                  <a>
-                    <Link to="/reserved">Reserved books</Link>
-                  </a>
-                  <a>
-                    <Link to="/fines">Fine and Fees</Link>
-                  </a>
+                  <Link to="/online" className={"menuButton"}>
+                    Online Public Access Catalogue
+                  </Link>
                 </div>
               </div>
             )
@@ -133,50 +187,48 @@ class Menu extends Component {
             <div className="dropdownMenu">
               <button className="dropdownbutton">MY LIBRARY</button>
               <div className="dropdown-menu">
-                <a>
-                  <Link to="/online">Online Public Acces Catalogue</Link>
-                </a>
-                <a href="#">Access </a>
-                <a href="#">LINK</a>
+                <Link to="/online" className={"menuButton"}>
+                  Online Public Access Catalogue
+                </Link>
               </div>
             </div>
           )}
 
-          {checkUser() === "admin" &&
+          {this.checkUser() === "admin" &&
           localStorage.getItem("isLoggedIn") === "true" ? (
-            <a>
-              <Link to="/viewlib">VIEW LIBRARIANS</Link>
-            </a>
-          ) : checkUser() === "librarian" &&
+            ""
+          ) : this.checkUser() === "librarian" &&
             localStorage.getItem("isLoggedIn") === "true" ? (
             <div className="dropdownMenu">
               <button className="dropdownbutton">USERS</button>
               <div className="dropdown-menu">
-                <a>
-                  <Link to="/viewusers">VIEW USERS</Link>
-                </a>
+                <Link to="/viewusers" className={"menuButton"}>
+                  VIEW USERS
+                </Link>
               </div>
             </div>
           ) : localStorage.getItem("isLoggedIn") === "true" &&
-            checkUser() === "user" ? (
+            this.checkUser() === "user" ? (
             <>
               <div className="dropdownMenu">
                 <button className="dropdownbutton">SERVICES</button>
                 <div className="dropdown-menu">
-                  <a>
-                    <Link to="/borrows">Borrows and returns</Link>
-                  </a>
-                  <a>
-                    <Link to="/finesandfees">Fees</Link>
-                  </a>
-                  <a>
-                    <Link to="/extend">Extend due date</Link>
-                  </a>
+                  <Link to="/borrows" className={"menuButton"}>
+                    Borrows and returns
+                  </Link>
+
+                  <Link to="/finesandfees" className={"menuButton"}>
+                    Fees
+                  </Link>
+
+                  <Link to="/extend" className={"menuButton"}>
+                    Extend due date
+                  </Link>
                 </div>
               </div>
               <Link
                 // id="buttons"
-                to="/record/edit"
+                to="/user/edit"
                 // onClick={async () => handleApproval("false")}
                 style={{
                   background: "transparent",
@@ -191,42 +243,45 @@ class Menu extends Component {
               </Link>
             </>
           ) : (
-            <>
-              <a>
-                <Link to="/services">SERVICES</Link>
-              </a>
-            </>
+            <></>
           )}
-
-          {/* {checkUser() === "admin" &&
-            localStorage.getItem("isLoggedIn") === "true" && (
-              <a>
-                <Link to="/pendingReviews">VIEW REVIEWS</Link>
-              </a>
-            )} */}
-
-          {checkUser() === "admin" &&
+          {this.checkUser() === "admin" &&
           localStorage.getItem("isLoggedIn") === "true" ? (
-            <a>
-              <Link to="/pendingReviews">VIEW REVIEWS</Link>
-            </a>
-          ) : checkUser() === "librarian" &&
+            <Link to="/pendingReviews" className={"menuButton"}>
+              VIEW REVIEWS
+            </Link>
+          ) : this.checkUser() === "librarian" &&
             localStorage.getItem("isLoggedIn") === "true" ? (
-            <div className="dropdownMenu">
-              <button className="dropdownbutton">FINES</button>
-              <div className="dropdown-menu">
-                <a>
+            <>
+              <div className="dropdownMenu">
+                <button className="dropdownbutton">FINES</button>
+                <div className="dropdown-menu">
                   <Link to="/paidfines">PAID FINES</Link>
-                </a>
+                </div>
               </div>
-            </div>
+              <Link
+                // id="buttons"
+                to="/user/edit"
+                // onClick={async () => handleApproval("false")}
+                style={{
+                  background: "transparent",
+                  border: "0px",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                  marginLeft: "750px",
+                  padding: "0px",
+                }}
+              >
+                <img src={settings} alt="settings" style={{ width: "20px" }} />
+              </Link>
+            </>
           ) : (
             ""
           )}
 
           {/* check if user is logged in then show logout button instead of login  */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
-            <a id="login">
+            <a id="login" data-testid="login">
               <button
                 style={{
                   background: "none",
@@ -236,10 +291,7 @@ class Menu extends Component {
                   float: "left",
                   textDecoration: "none",
                   fontSize: "15px",
-                  paddingBottom: "7px",
-                  paddingTop: "7px",
-                  // padding: "7px 7px",
-                  // paddingRight: "6px",
+                  cursor: "pointer",
                   borderStyle: "none",
                 }}
                 onClick={this.rerenderSignupCallback}
@@ -248,9 +300,9 @@ class Menu extends Component {
               </button>
             </a>
           ) : (
-            <a id="login">
-              <Link to="/login">LOGIN</Link>
-            </a>
+            <Link to="/login" style={{ float: "right" }}>
+              LOGIN
+            </Link>
           )}
           <Routes>
             <Route path="/" element={<Main />} />
@@ -262,7 +314,7 @@ class Menu extends Component {
             <Route
               path="/addlib"
               element={
-                <PrivateAdminRoute>
+                <PrivateAdminRoute type={this.checkUser()}>
                   <AddLibrarian />
                 </PrivateAdminRoute>
               }
@@ -271,7 +323,7 @@ class Menu extends Component {
             <Route
               path="/pendingReviews"
               element={
-                <PrivateAdminRoute>
+                <PrivateAdminRoute type={this.checkUser()}>
                   <PendingReviews />
                 </PrivateAdminRoute>
               }
@@ -279,7 +331,7 @@ class Menu extends Component {
             <Route
               path="/viewlib"
               element={
-                <PrivateAdminRoute>
+                <PrivateAdminRoute type={this.checkUser()}>
                   <ViewLibrarians />
                 </PrivateAdminRoute>
               }
@@ -288,7 +340,7 @@ class Menu extends Component {
             <Route
               path="/review/edit/:id"
               element={
-                <PrivateAdminRoute>
+                <PrivateAdminRoute type={this.checkUser()}>
                   <PendingReviews />
                 </PrivateAdminRoute>
               }
@@ -297,7 +349,7 @@ class Menu extends Component {
             <Route
               path="/addbook"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <AddBooks />
                 </PrivateLibrarianRoute>
               }
@@ -306,7 +358,7 @@ class Menu extends Component {
             <Route
               path="/book/edit/:id"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <EditBookDetails />
                 </PrivateLibrarianRoute>
               }
@@ -315,8 +367,17 @@ class Menu extends Component {
             <Route
               path="/issue/update/:id"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <EditIssue />
+                </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
+              path="/user/edit/:id"
+              element={
+                <PrivateLibrarianRoute type={this.checkUser()}>
+                  <EditUserLibrarian />
                 </PrivateLibrarianRoute>
               }
             />
@@ -324,16 +385,25 @@ class Menu extends Component {
             <Route
               path="/record/edit/:id"
               element={
-                <PrivateLibrarianRoute>
-                  <EditUserAdmin />
+                <PrivateLibrarianRoute type={this.checkUser()}>
+                  <EditUserByLibrarian />
                 </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
+              path="/edit/:id"
+              element={
+                <PrivateAdminRoute type={this.checkUser()}>
+                  <EditUserAdmin />
+                </PrivateAdminRoute>
               }
             />
 
             <Route
               path="/viewbook"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <ViewBooks />
                 </PrivateLibrarianRoute>
               }
@@ -342,7 +412,7 @@ class Menu extends Component {
             <Route
               path="/pending"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <PendingBooks />
                 </PrivateLibrarianRoute>
               }
@@ -351,7 +421,7 @@ class Menu extends Component {
             <Route
               path="/reserve"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <PendingReservation />
                 </PrivateLibrarianRoute>
               }
@@ -360,7 +430,7 @@ class Menu extends Component {
             <Route
               path="/returned"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <ReturnedBooks />
                 </PrivateLibrarianRoute>
               }
@@ -369,7 +439,7 @@ class Menu extends Component {
             <Route
               path="/viewusers"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <ViewUsers />
                 </PrivateLibrarianRoute>
               }
@@ -378,7 +448,7 @@ class Menu extends Component {
             <Route
               path="/paidfines"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <ViewPaidFines />
                 </PrivateLibrarianRoute>
               }
@@ -387,7 +457,7 @@ class Menu extends Component {
             <Route
               path="/viewIssuedBooks"
               element={
-                <PrivateLibrarianRoute>
+                <PrivateLibrarianRoute type={this.checkUser()}>
                   <ViewIssuedBooks />
                 </PrivateLibrarianRoute>
               }
@@ -397,16 +467,16 @@ class Menu extends Component {
             <Route
               path="/viewbooksuser"
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <ViewBooksAsUser />
                 </PrivateRoute>
               }
             />
 
             <Route
-              path="/record/edit"
+              path="/user/edit"
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <EditUser />
                 </PrivateRoute>
               }
@@ -415,7 +485,7 @@ class Menu extends Component {
             <Route
               path="/issue/edit/:id"
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <RenewBook />
                 </PrivateRoute>
               }
@@ -424,7 +494,7 @@ class Menu extends Component {
             <Route
               path={`/:id`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <ProductPage id={window.location} />
                 </PrivateRoute>
               }
@@ -432,7 +502,7 @@ class Menu extends Component {
             <Route
               path="/return"
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <ReturnBooks />
                 </PrivateRoute>
               }
@@ -440,7 +510,7 @@ class Menu extends Component {
             <Route
               path={`/:id/issue`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <Issue id={window.location} />
                 </PrivateRoute>
               }
@@ -449,7 +519,7 @@ class Menu extends Component {
             <Route
               path={`/:id/reserve`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <Issue id={window.location} type="reserve" />
                 </PrivateRoute>
               }
@@ -458,7 +528,7 @@ class Menu extends Component {
             <Route
               path={`/add`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <AddReview />
                 </PrivateRoute>
               }
@@ -467,7 +537,7 @@ class Menu extends Component {
             <Route
               path={`/:id/changeSettings`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <EditAddressDetails />
                 </PrivateRoute>
               }
@@ -476,7 +546,7 @@ class Menu extends Component {
             <Route
               path={`/issuedBooks`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <ViewIssuedBooksByUser />
                 </PrivateRoute>
               }
@@ -485,7 +555,7 @@ class Menu extends Component {
             <Route
               path={`/reserved`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <ViewReservedBooksByUser />
                 </PrivateRoute>
               }
@@ -494,18 +564,23 @@ class Menu extends Component {
             <Route
               path={`/fines`}
               element={
-                <PrivateRoute>
+                <PrivateRoute type={this.checkUser()}>
                   <ViewFines />
                 </PrivateRoute>
               }
             />
 
             {/* public access */}
+
             <Route
               path="/login"
               element={<Login rerenderCallback={this.rerenderCallback} />}
             />
+
             <Route path="/faq" element={<Faq />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/terms" element={<Terms />} />
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/finesandfees" element={<Fees />} />

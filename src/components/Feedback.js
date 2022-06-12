@@ -9,6 +9,7 @@ const AddFeedback = () => {
     email: "",
     message: "",
   });
+  const [isSent, setIsSent] = useState(false);
 
   const update = (value) => {
     return setFeedback((prev) => {
@@ -19,7 +20,9 @@ const AddFeedback = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const newFeedback = { ...feedback };
+    setIsSent(true);
     addFeedback(newFeedback);
+
     setFeedback({
       name: "",
       email: "",
@@ -98,6 +101,11 @@ const AddFeedback = () => {
               className="btn btn-primary"
             />
           </div>
+          {isSent && (
+            <center>
+              <span className={"feedbackAction"}>Feedback sent</span>
+            </center>
+          )}
         </form>
         <br />
       </div>

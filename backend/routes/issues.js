@@ -4,10 +4,10 @@ const db = require("../database/DatabaseConnection");
 const ObjectId = require("mongodb").ObjectId;
 
 record.route("/issue").get((req, res) => {
-  let dbConnection = db.getDB("issues");
+  let dbConnection = db.getDatabase("issues");
   dbConnection
     .collection("issues")
-    .find({})
+    .find()
     .toArray((err, result) => {
       if (err) throw err;
       res.json(result);
@@ -15,7 +15,7 @@ record.route("/issue").get((req, res) => {
 });
 
 record.route("/issue/:id").get((req, res) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
   dbConnection.collection("issues").findOne(myquery, (err, result) => {
     if (err) throw err;
@@ -25,7 +25,7 @@ record.route("/issue/:id").get((req, res) => {
 
 //create a new record.
 record.route("/issue/add").post((req, response) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myobj = {
     first: req.body.first,
     last: req.body.last,
@@ -36,14 +36,17 @@ record.route("/issue/add").post((req, response) => {
     bookId: req.body.bookId,
     bookTitle: req.body.bookTitle,
     deliveryType: req.body.deliveryType,
-    isApproved: req.body.isApproved,
     isReturned: req.body.isReturned,
     returnApproval: req.body.returnApproval,
+    isApproved: req.body.isApproved,
     fine: req.body.fine,
     issueDate: req.body.issueDate,
     dueDate: req.body.dueDate,
+    returnDate: req.body.returnDate,
     isReserved: req.body.isReserved,
     receipt: req.body.receipt,
+    paid: null,
+    verified: req.body.verified,
   };
   dbConnection.collection("issues").insertOne(myobj, (err, res) => {
     if (err) throw err;
@@ -53,7 +56,7 @@ record.route("/issue/add").post((req, response) => {
 
 //update a record by id.
 record.route("/issue/edit/:id").post((req, response) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
   let newvalues = {
     $set: {
@@ -66,32 +69,33 @@ record.route("/issue/edit/:id").post((req, response) => {
       bookId: req.body.bookId,
       bookTitle: req.body.bookTitle,
       deliveryType: req.body.deliveryType,
-      isApproved: req.body.isApproved,
       isReturned: req.body.isReturned,
       returnApproval: req.body.returnApproval,
+      isApproved: req.body.isApproved,
       fine: req.body.fine,
       issueDate: req.body.issueDate,
       dueDate: req.body.dueDate,
+      returnDate: req.body.returnDate,
       isReserved: req.body.isReserved,
       receipt: req.body.receipt,
+      paid: req.body.paid,
+      verified: req.body.verified,
     },
   };
   dbConnection
     .collection("issues")
     .updateOne(myquery, newvalues, (err, res) => {
       if (err) throw err;
-      console.log("1 issue updated");
       response.json(res);
     });
 });
 
 //delete a record
 record.route("/issue/delete/:id").delete((req, response) => {
-  let dbConnection = db.getDB();
+  let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
   dbConnection.collection("issues").deleteOne(myquery, (err, obj) => {
     if (err) throw err;
-    console.log("1 issue deleted");
     response.status(obj);
   });
 });

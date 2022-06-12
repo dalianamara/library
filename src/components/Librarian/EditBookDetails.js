@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { getGenre } from "../functions/getGenre";
 import Footer from "../Footer";
+import IssuePopup from "../pages/IssuePopup";
+import { ErrorBoundary } from "react-error-boundary";
 const EditDetails = () => {
+  const [error, setError] = useState(false);
   const [model, setModel] = useState({
     title: "",
     author: "",
@@ -12,24 +16,33 @@ const EditDetails = () => {
     pages: "",
     publisher: "",
   });
+  const [genres, setGenres] = useState([]);
   const url = useParams();
   const navigate = useNavigate();
+
+  const getGenres = () => {
+    const genres = getGenre();
+    genres.then((result) => {
+      setGenres(result);
+    });
+  };
+
+  useEffect(() => {
+    getGenres();
+  }, []);
 
   useEffect(() => {
     async function fetchBooks() {
       const id = url.id.toString();
-      const response = await fetch(
-        `http://localhost:5000/book/${url.id.toString()}`
-      );
-      if (!response.ok) {
+      const response = await fetch(`http://localhost:5000/book/${id}`);
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
       }
-
-      const user = await response.json();
+      let user = await response.json();
       if (!user) {
-        const message = `Record ${id} does not exist`;
+        const message = `Book ${id} does not exist`;
         window.alert(message);
         navigate(-1);
         return;
@@ -70,24 +83,43 @@ const EditDetails = () => {
     });
     navigate(-1);
   }
+  const ErrorFallback = ({ errorMess, resetError }) => {
+    return (
+      <IssuePopup
+        isOpen={error}
+        title="Error"
+        content={errorMess}
+        deliveryType={"Home"}
+        onOk={resetError}
+      />
+    );
+  };
 
+  const onOk = () => {
+    setError(!error);
+  };
   return (
     <>
       <div className="content">
         <center>
           <br />
-          <h1 style={{ marginBlockEnd: "0em" }}>Add new book</h1>
+          <h1 style={{ marginBlockEnd: "0em" }}>Edit book</h1>
           <hr
             style={{ border: "1px solid black", borderColor: "#A04000" }}
           ></hr>
           <form onSubmit={handleSubmit}>
             {/* input for description */}
             <div className="form-group" style={{ float: "left" }}>
-              <label htmlFor="cover" style={{ float: "left" }}>
+              <label
+                htmlFor="cover"
+                style={{ float: "left", marginLeft: "35px" }}
+              >
                 Cover
               </label>
+              <br></br>
               <img
                 id="coverImage"
+                alt="coverImage"
                 src={model.cover}
                 style={{
                   maxWidth: "270px",
@@ -100,6 +132,7 @@ const EditDetails = () => {
                 type="file"
                 className="form-control"
                 id="cover"
+                style={{ color: "transparent", marginLeft: "35px" }}
                 onChange={(e) => {
                   let fileReader = new FileReader();
                   let base64URL = "";
@@ -134,6 +167,7 @@ const EditDetails = () => {
                 Title
               </label>
               <br />
+
               <input
                 type="text"
                 className="form-control"
@@ -230,9 +264,9 @@ const EditDetails = () => {
                 <option value="" selected disabled hidden>
                   {model.genre}
                 </option>
-                <option value="Romance">Romance</option>
-                <option value="Drama">Drama</option>
-                <option value="Children">Children</option>
+                {genres.map((genre) => (
+                  <option value={genre.name}>{genre.name}</option>
+                ))}
               </select>
             </div>
             <div className="form-group">

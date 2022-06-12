@@ -4,10 +4,12 @@ import "../Content.css";
 import "../css/ViewBooks.css";
 import approve from "../images/approve.png";
 import reject from "../images/reject.png";
-
+import editIssue from "../functions/editIssue";
+import editBook from "../functions/editBook";
+import { getIssues } from "../functions/getIssues";
 const View = (props) => {
   const handleApproval = async (approve) => {
-    const editedbook = {
+    const editedIssue = {
       first: props.record.first,
       last: props.record.last,
       email: props.record.email,
@@ -21,20 +23,12 @@ const View = (props) => {
       isReturned: props.record.isReturned,
       isApproved: approve,
       issueDate: props.record.issueDate,
+      returnDate: props.record.returnDate,
       dueDate: props.record.dueDate,
       receipt: props.record.receipt,
       paid: props.record.paid,
     };
-    await fetch(`http://localhost:5000/issue/edit/${props.record._id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editedbook),
-    }).catch((error) => {
-      window.alert(error);
-      return;
-    });
+    editIssue(props.record._id, editedIssue);
 
     const editedBook = {
       title: props.book.title,
@@ -47,16 +41,7 @@ const View = (props) => {
       stock: approve === "true" ? props.book.stock - 1 : props.book.stock,
       publisher: props.book.publisher,
     };
-    await fetch(`http://localhost:5000/book/edit/${props.record.bookId}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editedBook),
-    }).catch((error) => {
-      window.alert(error);
-      return;
-    });
+    editBook(props.book._id, editedBook);
   };
   return (
     <tr>
@@ -109,23 +94,32 @@ export default function Viewbooks() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
       }
       const records = await response.json();
-      const pendingIssues = records.filter((el) => el.isApproved === null);
+      const pendingIssues = records.filter(
+        (el) =>
+          (el.isApproved === undefined || el.isApproved === null) &&
+          (el.isReserved === false ||
+            el.isReserved === null ||
+            el.isReserved === "false")
+      );
       setRecords(pendingIssues);
     }
     getRecords();
     return;
   });
+  const getBook = (id) => {
+    return books.filter((book) => book._id === id);
+  };
 
   useEffect(() => {
     const getBooks = async () => {
       const response = await fetch(`http://localhost:5000/book/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -136,10 +130,6 @@ export default function Viewbooks() {
     getBooks();
     return;
   }, [books]);
-
-  const getBook = (id) => {
-    return books.filter((book) => book._id === id);
-  };
 
   function recordList() {
     return records.map((record) => {

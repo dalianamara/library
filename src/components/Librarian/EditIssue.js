@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../css/EditIssue.css";
 import Footer from "../Footer";
-import blank from "../images/blank.jpg";
 const EditDetails = () => {
   const [model, setModel] = useState({
     first: "",
@@ -19,6 +18,7 @@ const EditDetails = () => {
     returnApproval: null,
     fine: 0,
     issueDate: "",
+    returnDate: "",
     dueDate: "",
     isReserved: null,
     receipt: null,
@@ -32,7 +32,7 @@ const EditDetails = () => {
       const response = await fetch(
         `http://localhost:5000/issue/${url.id.toString()}`
       );
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -73,6 +73,7 @@ const EditDetails = () => {
       returnApproval: model.returnApproval,
       fine: model.fine,
       issueDate: model.issueDate,
+      returnDate: model.returnDate,
       dueDate: model.dueDate,
       isReserved: model.isReserved,
       receipt: model.receipt,
@@ -129,28 +130,6 @@ const EditDetails = () => {
                 />
               </div>
             </div>
-            {/* <div style={{ float: "right" }}>
-              <label
-                htmlFor="deliveryType"
-                style={{
-                  marginLeft: "-420px",
-                }}
-              >
-                Receipt
-              </label>
-              <br />
-              <img
-                style={{
-                  maxWidth: "270px",
-                  marginLeft: "-420px",
-                  border: "2px solid grey",
-                  maxHeight: "405px",
-                }}
-                alt={"receipt"}
-                src={model.receipt ?? blank}
-              ></img>
-            </div> */}
-
             <div className="form-group" style={{ display: "flex" }}>
               <div>
                 <label htmlFor="lastname" style={{ float: "left" }}>
@@ -167,16 +146,16 @@ const EditDetails = () => {
                 />
               </div>
               <div style={{ marginLeft: "20px" }}>
-                <label htmlFor="issueDate" style={{ float: "left" }}>
+                <label htmlFor="dueDate" style={{ float: "left" }}>
                   Due Date
                 </label>
                 <br />
                 <input
                   type="text"
                   className="form-control"
-                  id="issueDate"
-                  value={model.issueDate}
-                  onChange={(e) => update({ issueDate: e.target.value })}
+                  id="dueDate"
+                  value={model.dueDate}
+                  onChange={(e) => update({ dueDate: e.target.value })}
                 />
               </div>
             </div>
@@ -331,6 +310,7 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <input
+                  disabled
                   type="text"
                   className="form-control"
                   id="bookId"
@@ -370,6 +350,7 @@ const EditDetails = () => {
                 <br />
                 <input
                   type="text"
+                  disabled
                   className="form-control"
                   id="bookTitle"
                   name="bookTitle"
@@ -379,13 +360,16 @@ const EditDetails = () => {
                 />
               </div>
               <div style={{ marginLeft: "20px" }}>
-                <label htmlFor="deliveryType" style={{ float: "left" }}>
+                <label
+                  htmlFor="deliveryType"
+                  style={{ float: "left", marginLeft: "-8px" }}
+                >
                   Delivery Type
                 </label>
                 <br />
                 <select
                   id="deliveryType"
-                  style={{ width: "180%", marginLeft: "-7px" }}
+                  style={{ width: "200%", marginLeft: "-7px" }}
                   required
                   onChange={(e) => update({ deliveryType: e.target.value })}
                 >
@@ -401,9 +385,9 @@ const EditDetails = () => {
             <div className="form-group">
               <input
                 type="submit"
-                value="Edit user"
+                value="Edit issue"
                 style={{ marginTop: "10px" }}
-                className="btn btn-primary"
+                className="editButton"
               />
             </div>
           </form>

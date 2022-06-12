@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { getBooks } from "../functions/getBooks";
 import Footer from "../Footer";
 import { Link } from "react-router-dom";
 import "../Content.css";
@@ -9,7 +10,7 @@ const View = (props) => (
     <td>
       {<img src={props.record.cover} alt="cover" style={{ width: "100px" }} />}
     </td>
-    <td>{props.record.title}</td>
+    <td style={{ width: "450px" }}>{props.record.title}</td>
     <td>{props.record.author}</td>
     <td>{props.record.genre}</td>
     <td>{props.record.pages}</td>
@@ -22,7 +23,7 @@ const View = (props) => (
       >
         Edit
       </Link>
-      |
+      |{" "}
       <button
         id="buttons"
         onClick={() => {
@@ -36,26 +37,19 @@ const View = (props) => (
   </tr>
 );
 
-export default function ViewUsers() {
+export default function ViewBooks() {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    async function getRecords() {
-      const response = await fetch(`http://localhost:5000/book/`);
+    let books = getBooks();
+    books.then((result) => {
+      setRecords(result);
+    });
 
-      if (!response.ok) {
-        const message = `An error occured: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
-      const records = await response.json();
-      setRecords(records);
-    }
-    getRecords();
     return;
-  });
+  }, [records.length]);
 
-  async function deleteUser(id) {
+  async function deleteBook(id) {
     await fetch(`http://localhost:5000/book/delete/${id}`, {
       method: "DELETE",
     });
@@ -68,7 +62,7 @@ export default function ViewUsers() {
       return (
         <View
           record={record}
-          deleteRecord={() => deleteUser(record._id)}
+          deleteRecord={() => deleteBook(record._id)}
           key={record._id}
         />
       );

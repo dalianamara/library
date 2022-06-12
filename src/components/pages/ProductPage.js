@@ -4,6 +4,9 @@ import Footer from "../Footer";
 import "../Content.css";
 import "../css/ProductDetails.css";
 import document from "../images/document.png";
+import calendar from "../images/calendar.png";
+import publisher from "../images/publisher.png";
+import genre from "../images/genre.png";
 import { getBooks } from "../functions/getBooks";
 import addReview from "../functions/addReview";
 import { getUser } from "../functions/getUsers";
@@ -115,8 +118,8 @@ const DisplayLayout = (props) => (
           Publication date
           <br />
           <img
-            src={document}
-            alt="document"
+            src={calendar}
+            alt="calendar"
             style={{ width: "40px", marginLeft: "40px" }}
           />
           <br />
@@ -138,8 +141,8 @@ const DisplayLayout = (props) => (
           <span style={{ marginLeft: "15px" }}>Publisher</span>
           <br />
           <img
-            src={document}
-            alt="document"
+            src={publisher}
+            alt="publisher"
             style={{ width: "40px", marginLeft: "30px" }}
           />
           <br />
@@ -158,8 +161,8 @@ const DisplayLayout = (props) => (
           <span style={{ marginLeft: "20px" }}>Genre</span>
           <br />
           <img
-            src={document}
-            alt="document"
+            src={genre}
+            alt="genre"
             style={{ width: "40px", marginLeft: "30px" }}
           />
           <br />
@@ -176,19 +179,7 @@ const DisplayLayout = (props) => (
             marginLeft: "30px",
             marginRight: "10px",
           }}
-        >
-          <span style={{ marginLeft: "10px" }}>Language</span>
-          <br />
-          <img
-            src={document}
-            alt="document"
-            style={{ width: "40px", marginLeft: "30px" }}
-          />
-          <br />
-          <span style={{ marginLeft: "15px", fontSize: "15px" }}>
-            {props.record.genre}
-          </span>
-        </span>
+        ></span>
       </div>
       <hr
         style={{

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import Image from "./Image";
 import "./Content.css";
 import Footer from "./Footer.js";

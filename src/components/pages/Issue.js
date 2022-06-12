@@ -25,8 +25,8 @@ const View = (props) => {
 
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
-      if (!response.ok) {
+      const response = await fetch(`http://localhost:5000/user/`);
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -43,7 +43,6 @@ const View = (props) => {
   }, [users.length]);
 
   async function handleSubmitHome() {
-    console.log(currentUser);
     if (
       currentUser.city !== null &&
       currentUser.street !== null &&
@@ -65,6 +64,7 @@ const View = (props) => {
         fine: 0,
         issueDate: today.toString(),
         dueDate: dueDate,
+        returnDate: null,
         isReserved: props.type === "reserve" ? "true" : "false",
         receipt: undefined,
       };
@@ -81,7 +81,7 @@ const View = (props) => {
       const response = await fetch(
         `http://localhost:5000/book/${props.record._id.toString()}`
       );
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -109,7 +109,8 @@ const View = (props) => {
       fine: 0,
       issueDate: today.toString(),
       dueDate: dueDate,
-      isReserved: undefined,
+      returnDate: null,
+      isReserved: props.type === "reserve" ? "true" : "false",
       receipt: undefined,
     };
     await fetch("http://localhost:5000/issue/add", {
@@ -149,7 +150,7 @@ const View = (props) => {
               }}
             >
               <b>City: </b>
-              {/* {users.username === localStorage.username ? } */}
+
               {currentUser.city !== undefined &&
               currentUser.city !== "" &&
               currentUser.city !== null
@@ -207,7 +208,7 @@ const View = (props) => {
             // to={`/${props.record._id}/issue/home`}
             onClick={handleSubmitHome}
             id="adressButton"
-            style={{ marginTop: "120px", height: "30px" }}
+            style={{ marginTop: "120px", height: "30px", color: "#FFFFFF" }}
           >
             Free delivery at home
           </button>
@@ -276,6 +277,7 @@ const View = (props) => {
                 height: "30px",
                 marginLeft: "40px",
                 width: "180px",
+                color: "#FFFFFF",
               }}
             >
               Free delivery at pickup
@@ -301,7 +303,7 @@ export default function Issue(props) {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/book/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;

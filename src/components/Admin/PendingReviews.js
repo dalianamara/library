@@ -64,13 +64,13 @@ const View = (props) => {
   );
 };
 
-export default function ViewUsers() {
+export default function ViewReviews() {
   const [reviews, setReviews] = useState([]);
-
+  console.log(reviews);
   useEffect(() => {
     async function getReviews() {
       const response = await fetch(`http://localhost:5000/review/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -83,7 +83,7 @@ export default function ViewUsers() {
     }
     getReviews();
     return;
-  });
+  }, [reviews]);
 
   function recordList() {
     return reviews.map((record) => {
@@ -94,7 +94,7 @@ export default function ViewUsers() {
   return (
     <>
       <div className="content">
-        <h1 style={{ marginBlockEnd: "0em" }}>Issue approvals</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Review approvals</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>

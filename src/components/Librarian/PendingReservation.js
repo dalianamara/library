@@ -22,6 +22,7 @@ const View = (props) => {
       fine: props.record.fine,
       isApproved: approve,
       issueDate: props.record.issueDate,
+      returnDate: props.record.returnDate,
       dueDate: props.record.dueDate,
       isReserved: !approve,
       receipt: undefined,
@@ -40,28 +41,28 @@ const View = (props) => {
     const response = await fetch(
       `http://localhost:5000/book/${props.record.bookId.toString()}`
     );
-    if (!response.ok) {
+    if (response.status !== 200) {
       const message = `An error occured: ${response.statusText}`;
       window.alert(message);
       return;
     }
 
-    const user = await response.json();
-    if (!user) {
+    const book = await response.json();
+    if (!book) {
       const message = `Record ${props.record.bookId} does not exist`;
       window.alert(message);
       return;
     }
     const editedBook = {
-      title: user.title,
-      author: user.author,
-      genre: user.genre,
-      cover: user.cover,
-      year: user.year,
-      description: user.description,
-      pages: user.pages,
-      stock: approve === "true" ? user.stock - 1 : user.stock,
-      publisher: user.publisher,
+      title: book.title,
+      author: book.author,
+      genre: book.genre,
+      cover: book.cover,
+      year: book.year,
+      description: book.description,
+      pages: book.pages,
+      stock: approve === "true" ? book.stock - 1 : book.stock,
+      publisher: book.publisher,
     };
     await fetch(`http://localhost:5000/book/edit/${props.record.bookId}`, {
       method: "POST",
@@ -125,7 +126,7 @@ export default function ViewUsers() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -143,7 +144,7 @@ export default function ViewUsers() {
   useEffect(() => {
     const getBooks = async () => {
       const response = await fetch(`http://localhost:5000/book/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;

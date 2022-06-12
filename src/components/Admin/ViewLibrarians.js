@@ -34,9 +34,9 @@ export default function ViewUsers() {
   const [records, setRecords] = useState([]);
   useEffect(() => {
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
+      const response = await fetch(`http://localhost:5000/user/`);
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
@@ -47,7 +47,7 @@ export default function ViewUsers() {
     }
     getRecords();
     return;
-  }, [records.length]);
+  }, [records]);
 
   async function deleteUser(id) {
     await fetch(`http://localhost:5000/${id}`, {
@@ -62,6 +62,7 @@ export default function ViewUsers() {
     let librarians = [];
     records.map((record) => {
       if (record.user === "librarian") librarians.push(record);
+      return 0;
     });
     return librarians.map((librarian) => (
       <View

@@ -1,9 +1,9 @@
-import { Navigate, useEffect, useState } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-export default function PrivateLibrarianRoute({ children }) {
+export default function PrivateLibrarianRoute({ children, type }) {
   const auth = localStorage.isLoggedIn;
-  const user = localStorage.user;
-  return auth === "true" && user === "librarian" ? (
+  console.log(type);
+  return auth === "true" && type === "librarian" ? (
     children
   ) : (
     <Navigate to="/signup" />

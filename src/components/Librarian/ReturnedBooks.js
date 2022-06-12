@@ -22,6 +22,7 @@ const View = (props) => {
       returnApproval: approve,
       fine: props.record.fine,
       issueDate: props.record.issueDate,
+      returnDate: props.record.returnDate,
       dueDate: props.record.dueDate,
       isReserved: false,
       receipt: undefined,
@@ -39,7 +40,7 @@ const View = (props) => {
     const response = await fetch(
       `http://localhost:5000/book/${props.record.bookId.toString()}`
     );
-    if (!response.ok) {
+    if (response.status !== 200) {
       const message = `An error occured: ${response.statusText}`;
       window.alert(message);
       return;
@@ -120,7 +121,7 @@ export default function ViewUsers() {
   useEffect(() => {
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
-      if (!response.ok) {
+      if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
         return;
