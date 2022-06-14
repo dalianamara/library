@@ -5,7 +5,7 @@ import "../Content.css";
 import "../css/ViewBooks.css";
 let fine = 0;
 const View = (props) => {
-  const [dayss, setdayss] = useState(0);
+  const [noDays, setDays] = useState(0);
   const dueDate = new Date(props.record.dueDate);
   let today = new Date();
   let day = today.getDate();
@@ -22,12 +22,11 @@ const View = (props) => {
     days = 0;
   }
 
-  // console.log(daysReturn, days, dueDate.getTime(), mili);
   useEffect(() => {
-    setdayss(days);
+    setDays(days);
     if (daysReturn < 0) {
       fine = (0.3 * -daysReturn).toFixed(2);
-      setdayss(daysReturn);
+      setDays(daysReturn);
     } else if (
       (days < 0 && props.record.isReturned === "false") ||
       props.record.isReturned === null
@@ -39,8 +38,8 @@ const View = (props) => {
       fine = 0;
     }
     props.updateFine(props.record, fine);
-  }, [days, daysReturn, dayss, props]);
-  console.log(daysReturn, days, dayss);
+  }, [days, daysReturn, noDays, props]);
+
   return (
     <tr>
       <td style={{ width: "200px" }}>{props.record.bookTitle}</td>
@@ -54,7 +53,7 @@ const View = (props) => {
       <td>{props.record.returnApproval === "true" ? "yes" : "no"}</td>
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
-      <td>{Math.round(dayss)}</td>
+      <td>{Math.round(noDays)}</td>
       <td>{props.record.fine + " lei"}</td>
       <td>
         <Link
@@ -66,7 +65,9 @@ const View = (props) => {
           to={`/issue/edit/${props.record._id}`}
           style={{ color: "black", height: "21px" }}
         >
-          Renew
+          {props.record.fine > 0 || props.record.returnApproval === "true"
+            ? ""
+            : "Renew"}
         </Link>
       </td>
     </tr>

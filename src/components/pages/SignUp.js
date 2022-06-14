@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Footer from "../Footer";
 import "../css/SignUp.css";
 
@@ -14,27 +14,9 @@ const SignUp = () => {
 
   const [validPass, setValidPass] = useState(true);
   const [validUname, setValidUname] = useState(true);
-  const [nonExistent, setNotExistent] = useState(true);
+  const [existUsername, setExistUsername] = useState(false);
   const [validEmail, setValidEmail] = useState(true);
-  const [records, setRecords] = useState([]);
-  const [nonExistentEmail, setNotExistentEmail] = useState(true);
-
-  useEffect(() => {
-    async function getUsers() {
-      const response = await fetch(`http://localhost:5000/user/`);
-
-      if (response.status !== 200) {
-        const message = `An error occured: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
-
-      const records = await response.json();
-      setRecords(records);
-    }
-    getUsers();
-    return;
-  }, [records.length]);
+  const [existEmail, setExistEmail] = useState(false);
 
   const update = (value) => {
     return setModel((prev) => {
@@ -46,28 +28,44 @@ const SignUp = () => {
     const { uname, pass, email } = document.forms[0];
     const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
-    const validEmailB = validateEmail(email);
+    const validEmailInForm = validateEmail(email);
 
-    if (validPassword && validEmailB && validUsername === true) {
+    if (validPassword && validEmailInForm && validUsername === true) {
       const newUser = { ...model };
-      await fetch("http://localhost:5000/user/add", {
+      const response = await fetch("http://localhost:5000/user/add", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newUser),
-      }).catch((error) => {
-        window.alert(error);
+      });
+      const errorVerify = await response.json();
+
+      if (errorVerify.success === false) {
+        if (errorVerify.message === "Both exist") {
+          setExistUsername(true);
+          setExistEmail(true);
+        }
+        if (errorVerify.message === "Username already exists") {
+          setExistEmail(false);
+          setExistUsername(true);
+        } else if (errorVerify.message === "Email already exists") {
+          setExistUsername(false);
+          setExistEmail(true);
+        }
         return;
-      });
-      setModel({
-        first: "",
-        last: "",
-        email: "",
-        username: "",
-        password: "",
-        user: "user",
-      });
+      } else {
+        setExistUsername(false);
+        setExistEmail(false);
+        setModel({
+          first: "",
+          last: "",
+          email: "",
+          username: "",
+          password: "",
+          user: "user",
+        });
+      }
     }
   }
 
@@ -85,38 +83,22 @@ const SignUp = () => {
 
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    const existent = records.filter(
-      (user) => (user.email === email.value) === true
-    );
-    if (existent.length === 0) {
-      setNotExistentEmail(true);
-      if (email.value.match(emailExpression)) {
-        setValidEmail(true);
-        return true;
-      } else {
-        setValidEmail(false);
-        return false;
-      }
+    if (email.value.match(emailExpression)) {
+      setValidEmail(true);
+      return true;
     } else {
-      setNotExistentEmail(false);
+      setValidEmail(false);
       return false;
     }
   };
 
   const validateUsername = (uname) => {
     const username = /^[A-Za-z0-9]\w{5,30}$/;
-    const existent = records.filter((user) => user.username === uname.value);
-    if (existent.length === 0) {
-      setNotExistent(true);
-      if (uname.value.match(username)) {
-        setValidUname(true);
-        return true;
-      } else {
-        setValidUname(false);
-        return false;
-      }
+    if (uname.value.match(username)) {
+      setValidUname(true);
+      return true;
     } else {
-      setNotExistent(false);
+      setValidUname(false);
       return false;
     }
   };
@@ -178,7 +160,7 @@ const SignUp = () => {
                   onChange={(e) => update({ username: e.target.value })}
                 />
 
-                {!nonExistent ? (
+                {existUsername ? (
                   <span className="error" style={{ color: "red" }}>
                     Sorry, this username already exists.
                   </span>
@@ -205,7 +187,7 @@ const SignUp = () => {
                   value={model.email}
                   onChange={(e) => update({ email: e.target.value })}
                 />
-                {!nonExistentEmail ? (
+                {existEmail ? (
                   <span className="error" style={{ color: "red" }}>
                     Sorry, this email already exists.
                   </span>
@@ -234,7 +216,7 @@ const SignUp = () => {
                 />
                 {!validPass ? (
                   <span className="error" style={{ color: "red" }}>
-                    eroare password
+                    Invalid password
                   </span>
                 ) : (
                   ""

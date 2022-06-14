@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getUsers } from "../functions/getUsers";
 import Footer from "../Footer";
 import "../css/SignUp.css";
+import "../css/EditIssue.css";
 const EditLibrarian = () => {
   const [model, setModel] = useState({
     first: "",
@@ -20,7 +21,7 @@ const EditLibrarian = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [records, setRecords] = useState([]);
   const [showPass, setShowPass] = useState(false);
-
+  const [isChanged, setIsChanged] = useState(false);
   const togglePassword = () => {
     setShowPass(!showPass);
   };
@@ -62,6 +63,7 @@ const EditLibrarian = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const { uname, pass, email } = document.forms[0];
+    console.log(uname, pass, email);
     const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
     const validEmailB = validateEmail(email);
@@ -88,18 +90,24 @@ const EditLibrarian = () => {
         window.alert(error);
         return;
       });
+      window.location.href = "/viewlib";
     }
   }
 
   const validatePassword = (pass) => {
     const password = /^[A-Za-z]\w{6,14}$/;
-    if (pass.value.match(password)) {
+    if (isChanged !== false) {
+      if (pass.value.match(password)) {
+        setValidPass(true);
+        return true;
+      } else {
+        setValidPass(false);
+
+        return false;
+      }
+    } else {
       setValidPass(true);
       return true;
-    } else {
-      setValidPass(false);
-
-      return false;
     }
   };
 
@@ -246,11 +254,14 @@ const EditLibrarian = () => {
                 name="pass"
                 value={model.password}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ password: e.target.value })}
+                onChange={(e) => {
+                  setIsChanged(true);
+                  update({ password: e.target.value });
+                }}
               />
               {!validPass ? (
                 <span className="error" style={{ color: "red" }}>
-                  Password error
+                  Incorrect password
                   <br />
                 </span>
               ) : (
@@ -259,7 +270,7 @@ const EditLibrarian = () => {
               <input
                 type="checkbox"
                 checked={showPass}
-                onClick={togglePassword}
+                onChange={togglePassword}
               ></input>
 
               <label for={"showPass"}>Show password</label>
@@ -267,8 +278,8 @@ const EditLibrarian = () => {
             <div className="form-group">
               <input
                 type="submit"
-                value="Edit user"
-                className="btn btn-primary"
+                value="Edit librarian"
+                className="editButton"
               />
             </div>
           </form>

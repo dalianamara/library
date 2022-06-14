@@ -241,7 +241,7 @@ const EditLibrarian = () => {
               <input
                 type="checkbox"
                 checked={showPass}
-                onClick={togglePassword}
+                onChange={togglePassword}
               ></input>
               <label for={"showPass"}>Show password</label>
               {!validPass ? (

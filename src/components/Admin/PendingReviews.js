@@ -66,7 +66,6 @@ const View = (props) => {
 
 export default function ViewReviews() {
   const [reviews, setReviews] = useState([]);
-  console.log(reviews);
   useEffect(() => {
     async function getReviews() {
       const response = await fetch(`http://localhost:5000/review/`);

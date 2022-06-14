@@ -243,7 +243,7 @@ export default function ProductPage(id) {
 
   today = day + " " + month + " " + year;
   const handleAddReview = async () => {
-    let currentUser = await getUser(localStorage.id);
+    let currentUser = await getUser(id);
     const review = {
       bookId: currentBook._id,
       userId: currentUser[0]._id,

@@ -93,14 +93,17 @@ export default function ViewBooksAsUser() {
       category === ""
         ? title === ""
           ? el
-          : el.title.toLowerCase().includes(title.toLowerCase())
+          : (setIsFiltered(true),
+            el.title.toLowerCase().includes(title.toLowerCase()))
         : title === ""
         ? el.genre === category
-        : el.title.toLowerCase().includes(title.toLowerCase())
+        : (setIsFiltered(true),
+          el.title.toLowerCase().includes(title.toLowerCase()))
     );
+    console.log(filteredBooks);
     setFilteredBooks(newRecords);
     return;
-  }, [records.length, category, title]);
+  }, [category, title]);
 
   async function getBook(id) {
     await fetch(`http://localhost:5000/${id}`, {

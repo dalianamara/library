@@ -47,35 +47,54 @@ import Fees from "./pages/Fees";
 import Terms from "./pages/Terms";
 import About from "./About";
 import Contact from "./Contact";
+import LoadingSpinner from "../components/pages/LoadingSpinner";
 
 class Menu extends Component {
   constructor(props) {
     super(props);
     this.rerenderCallback = this.rerenderCallback.bind(this);
-    this.rerenderSignupCallback = this.rerenderSignupCallback.bind(this);
+    this.rerenderLogoutCallback = this.rerenderLogoutCallback.bind(this);
     this.state = {
-      user: [],
+      user: "",
+      isLoading: false,
     };
   }
 
-  checkUser() {
-    if (this.state.user === undefined) return "none";
-    else return this.state.user.user;
+  async componentWillMount() {
+    this.setState({ isLoading: true, user: "" });
+    const response = await fetch(`http://localhost:5000/user/`);
+    if (response.status !== 200) {
+      const message = `An error occured: ${response.statusText}`;
+      window.alert(message);
+      return;
+    }
+    const users = await response.json();
+    const user = users.find((user) => user._id === localStorage.id);
+
+    if (user !== undefined)
+      this.setState({ isLoading: false, user: user.user });
+    else {
+      this.setState({ isLoading: false, user: "none" });
+    }
   }
 
-  componentDidMount() {
-    fetch(`http://localhost:5000/user/`)
-      .then((response) => response.json())
-      .then((user) => {
-        const users = user.find((user) => user._id === localStorage.id);
-        this.setState({ user: users });
-      })
-      .catch((e) => {
-        this.setState({ user: [{ user: "none" }] });
-        console.log("The user does not exist");
-        return;
-      });
-  }
+  // checkUser() {
+  //   const auth = localStorage.isLoggedIn;
+  //   const userType = localStorage.getItem("user");
+  //   if (this.state.user === "" && this.state.isLoading === false)
+  //     return "loading";
+  //   else if (this.state.isLoading === true) return "loading";
+  //   else if (auth === "true" && this.state.user === userType)
+  //     return this.state.user;
+  //   else if (
+  //     (this.state.isLoading === true && this.state.user === "") ||
+  //     (this.state.isLoading === true && this.state.user !== userType) ||
+  //     (this.state.isLoading === false && this.state.user !== userType) ||
+  //     (this.state.isLoading === true && this.state.user === "none") ||
+  //     (this.state.isLoading === false && this.state.user === "none")
+  //   )
+  //     return "none";
+  // }
 
   rerenderCallback() {
     this.forceUpdate();
@@ -83,13 +102,13 @@ class Menu extends Component {
 
   useForceUpdate() {}
 
-  rerenderSignupCallback() {
+  rerenderLogoutCallback() {
     localStorage.setItem("isLoggedIn", false);
-    localStorage.setItem("username", null);
-    localStorage.setItem("firstName", null);
-    localStorage.setItem("user", null);
-    localStorage.setItem("email", null);
-    localStorage.setItem("id", null);
+    localStorage.removeItem("username");
+    localStorage.removeItem("firstName");
+    localStorage.removeItem("user");
+    localStorage.removeItem("email");
+    localStorage.removeItem("id");
     this.forceUpdate();
   }
 
@@ -100,10 +119,12 @@ class Menu extends Component {
           <Link to="/" className={"menuButton"}>
             HOME
           </Link>
-          {console.log(this.checkUser())}
+
           {/* check if user is admin then show admin related menu */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
-            this.checkUser() === "admin" ? (
+            this.state.user === "" && this.state.isLoading === false ? (
+              <LoadingSpinner isOpen={this.state.isLoading} />
+            ) : this.state.user === "admin" ? (
               <div className="dropdownMenu">
                 <button className="dropdownbutton">LIBRARIANS</button>
                 <div className="dropdown-menu">
@@ -115,7 +136,8 @@ class Menu extends Component {
                   </Link>
                 </div>
               </div>
-            ) : this.checkUser() === "librarian" ? (
+            ) : this.state.user === "librarian" &&
+              this.state.isLoading === false ? (
               <div className="dropdownMenu">
                 <button className="dropdownbutton">BOOKS</button>
                 <div className="dropdown-menu">
@@ -144,7 +166,7 @@ class Menu extends Component {
                   </Link>
                 </div>
               </div>
-            ) : this.checkUser() === "user" ? (
+            ) : this.state.user === "user" ? (
               <div className="dropdownMenu">
                 <button className="dropdownbutton">MY LIBRARY</button>
                 <div className="dropdown-menu">
@@ -194,10 +216,10 @@ class Menu extends Component {
             </div>
           )}
 
-          {this.checkUser() === "admin" &&
+          {this.state.user === "admin" &&
           localStorage.getItem("isLoggedIn") === "true" ? (
             ""
-          ) : this.checkUser() === "librarian" &&
+          ) : this.state.user === "librarian" &&
             localStorage.getItem("isLoggedIn") === "true" ? (
             <div className="dropdownMenu">
               <button className="dropdownbutton">USERS</button>
@@ -208,7 +230,7 @@ class Menu extends Component {
               </div>
             </div>
           ) : localStorage.getItem("isLoggedIn") === "true" &&
-            this.checkUser() === "user" ? (
+            this.state.user === "user" ? (
             <>
               <div className="dropdownMenu">
                 <button className="dropdownbutton">SERVICES</button>
@@ -245,12 +267,12 @@ class Menu extends Component {
           ) : (
             <></>
           )}
-          {this.checkUser() === "admin" &&
+          {this.state.user === "admin" &&
           localStorage.getItem("isLoggedIn") === "true" ? (
             <Link to="/pendingReviews" className={"menuButton"}>
               VIEW REVIEWS
             </Link>
-          ) : this.checkUser() === "librarian" &&
+          ) : this.state.user === "librarian" &&
             localStorage.getItem("isLoggedIn") === "true" ? (
             <>
               <div className="dropdownMenu">
@@ -261,7 +283,7 @@ class Menu extends Component {
               </div>
               <Link
                 // id="buttons"
-                to="/user/edit"
+                to="/librarian/edit"
                 // onClick={async () => handleApproval("false")}
                 style={{
                   background: "transparent",
@@ -294,7 +316,7 @@ class Menu extends Component {
                   cursor: "pointer",
                   borderStyle: "none",
                 }}
-                onClick={this.rerenderSignupCallback}
+                onClick={this.rerenderLogoutCallback}
               >
                 LOGOUT
               </button>
@@ -314,7 +336,10 @@ class Menu extends Component {
             <Route
               path="/addlib"
               element={
-                <PrivateAdminRoute type={this.checkUser()}>
+                <PrivateAdminRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <AddLibrarian />
                 </PrivateAdminRoute>
               }
@@ -323,7 +348,10 @@ class Menu extends Component {
             <Route
               path="/pendingReviews"
               element={
-                <PrivateAdminRoute type={this.checkUser()}>
+                <PrivateAdminRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <PendingReviews />
                 </PrivateAdminRoute>
               }
@@ -331,7 +359,10 @@ class Menu extends Component {
             <Route
               path="/viewlib"
               element={
-                <PrivateAdminRoute type={this.checkUser()}>
+                <PrivateAdminRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewLibrarians />
                 </PrivateAdminRoute>
               }
@@ -340,7 +371,10 @@ class Menu extends Component {
             <Route
               path="/review/edit/:id"
               element={
-                <PrivateAdminRoute type={this.checkUser()}>
+                <PrivateAdminRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <PendingReviews />
                 </PrivateAdminRoute>
               }
@@ -349,7 +383,10 @@ class Menu extends Component {
             <Route
               path="/addbook"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <AddBooks />
                 </PrivateLibrarianRoute>
               }
@@ -358,7 +395,10 @@ class Menu extends Component {
             <Route
               path="/book/edit/:id"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditBookDetails />
                 </PrivateLibrarianRoute>
               }
@@ -367,16 +407,22 @@ class Menu extends Component {
             <Route
               path="/issue/update/:id"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditIssue />
                 </PrivateLibrarianRoute>
               }
             />
 
             <Route
-              path="/user/edit/:id"
+              path="/librarian/edit"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditUserLibrarian />
                 </PrivateLibrarianRoute>
               }
@@ -385,7 +431,10 @@ class Menu extends Component {
             <Route
               path="/record/edit/:id"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditUserByLibrarian />
                 </PrivateLibrarianRoute>
               }
@@ -394,7 +443,10 @@ class Menu extends Component {
             <Route
               path="/edit/:id"
               element={
-                <PrivateAdminRoute type={this.checkUser()}>
+                <PrivateAdminRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditUserAdmin />
                 </PrivateAdminRoute>
               }
@@ -403,7 +455,10 @@ class Menu extends Component {
             <Route
               path="/viewbook"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewBooks />
                 </PrivateLibrarianRoute>
               }
@@ -412,7 +467,10 @@ class Menu extends Component {
             <Route
               path="/pending"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <PendingBooks />
                 </PrivateLibrarianRoute>
               }
@@ -421,7 +479,10 @@ class Menu extends Component {
             <Route
               path="/reserve"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <PendingReservation />
                 </PrivateLibrarianRoute>
               }
@@ -430,7 +491,10 @@ class Menu extends Component {
             <Route
               path="/returned"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ReturnedBooks />
                 </PrivateLibrarianRoute>
               }
@@ -439,7 +503,10 @@ class Menu extends Component {
             <Route
               path="/viewusers"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewUsers />
                 </PrivateLibrarianRoute>
               }
@@ -448,7 +515,10 @@ class Menu extends Component {
             <Route
               path="/paidfines"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewPaidFines />
                 </PrivateLibrarianRoute>
               }
@@ -457,7 +527,10 @@ class Menu extends Component {
             <Route
               path="/viewIssuedBooks"
               element={
-                <PrivateLibrarianRoute type={this.checkUser()}>
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewIssuedBooks />
                 </PrivateLibrarianRoute>
               }
@@ -467,7 +540,10 @@ class Menu extends Component {
             <Route
               path="/viewbooksuser"
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewBooksAsUser />
                 </PrivateRoute>
               }
@@ -476,7 +552,10 @@ class Menu extends Component {
             <Route
               path="/user/edit"
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditUser />
                 </PrivateRoute>
               }
@@ -485,7 +564,10 @@ class Menu extends Component {
             <Route
               path="/issue/edit/:id"
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <RenewBook />
                 </PrivateRoute>
               }
@@ -494,7 +576,10 @@ class Menu extends Component {
             <Route
               path={`/:id`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ProductPage id={window.location} />
                 </PrivateRoute>
               }
@@ -502,7 +587,10 @@ class Menu extends Component {
             <Route
               path="/return"
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ReturnBooks />
                 </PrivateRoute>
               }
@@ -510,7 +598,10 @@ class Menu extends Component {
             <Route
               path={`/:id/issue`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <Issue id={window.location} />
                 </PrivateRoute>
               }
@@ -519,7 +610,10 @@ class Menu extends Component {
             <Route
               path={`/:id/reserve`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <Issue id={window.location} type="reserve" />
                 </PrivateRoute>
               }
@@ -528,7 +622,10 @@ class Menu extends Component {
             <Route
               path={`/add`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <AddReview />
                 </PrivateRoute>
               }
@@ -537,7 +634,10 @@ class Menu extends Component {
             <Route
               path={`/:id/changeSettings`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <EditAddressDetails />
                 </PrivateRoute>
               }
@@ -546,7 +646,10 @@ class Menu extends Component {
             <Route
               path={`/issuedBooks`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewIssuedBooksByUser />
                 </PrivateRoute>
               }
@@ -555,7 +658,10 @@ class Menu extends Component {
             <Route
               path={`/reserved`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewReservedBooksByUser />
                 </PrivateRoute>
               }
@@ -564,7 +670,10 @@ class Menu extends Component {
             <Route
               path={`/fines`}
               element={
-                <PrivateRoute type={this.checkUser()}>
+                <PrivateRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
                   <ViewFines />
                 </PrivateRoute>
               }

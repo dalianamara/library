@@ -53,7 +53,7 @@ const RenewBook = () => {
       return { ...prev, ...value };
     });
   };
-
+  console.log(model);
   async function handleSubmit(e) {
     e.preventDefault();
     const editedissue = {

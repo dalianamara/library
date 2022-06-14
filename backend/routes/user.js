@@ -15,6 +15,29 @@ user.route("/user").get((request, response) => {
     });
 });
 
+user.route("/user/login").post(async (request, response) => {
+  let dbConnection = db.getDatabase("users");
+  const { username, password } = request.body;
+  const user = await dbConnection.collection("users").findOne({ username });
+
+  if (username && password !== undefined) {
+    if (user) {
+      response.json({
+        _id: user._id,
+        email: user.email,
+        password: user.password,
+        user: user.user,
+        username: user.username,
+      });
+    } else {
+      return response.send({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+  }
+});
+
 user.route("/user/:id").get((request, response) => {
   let dbConnection = db.getDatabase();
   let condition = { _id: ObjectId(request.params.id) };
@@ -25,9 +48,10 @@ user.route("/user/:id").get((request, response) => {
 });
 
 //create a new user.
-user.route("/user/add").post((request, response) => {
+user.route("/user/add").post(async (request, response) => {
   let dbConnection = db.getDatabase();
-  let user = {
+  const { email, username } = request.body;
+  let newUser = {
     first: request.body.first,
     last: request.body.last,
     email: request.body.email,
@@ -38,7 +62,23 @@ user.route("/user/add").post((request, response) => {
     city: request.body.city,
     user: request.body.user,
   };
-  dbConnection.collection("users").insertOne(user, (error, result) => {
+  const emailExists = await dbConnection.collection("users").findOne({ email });
+  const usernameExists = await dbConnection
+    .collection("users")
+    .findOne({ username });
+
+  if (emailExists && usernameExists) {
+    return response.send({ success: false, message: "Both exist" });
+  } else if (emailExists) {
+    return response.send({ success: false, message: "Email already exists" });
+  } else if (usernameExists) {
+    return response.send({
+      success: false,
+      message: "Username already exists",
+    });
+  }
+
+  dbConnection.collection("users").insertOne(newUser, (error, result) => {
     if (error) throw error;
     response.json(result);
   });

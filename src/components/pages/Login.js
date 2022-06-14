@@ -10,14 +10,26 @@ const Login = (props) => {
   const [records, setRecords] = useState([]);
   const [validPass, setValidPass] = useState(true);
   const [validUsername, setValidUsername] = useState(true);
-  const users = records.map((record) => record);
-
+  // const users = records.map((record) => record);
+  const [model, setModel] = useState({
+    username: "",
+    password: "",
+  });
   const valid = () => {
     return username.length > 0 && password.length > 0;
   };
+  const [error, setError] = useState("");
+
   useEffect(() => {
+    const newUser = { username: model.username, password: model.password };
     async function getRecords() {
-      const response = await fetch(`http://localhost:5000/user/`);
+      const response = await fetch(`http://localhost:5000/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newUser),
+      });
       if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
@@ -28,38 +40,43 @@ const Login = (props) => {
     }
     getRecords();
     return;
-  }, [records.length]);
+  }, [model, records.length]);
 
-  const findUser = (username) => {
-    const userdata = users.find((user) => user.username === username);
-    localStorage.setItem("id", userdata._id);
+  const update = (value) => {
+    return setModel((prev) => {
+      return { ...prev, ...value };
+    });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const userdata = users.find((user) => user.username === username);
     try {
-      if (userdata) {
-        if (bcrypt.compareSync(password, userdata.password)) {
-          localStorage.setItem("isLoggedIn", true);
-          localStorage.setItem("username", userdata.username);
-          localStorage.setItem("firstName", userdata.first);
-          localStorage.setItem("email", userdata.email);
-          localStorage.setItem("user", userdata.user);
-          setSuccess(true);
-
-          setValidPass(true);
-          setValidUsername(true);
-          props.rerenderCallback();
+      if (records !== undefined) {
+        if (model.username === records.username) {
+          if (bcrypt.compareSync(model.password, records.password)) {
+            localStorage.setItem("isLoggedIn", true);
+            localStorage.setItem("email", records.email);
+            localStorage.setItem("user", records.user);
+            localStorage.setItem("id", records._id);
+            setSuccess(true);
+            setValidPass(true);
+            setValidUsername(true);
+            props.rerenderCallback();
+          } else {
+            throw Error("Wrong password");
+          }
         } else {
-          throw Error("Wrong password");
+          throw Error("Wrong username");
         }
-      } else {
-        throw Error("Wrong username");
       }
     } catch (err) {
-      if (err.message === "Wrong username") setValidUsername(false);
-      else if (err.message === "Wrong password") setValidPass(false);
+      if (err.message === "Wrong username") {
+        setValidUsername(false);
+        setValidPass(true);
+      } else if (err.message === "Wrong password") {
+        setValidPass(false);
+        setValidUsername(true);
+      }
     }
     window.location.href = "/";
   };
@@ -83,10 +100,10 @@ const Login = (props) => {
                 data-testid="username"
                 required
                 id={"username"}
-                value={username}
+                value={model.username}
                 onChange={(e) => {
                   setUsername(e.target.value);
-                  findUser(e.target.value);
+                  update({ username: e.target.value });
                 }}
               />
               <br />
@@ -109,8 +126,11 @@ const Login = (props) => {
                 data-testid="password"
                 name="pass"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={model.password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  update({ password: e.target.value });
+                }}
               />
               <br />
               {!validPass ? (
@@ -131,7 +151,6 @@ const Login = (props) => {
                 id="loginButton"
                 size="lg"
                 data-testid={"loginButton"}
-                // id={"submit"}
                 disabled={!valid()}
                 submit={handleSubmit}
               >

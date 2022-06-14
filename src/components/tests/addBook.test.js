@@ -1,18 +1,17 @@
 import addBooks from "../functions/addBooks";
 import request from "supertest";
-// jest.mock("../functions/addBooks");
 describe("AddBook tests", () => {
   test("Given any input the book is added in database", async () => {
     const bookModel = {
-      title: "a",
-      author: "a",
-      genre: "a",
-      cover: "a",
-      year: 0,
-      description: "a",
-      pages: 0,
-      publisher: "a",
-      stock: 0,
+      title: "HTML & CSS: Design and Build Websites",
+      author: "Jon Duckett",
+      genre: "Programming",
+      cover: "cover",
+      year: 2014,
+      description: "An introduction to the basics of HTML and CSS",
+      pages: 512,
+      publisher: "John Wiley & Sons",
+      stock: 3,
     };
 
     global.fetch = jest.fn(() =>
@@ -23,12 +22,6 @@ describe("AddBook tests", () => {
     const res = request("http://localhost:5000").get("/book");
     console.log(res);
     await addBooks(bookModel);
-    const fetchMock = jest
-      .spyOn(global, "fetch")
-      .mockImplementation(() =>
-        Promise.resolve({ json: () => Promise.resolve(bookModel) })
-      );
-
-    expect(fetchMock).tobeca;
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

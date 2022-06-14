@@ -10,7 +10,7 @@ import {
 import Login from "../../pages/Login";
 const getById = queryByAttribute.bind(null, "id");
 
-const mockResponse = [
+const mockObject = [
   {
     _id: "62a0a6d1ae3d08b41231965a",
     first: "Lucian",
@@ -39,7 +39,7 @@ beforeEach(() => {
   jest.spyOn(global, "fetch").mockImplementation(() =>
     Promise.resolve({
       status: 200,
-      json: () => Promise.resolve(mockResponse),
+      json: () => Promise.resolve(mockObject),
     })
   );
 });

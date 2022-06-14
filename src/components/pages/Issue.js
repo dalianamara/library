@@ -34,7 +34,7 @@ const View = (props) => {
 
       const records = await response.json();
       records.map((record) =>
-        record.username === localStorage.username ? setCurrentUser(record) : ""
+        record._id === localStorage.id ? setCurrentUser(record) : ""
       );
       setUsers(records);
     }

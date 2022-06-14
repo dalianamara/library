@@ -12,7 +12,7 @@ const View = (props) => (
       <Link
         id="buttons"
         className="btn btn-link"
-        to={`/user/edit/${props.record._id}`}
+        to={`/record/edit/${props.record._id}`}
         style={{ color: "black" }}
       >
         Edit

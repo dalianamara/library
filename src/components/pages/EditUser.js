@@ -21,7 +21,7 @@ const EditUser = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [records, setRecords] = useState([]);
   const [showPass, setShowPass] = useState(false);
-
+  const [isChanged, setIsChanged] = useState(false);
   const togglePassword = () => {
     setShowPass(!showPass);
   };
@@ -86,13 +86,17 @@ const EditUser = () => {
 
   const validatePassword = (pass) => {
     const password = /^[A-Za-z]\w{6,14}$/;
-    if (pass.value.match(password)) {
+    if (isChanged !== false) {
+      if (pass.value.match(password)) {
+        setValidPass(true);
+        return true;
+      } else {
+        setValidPass(false);
+        return false;
+      }
+    } else {
       setValidPass(true);
       return true;
-    } else {
-      setValidPass(false);
-
-      return false;
     }
   };
 
@@ -278,7 +282,10 @@ const EditUser = () => {
                 name="pass"
                 value={model.password}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ password: e.target.value })}
+                onChange={(e) => {
+                  setIsChanged(true);
+                  update({ password: e.target.value });
+                }}
               />
               <input
                 type="checkbox"
