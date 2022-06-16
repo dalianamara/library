@@ -9,7 +9,13 @@ const Faq = () => {
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <p>
           <div className="question">Where is this library located?</div>
-          <div className="answer">*ADD LOCATION*</div>
+          <div className="answer">
+            Ioan Slavici Street, nr. 20
+            <br />
+            Timisoara, 300077
+            <br />
+            Timis, Romania
+          </div>
         </p>
 
         <p>
@@ -18,7 +24,17 @@ const Faq = () => {
           </div>
           <div className="answer">
             The legal time in which you can return the documents is 14 working
-            days. It can be extended with librarian's approval.
+            days.
+          </div>
+        </p>
+
+        <p>
+          <div className="question">
+            What is the fee in case return was not done before due date?{" "}
+          </div>
+          <div className="answer">
+            Non-compliance with the loan term is sanctioned with the payment of
+            a penalty of <b>0.3 lei</b> for each day of delay, for each book.
           </div>
         </p>
       </div>

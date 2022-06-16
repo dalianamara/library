@@ -128,6 +128,8 @@ const View = (props) => {
   const handleOk = (e) => {
     setPickupVisibility(e);
   };
+
+  // props.type === "reserve"
   return (
     <>
       <h1 style={{ marginBlockEnd: "0em" }}>Delivery address</h1>
@@ -138,7 +140,7 @@ const View = (props) => {
             Home delivery
           </p>
           <p style={{ margin: "2px" }}>
-            The issued books will be delivered to your home address after
+            The issued book will be delivered to your home address after
             confirmation.
           </p>
           <div style={{ marginLeft: "80px" }}>
@@ -218,6 +220,7 @@ const View = (props) => {
             content={props.record}
             deliveryType={"Home"}
             onOk={handleOk}
+            type={props.type}
           ></IssuePopup>
           <IssuePopup
             isOpen={errorVisibility}
@@ -226,6 +229,7 @@ const View = (props) => {
               "Address was not set yet. Please return to the previous page to set your correct address."
             }
             deliveryType={"Home"}
+            type={props.type}
             onOk={handleOk}
           ></IssuePopup>
         </div>
@@ -286,6 +290,7 @@ const View = (props) => {
               isOpen={pickupVisibility}
               title="Pickup Delivery"
               content={props.record}
+              type={props.type}
               deliveryType={"Pickup"}
               onOk={handleOk}
             ></IssuePopup>

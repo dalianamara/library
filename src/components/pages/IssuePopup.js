@@ -10,10 +10,11 @@ const IssuePopup = (props) => {
   let deliveryNumericDay = nextDay.getDate();
   let deliveryMonth = nextDay.toLocaleString("default", { month: "long" });
   let deliveryDay = nextDay.toLocaleString("default", { weekday: "long" });
-
   const handleOk = (e) => {
     setIsOpen(false);
     props.onOk(false);
+    if (props.title !== "Address error")
+      window.location.href = "/viewbooksuser";
   };
   useEffect(() => {
     setIsOpen(props.isOpen);
@@ -29,41 +30,59 @@ const IssuePopup = (props) => {
     >
       <div className="box">
         <h2>{props.title}</h2>
+
         <br />
         <img
           src={`${props.content.cover}`}
           alt={"cover"}
-          style={{ width: "120px", float: "left" }}
+          style={{ width: "160px", float: "left" }}
         />
         <div style={{ float: "left", marginLeft: "30px" }}>
-          <h3 style={{ marginBottom: "0px", marginLeft: "-60px" }}>
-            {props.content.title}
-          </h3>
-          <span>A book by {props.content.author}</span>
+          <div style={{ width: "800px" }}>
+            <h3 style={{ marginBottom: "0px", textAlign: "left" }}>
+              {props.content.title}
+            </h3>
+          </div>
+          <div style={{ textAlign: "left" }}>
+            <span>A book by {props.content.author}</span>
+          </div>
         </div>
         <hr
           style={{
             border: "0.1px solid black",
             borderColor: "rgba(190,190,190, 0.4)",
             width: "80%",
-            marginLeft: "150px",
+            marginLeft: "180px",
             margin: "0px",
             marginTop: "5px",
           }}
         ></hr>
-        <span style={{ color: "#6AA121", float: "left", marginLeft: "30px" }}>
-          <b>{props.deliveryType} Delivery</b>
-        </span>
+        <div style={{ textAlign: "left" }}>
+          <span style={{ color: "#6AA121", float: "left", marginLeft: "30px" }}>
+            <b>{props.deliveryType} Delivery</b>
+          </span>
+        </div>
         <br />
-        <span style={{ float: "left", marginLeft: "30px", marginTop: "20px" }}>
-          {props.content.title} can arrive at your address on
-          {` ${deliveryDay}`}, {`${deliveryNumericDay}`} {`${deliveryMonth}`}
-        </span>
+        <div style={{ width: "800px", marginLeft: "120px" }}>
+          <span
+            style={{
+              float: "left",
+              marginLeft: "70px",
+              marginTop: "-80px",
+              textAlign: "left",
+            }}
+          >
+            {props.type !== "reserve"
+              ? `${props.content.title} can arrive at your address on
+             ${deliveryDay}, ${deliveryNumericDay} ${deliveryMonth}, if the issue will be approved today`
+              : "The issued book will be issued after a copy will be available and the librarian confirmed the reservation."}
+          </span>
+        </div>
         <br />
         <br />
         <button
           onClick={handleOk}
-          style={{ marginTop: "10px", width: "50px", height: "30px" }}
+          style={{ marginTop: "50px", width: "50px", height: "30px" }}
           id={"adressButton"}
         >
           OK

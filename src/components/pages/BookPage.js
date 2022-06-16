@@ -209,26 +209,27 @@ const DisplayReviewsLayout = (props) => (
       {props.review.firstName} {props.review.lastName}
     </span>
     <span style={{ fontFamily: "Times New Roman", fontSize: "15px" }}>
-      , {props.review.date}{" "}
+      , {props.review.date}
     </span>
     <br />
     <span>{props.review.content}</span>
   </div>
 );
 
-export default function ProductPage(id) {
+export default function ProductPage(props) {
   const [records, setRecords] = useState([]);
   const location = useLocation().pathname.split("/");
   const [reviewContent, setReviewContent] = useState("");
   const [stars, setStars] = useState(0);
   const [reviews, setReviews] = useState([]);
+  const [isAdded, setIsAdded] = useState(false);
   let today = new Date();
   let day = today.getDate();
   let month = today.toLocaleString("default", { month: "long" });
   let year = today.getFullYear();
   const defaultStars = [1, 2, 3, 4, 5];
   let currentBook = {};
-
+  console.log(props);
   useEffect(() => {
     let record = getBooks();
     let review = getReviews();
@@ -243,7 +244,10 @@ export default function ProductPage(id) {
 
   today = day + " " + month + " " + year;
   const handleAddReview = async () => {
-    let currentUser = await getUser(id);
+    let userId =
+      props.user._id === undefined ? localStorage.id : props.user._id;
+    let currentUser = await getUser(userId);
+    console.log(currentUser, currentBook);
     const review = {
       bookId: currentBook._id,
       userId: currentUser[0]._id,
@@ -255,6 +259,9 @@ export default function ProductPage(id) {
       isApproved: undefined,
     };
     addReview(review);
+    setIsAdded(true);
+    setStars(0);
+    setReviewContent("");
   };
 
   function displayBook() {
@@ -304,11 +311,28 @@ export default function ProductPage(id) {
       })}
       <br />
       <textarea
-        placeholder={`${localStorage.firstName}, share your opinion!`}
+        placeholder={`${props.user.first}, share your opinion!`}
         style={{ width: "99%" }}
         onChange={(e) => setReviewContent(e.target.value)}
       ></textarea>
       <br />
+      {isAdded ? (
+        <>
+          <span
+            className="error"
+            data-testid="error"
+            style={{ color: "green", marginLeft: "500px" }}
+          >
+            Review added successfully.
+          </span>
+
+          <br />
+        </>
+      ) : (
+        ""
+      )}
+      <br />
+
       <button
         style={{ color: "white", marginLeft: "545px" }}
         id={stars === 0 ? "issueButtonDisabled" : "issueButton"}

@@ -6,7 +6,7 @@ const editIssue = async (issueId, newIssue) => {
     },
     body: JSON.stringify(newIssue),
   }).catch((error) => {
-    window.alert(error);
+    window.alert("issue");
     return;
   });
 };

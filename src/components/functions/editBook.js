@@ -6,7 +6,7 @@ const editBook = async (bookId, editedBook) => {
     },
     body: JSON.stringify(editedBook),
   }).catch((error) => {
-    window.alert(error);
+    window.alert("bookid");
     return;
   });
 };

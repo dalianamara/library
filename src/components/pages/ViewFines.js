@@ -3,15 +3,14 @@ import Footer from "../Footer";
 import "../Content.css";
 import "../css/ViewBooks.css";
 let receipt = "";
-let imageChosed = false;
-const View = (props) => {
+const ViewFinesTable = (props) => {
   return (
     <tr>
       <td>{props.record.bookTitle}</td>
       <td>{props.record.first}</td>
       <td>{props.record.last}</td>
       <td>{props.record.deliveryType}</td>
-      <td>{props.record.returnApproval === "true" ? "yes" : "no"}</td>
+      <td>{props.record.isReturned === "true" ? "yes" : "no"}</td>
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
       <td>{props.record.fine}</td>
@@ -31,7 +30,6 @@ const View = (props) => {
               base64URL = fileReader.result;
               receipt = base64URL;
             };
-            imageChosed = true;
           }}
         ></input>
         <button>
@@ -39,23 +37,16 @@ const View = (props) => {
         </button>
         <button
           id={"buttons"}
-          disabled={!imageChosed}
-          onClick={() => props.updateReceipt(props, receipt)}
-          style={
-            imageChosed
-              ? {
-                  color: "black",
-                  width: "91px",
-                  height: "21px",
-                  pointerEvents: "auto",
-                }
-              : {
-                  color: "black",
-                  width: "91px",
-                  height: "21px",
-                  pointerEvents: "none",
-                }
-          }
+          onClick={() => {
+            props.updateReceipt(props, receipt);
+            props.setIsApproved(true);
+          }}
+          style={{
+            color: "black",
+            width: "91px",
+            height: "21px",
+            pointerEvents: "auto",
+          }}
         >
           Send receipt
         </button>
@@ -63,7 +54,6 @@ const View = (props) => {
     </tr>
   );
 };
-
 async function updateReceipt(props, receipt) {
   const editedissue = {
     first: props.first,
@@ -100,8 +90,9 @@ async function updateReceipt(props, receipt) {
 
 export default function ViewUsers() {
   const [records, setRecords] = useState([]);
-
+  const [approved, setIsApproved] = useState(false);
   useEffect(() => {
+    setIsApproved(false);
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
       if (response.status !== 200) {
@@ -116,27 +107,15 @@ export default function ViewUsers() {
           el.email === localStorage.email &&
           el.fine !== 0 &&
           (el.paid === null || el.paid === "false") &&
-          el.receipt === null &&
-          el.returnApproval === "true"
+          (el.receipt === null || el.receipt === "") &&
+          (el.returnApproval === null || el.returnApproval === "false")
       );
       setRecords(issuedBooks);
     }
     getRecords();
     return;
-  });
-
-  function recordList() {
-    return records.map((record) => {
-      return (
-        <View
-          record={record}
-          key={record._id}
-          updateReceipt={() => updateReceipt(record, receipt)}
-        />
-      );
-    });
-  }
-
+  }, [approved]);
+  console.log(records);
   return (
     <>
       <div className="content">
@@ -157,7 +136,18 @@ export default function ViewUsers() {
               <th></th>
             </tr>
           </thead>
-          <tbody>{recordList()}</tbody>
+          <tbody>
+            {records.map((record) => {
+              return (
+                <ViewFinesTable
+                  record={record}
+                  key={record._id}
+                  updateReceipt={() => updateReceipt(record, receipt)}
+                  setIsApproved={setIsApproved}
+                />
+              );
+            })}
+          </tbody>
         </table>
       </div>
       <Footer></Footer>

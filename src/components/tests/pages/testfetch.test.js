@@ -18,7 +18,7 @@ const mockObject = {
   username: "luciangeo",
 };
 
-const mockObjects = [
+const mockUsers = [
   {
     _id: "62a0a6d1ae3d08b41231965a",
     first: "Lucian",
@@ -56,7 +56,7 @@ beforeEach(() => {
     .mockImplementationOnce(() =>
       Promise.resolve({
         status: 200,
-        json: () => Promise.resolve(mockObjects),
+        json: () => Promise.resolve(mockUsers),
       })
     );
 });

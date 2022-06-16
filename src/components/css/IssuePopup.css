@@ -8,12 +8,12 @@
 
 .box {
   position: relative;
-  width: 60%;
+  width: 55%;
   background: #ffffff;
   border-radius: 5px;
   padding: 20px;
   transition: all 5s ease-in-out;
-  height: 30%;
+  height: 40%;
   margin: 70px auto;
 }
 

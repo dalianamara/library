@@ -1,40 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
-import { Link } from "react-router-dom";
+import { ViewIssuedBooksTable } from "./ViewIssuedBooksTable";
 import "../Content.css";
 import "../css/ViewBooks.css";
-
-const View = (props) => (
-  <tr>
-    <td>{props.record.bookTitle}</td>
-    <td>{props.record.first}</td>
-    <td>{props.record.last}</td>
-    <td>
-      {props.record.street}, {props.record.city}
-    </td>
-    <td>{props.record.phoneNumber}</td>
-    <td>{props.record.deliveryType}</td>
-    <td>
-      <Link
-        id="buttons"
-        to={`/issue/update/${props.record._id}`}
-        style={{ color: "black", height: "21px" }}
-      >
-        Edit
-      </Link>
-      |{" "}
-      <button
-        id="buttons"
-        onClick={() => {
-          props.deleteRecord(props.record._id);
-        }}
-        style={{ color: "black", height: "25px" }}
-      >
-        Delete
-      </button>
-    </td>
-  </tr>
-);
 
 export default function ViewIssuedBooks() {
   const [records, setRecords] = useState([]);
@@ -53,25 +21,11 @@ export default function ViewIssuedBooks() {
     }
     getRecords();
     return;
-  }, [records.length]);
+  }, []);
 
   async function deleteIssue(id) {
     await fetch(`http://localhost:5000/issue/delete/${id}`, {
       method: "DELETE",
-    });
-    const newRecords = records.filter((el) => el._id !== id);
-    setRecords(newRecords);
-  }
-
-  function recordList() {
-    return records.map((record) => {
-      return (
-        <View
-          record={record}
-          deleteRecord={() => deleteIssue(record._id)}
-          key={record._id}
-        />
-      );
     });
   }
 
@@ -92,7 +46,17 @@ export default function ViewIssuedBooks() {
               <th></th>
             </tr>
           </thead>
-          <tbody>{recordList()}</tbody>
+          <tbody>
+            {records.map((record) => {
+              return (
+                <ViewIssuedBooksTable
+                  record={record}
+                  deleteRecord={() => deleteIssue(record._id)}
+                  key={record._id}
+                />
+              );
+            })}
+          </tbody>
         </table>
       </div>
       <Footer></Footer>

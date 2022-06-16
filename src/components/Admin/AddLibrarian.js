@@ -62,7 +62,7 @@ const AddLibrarian = () => {
   };
 
   const validateUsername = (uname) => {
-    const username = /^[A-Za-z]\w{5,30}$/;
+    const username = /\S+@\S+\.\S+/;
     const existent = records.filter((user) => user.username === uname.value);
     if (existent.length === 0) {
       setNotExistent(true);
@@ -129,6 +129,7 @@ const AddLibrarian = () => {
                 className="form-control"
                 id="firstname"
                 name="firstname"
+                data-testid="firstname"
                 value={model.first}
                 onChange={(e) => update({ first: e.target.value })}
               />
@@ -144,6 +145,7 @@ const AddLibrarian = () => {
                 className="form-control"
                 id="lastname"
                 name="lastname"
+                data-testid="lastname"
                 value={model.last}
                 style={{ width: "100%" }}
                 onChange={(e) => update({ last: e.target.value })}
@@ -160,6 +162,7 @@ const AddLibrarian = () => {
                 className="form-control"
                 id="username"
                 name="uname"
+                data-testid="username"
                 value={model.username}
                 style={{ width: "100%" }}
                 onChange={(e) => update({ username: e.target.value })}
@@ -189,6 +192,7 @@ const AddLibrarian = () => {
                 className="form-control"
                 id="phoneNumber"
                 name="phoneNumber"
+                data-testid="phoneNumber"
                 value={model.phoneNumber}
                 style={{ width: "100%" }}
                 onChange={(e) => update({ phoneNumber: e.target.value })}
@@ -203,6 +207,7 @@ const AddLibrarian = () => {
                 required
                 type="text"
                 className="form-control"
+                data-testid="email"
                 id="email"
                 name="email"
                 value={model.email}

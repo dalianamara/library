@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
-import { ViewReservedBooksTable } from "./ViewReservedBooksTable";
+import { ViewFinesTable } from "./ViewFinesTable";
 import "../Content.css";
 import "../css/ViewBooks.css";
 
-export default function ViewUsers() {
+export default function ViewFines() {
   const [records, setRecords] = useState([]);
-  const [approved, setIsApproved] = useState(false);
+
   useEffect(() => {
-    setIsApproved(false);
-    async function getRecords() {
+    async function getFines() {
       const response = await fetch(`http://localhost:5000/issue/`);
       if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
@@ -18,24 +17,18 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const issuedBooks = records.filter(
-        (el) => el.isReserved === "true" && el.email === localStorage.email
+        (el) => el.isApproved === "true" && el.fine !== 0
       );
       setRecords(issuedBooks);
     }
-    getRecords();
+    getFines();
     return;
-  }, [approved]);
+  }, []);
 
-  async function cancelReservation(id) {
-    await fetch(`http://localhost:5000/issue/delete/${id}`, {
-      method: "DELETE",
-    });
-  }
-  console.log(records);
   return (
     <>
       <div className="content">
-        <h1 style={{ marginBlockEnd: "0em" }}>Reserved Books</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Fines approvals</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
@@ -46,20 +39,13 @@ export default function ViewUsers() {
               <th>Address</th>
               <th>Phone Number</th>
               <th>Delivery Type</th>
-
-              <th></th>
+              <th>Fine</th>
+              <th>Receipt</th>
             </tr>
           </thead>
           <tbody>
             {records.map((record) => {
-              return (
-                <ViewReservedBooksTable
-                  record={record}
-                  cancelReservation={() => cancelReservation(record._id)}
-                  key={record._id}
-                  setIsApproved={setIsApproved}
-                />
-              );
+              return <ViewFinesTable record={record} key={record._id} />;
             })}
           </tbody>
         </table>

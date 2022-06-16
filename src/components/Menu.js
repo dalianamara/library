@@ -5,7 +5,7 @@ import MyLibrary from "./pages/MyLibrary";
 import settings from "./images/settings.png";
 import Main from "./Main";
 import Services from "./pages/Services";
-import ProductPage from "./pages/ProductPage";
+import BookPage from "./pages/BookPage";
 import Issue from "./pages/Issue";
 import Faq from "./pages/Faq";
 import Login from "./pages/Login";
@@ -36,6 +36,7 @@ import RenewBook from "./pages/RenewBook";
 import ViewReservedBooksByUser from "./pages/ViewReservedBooksByUser";
 import ViewFines from "./pages/ViewFines";
 import ViewPaidFines from "./Librarian/ViewPaidFines";
+import ViewFinesLibrarian from "./Librarian/ViewFines";
 import EditUserAdmin from "./Admin/EditLibrarian";
 import EditUserLibrarian from "./Librarian/EditLibrarian";
 import EditUserByLibrarian from "./Librarian/EditUser";
@@ -57,6 +58,7 @@ class Menu extends Component {
     this.setUserCallback = this.setUserCallback.bind(this);
     this.state = {
       user: "",
+      userInfo: {},
       isLoading: false,
     };
   }
@@ -72,14 +74,14 @@ class Menu extends Component {
     const users = await response.json();
     const user = users.find((user) => user._id === localStorage.id);
     if (user !== undefined)
-      this.setState({ isLoading: false, user: user.user });
+      this.setState({ isLoading: false, user: user.user, userInfo: user });
     else {
-      this.setState({ isLoading: false, user: "none" });
+      this.setState({ isLoading: false, user: "none", userInfo: {} });
     }
   }
 
-  setUserCallback(isLoading, user) {
-    this.setState({ isLoading: isLoading, user: user });
+  setUserCallback(isLoading, userInfo, user) {
+    this.setState({ isLoading: isLoading, userInfo: userInfo, user: user });
   }
 
   rerenderCallback() {
@@ -264,6 +266,7 @@ class Menu extends Component {
                 <button className="dropdownbutton">FINES</button>
                 <div className="dropdown-menu">
                   <Link to="/paidfines">PAID FINES</Link>
+                  <Link to="/paidfineslibrarian">VIEW FINES</Link>
                 </div>
               </div>
               <Link
@@ -510,6 +513,18 @@ class Menu extends Component {
             />
 
             <Route
+              path="/paidfineslibrarian"
+              element={
+                <PrivateLibrarianRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
+                  <ViewFinesLibrarian />
+                </PrivateLibrarianRoute>
+              }
+            />
+
+            <Route
               path="/viewIssuedBooks"
               element={
                 <PrivateLibrarianRoute
@@ -557,7 +572,7 @@ class Menu extends Component {
                 </PrivateRoute>
               }
             />
-
+            {console.log(this.state.userInfo)}
             <Route
               path={`/:id`}
               element={
@@ -565,7 +580,10 @@ class Menu extends Component {
                   type={this.state.user}
                   isLoading={this.state.isLoading}
                 >
-                  <ProductPage id={window.location} />
+                  <BookPage
+                    id={window.location}
+                    user={this.state.userInfo !== {} ? this.state.userInfo : {}}
+                  />
                 </PrivateRoute>
               }
             />

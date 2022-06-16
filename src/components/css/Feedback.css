@@ -16,5 +16,6 @@
 }
 
 .feedbackAction {
-  color: red;
+  color: green;
+  margin-left: 30px;
 }

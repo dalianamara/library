@@ -122,7 +122,8 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <input
-                  type="text"
+                  type="date"
+                  style={{ width: "166px", marginRight: "-8px" }}
                   className="form-control"
                   id="issueDate"
                   value={model.issueDate}
@@ -151,7 +152,8 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <input
-                  type="text"
+                  type="date"
+                  style={{ width: "166px", marginRight: "-8px" }}
                   className="form-control"
                   id="dueDate"
                   value={model.dueDate}

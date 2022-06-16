@@ -19,7 +19,7 @@ const EditLibrarian = () => {
   const [nonExistent, setNotExistent] = useState(true);
   const [nonExistentEmail, setNotExistentEmail] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
-  const [records, setRecords] = useState([]);
+  const [users, setUsers] = useState([]);
   const [showPass, setShowPass] = useState(false);
   const [isPasswordChanged, setIsPasswordChanged] = useState(false);
   const [isEmailChanged, setIsEmailChanged] = useState(false);
@@ -39,12 +39,12 @@ const EditLibrarian = () => {
 
       const records = await response.json();
       records.map((record) => (record._id === id ? setModel(record) : ""));
-      setRecords(records);
+      setUsers(records);
     }
     getUsers();
 
     return;
-  }, [records.length]);
+  }, [users.length]);
 
   const update = (value) => {
     return setModel((prev) => {
@@ -70,6 +70,7 @@ const EditLibrarian = () => {
       user: model.user,
     };
     if (isPasswordChanged === true) editedUser["password"] = model.password;
+    console.log(isPasswordChanged, validPassword, validEmailB, validUsername);
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -105,11 +106,20 @@ const EditLibrarian = () => {
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
     if (isEmailChanged !== false) {
-      if (email.value.match(emailExpression)) {
-        setValidEmail(true);
-        return true;
+      const existent = users.filter(
+        (user) => user.email === email.value && user._id !== model._id
+      );
+      if (existent.length === 0) {
+        setNotExistentEmail(true);
+        if (email.value.match(emailExpression)) {
+          setValidEmail(true);
+          return true;
+        } else {
+          setValidEmail(false);
+          return false;
+        }
       } else {
-        setValidEmail(false);
+        setNotExistentEmail(false);
         return false;
       }
     } else {
@@ -119,13 +129,22 @@ const EditLibrarian = () => {
   };
 
   const validateUsername = (uname) => {
-    const username = /^[A-Za-z]\w{5,30}$/;
+    const username = /\S+@\S+\.\S+/;
     if (isUsernameChanged !== false) {
-      if (uname.value.match(username)) {
-        setValidUname(true);
-        return true;
+      const existent = users.filter(
+        (user) => user.username === uname.value && user._id !== model._id
+      );
+      if (existent.length === 0) {
+        setNotExistent(true);
+        if (uname.value.match(username)) {
+          setValidUname(true);
+          return true;
+        } else {
+          setValidUname(false);
+          return false;
+        }
       } else {
-        setValidUname(false);
+        setNotExistent(false);
         return false;
       }
     } else {
@@ -248,19 +267,12 @@ const EditLibrarian = () => {
               />
               {!validPass ? (
                 <span className="error" style={{ color: "red" }}>
-                  Incorrect password
+                  Sorry, this password is invalid.
                   <br />
                 </span>
               ) : (
                 ""
               )}
-              <input
-                type="checkbox"
-                checked={showPass}
-                onChange={togglePassword}
-              ></input>
-
-              <label for={"showPass"}>Show password</label>
             </div>
             <div className="form-group">
               <input

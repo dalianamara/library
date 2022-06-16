@@ -65,18 +65,18 @@ const SignUp = () => {
           password: "",
           user: "user",
         });
+        window.location.href = "/login";
       }
     }
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z]\w{6,14}$/;
+    const password = /^[A-Za-z0-9]\w{6,14}$/;
     if (pass.value.match(password)) {
       setValidPass(true);
       return true;
     } else {
       setValidPass(false);
-
       return false;
     }
   };
@@ -205,7 +205,7 @@ const SignUp = () => {
                 </label>
                 <br />
                 <input
-                  type="text"
+                  type="password"
                   className="form-control"
                   id="password"
                   name="pass"
@@ -216,7 +216,7 @@ const SignUp = () => {
                 />
                 {!validPass ? (
                   <span className="error" style={{ color: "red" }}>
-                    Invalid password
+                    Sorry, this password is invalid.
                   </span>
                 ) : (
                   ""

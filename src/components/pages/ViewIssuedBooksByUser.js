@@ -45,7 +45,7 @@ const View = (props) => {
 
     props.updateFine(props.record, fine);
   }, [days, daysReturn, noDays, props]);
-  console.log(props.record.paid, fine);
+
   return (
     <tr>
       <td style={{ width: "200px" }}>{props.record.bookTitle}</td>
@@ -61,32 +61,21 @@ const View = (props) => {
       <td>{props.record.dueDate}</td>
       <td>{props.record.returnDate}</td>
       <td>{Math.round(noDays)}</td>
-      <td>{props.record.fine + " lei"}</td>
       <td>
-        {Math.round(noDays) < 0
-          ? props.record.paid === null && props.record.fine > 0
-            ? "no"
-            : "yes"
-          : ""}
+        {props.record.fine === null ? "0 lei" : props.record.fine + " lei"}
       </td>
+
       <td>
         <Link
           id={
-            props.record.fine > 0 || props.record.returnApproval === "true"
+            props.record.fine > 0 || props.record.returnDate !== null
               ? "disabledButton"
               : "buttons"
           }
           to={`/issue/edit/${props.record._id}`}
           style={{ color: "black", height: "21px" }}
         >
-          {/* {console.log(
-            props.record.fine,
-            props.record.returnDate,
-            props.record.returnApproval,
-            Math.round(noDays),
-            Math.round(noDays) > 0
-          )} */}
-          {Math.round(noDays) <= 0 && props.record.isReturned !== "false"
+          {props.record.fine > 0 || props.record.returnDate !== null
             ? ""
             : "Renew"}
         </Link>
@@ -150,18 +139,6 @@ export default function ViewUsers() {
     });
   }
 
-  function recordList() {
-    return records.map((record) => {
-      return (
-        <View
-          record={record}
-          updateFine={() => updateFine(record, fine)}
-          key={record._id}
-        />
-      );
-    });
-  }
-
   return (
     <>
       <div className="content">
@@ -184,7 +161,17 @@ export default function ViewUsers() {
               <th></th>
             </tr>
           </thead>
-          <tbody>{recordList()}</tbody>
+          <tbody>
+            {records.map((record) => {
+              return (
+                <View
+                  record={record}
+                  updateFine={() => updateFine(record, fine)}
+                  key={record._id}
+                />
+              );
+            })}
+          </tbody>
         </table>
       </div>
       <Footer></Footer>

@@ -14,7 +14,7 @@ const RenewBook = () => {
     isApproved: "",
     isReturned: "",
     returnApproval: "",
-    fine: "",
+    fine: 0,
     issueDate: "",
     returnDate: "",
     dueDate: "",

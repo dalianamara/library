@@ -7,10 +7,9 @@ const Login = (props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [success, setSuccess] = useState(false);
-  const [records, setRecords] = useState([]);
+  const [user, setUser] = useState([]);
   const [validPass, setValidPass] = useState(true);
   const [validUsername, setValidUsername] = useState(true);
-  // const users = records.map((record) => record);
   const [model, setModel] = useState({
     username: "",
     password: "",
@@ -18,7 +17,6 @@ const Login = (props) => {
   const valid = () => {
     return username.length > 0 && password.length > 0;
   };
-  const [error, setError] = useState("");
 
   useEffect(() => {
     const newUser = { username: model.username, password: model.password };
@@ -35,12 +33,12 @@ const Login = (props) => {
         window.alert(message);
         return;
       }
-      const records = await response.json();
-      setRecords(records);
+      const user = await response.json();
+      setUser(user);
     }
     getRecords();
     return;
-  }, [model, records.length]);
+  }, [model, user.length]);
 
   const update = (value) => {
     return setModel((prev) => {
@@ -51,14 +49,14 @@ const Login = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     try {
-      if (records !== undefined) {
-        if (model.username === records.username) {
-          if (bcrypt.compareSync(model.password, records.password)) {
-            localStorage.setItem("id", records._id);
+      if (user !== undefined) {
+        if (model.username === user.username) {
+          if (bcrypt.compareSync(model.password, user.password)) {
+            localStorage.setItem("id", user._id);
             localStorage.setItem("isLoggedIn", true);
-            localStorage.setItem("email", records.email);
-            localStorage.setItem("user", records.user);
-            props.setUserCallback(false, records.user);
+            localStorage.setItem("email", user.email);
+            localStorage.setItem("user", user.user);
+            props.setUserCallback(false, user, user.user);
             setSuccess(true);
             setValidPass(true);
             setValidUsername(true);

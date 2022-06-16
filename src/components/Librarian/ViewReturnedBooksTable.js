@@ -1,52 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { getBooks } from "../functions/getBooks";
 import Footer from "../Footer";
-import { ViewBooksTable } from "./ViewBooksTable";
 import "../Content.css";
 import "../css/ViewBooks.css";
+import { ViewReturnedBooksTable } from "./ReturnedBooksTable";
+import { getIssues } from "../functions/getIssues";
 
-export default function ViewBooks() {
+export default function ViewUsers() {
   const [records, setRecords] = useState([]);
 
   useEffect(() => {
-    let books = getBooks();
-    books.then((result) => {
-      setRecords(result);
+    let issues = getIssues();
+    issues.then((issue) => {
+      const pendingIssues = issue.filter(
+        (el) => el.isReturned === "true" && el.returnApproval === null
+      );
+      setRecords(pendingIssues);
     });
     return;
   }, []);
 
-  async function deleteBook(id) {
-    await fetch(`http://localhost:5000/book/delete/${id}`, {
-      method: "DELETE",
-    });
-  }
-
   return (
     <>
       <div className="content">
-        <h1 style={{ marginBlockEnd: "0em" }}>Catalogue</h1>
+        <h1 style={{ marginBlockEnd: "0em" }}>Return approvals</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
             <tr>
-              <th>Cover</th>
               <th>Title</th>
-              <th>Author</th>
-              <th>Genre</th>
-              <th>Pages</th>
-              <th>In stock</th>
+              <th>First Name</th>
+              <th>Last Name</th>
+              <th>Address</th>
+              <th>Phone Number</th>
+              <th>Delivery Type</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {records.map((record) => {
               return (
-                <ViewBooksTable
-                  record={record}
-                  deleteBook={() => deleteBook(record._id)}
-                  key={record._id}
-                />
+                <ViewReturnedBooksTable record={record} key={record._id} />
               );
             })}
           </tbody>

@@ -19,7 +19,7 @@ const EditUser = () => {
   const [nonExistent, setNotExistent] = useState(true);
   const [nonExistentEmail, setNotExistentEmail] = useState(true);
   const [validEmail, setValidEmail] = useState(true);
-  const [records, setRecords] = useState([]);
+  const [users, setUsers] = useState([]);
   const [showPass, setShowPass] = useState(false);
   const [isPasswordChanged, setIsPasswordChanged] = useState(false);
   const [isEmailChanged, setIsEmailChanged] = useState(false);
@@ -30,7 +30,6 @@ const EditUser = () => {
   useEffect(() => {
     async function getUsers() {
       const response = await fetch(`http://localhost:5000/user/`);
-
       if (response.status !== 200) {
         const message = `An error occured: ${response.statusText}`;
         window.alert(message);
@@ -41,12 +40,12 @@ const EditUser = () => {
       records.map((record) =>
         record._id === localStorage.id ? setModel(record) : ""
       );
-      setRecords(records);
+      setUsers(records);
     }
     getUsers();
 
     return;
-  }, [records.length]);
+  }, [users.length]);
 
   const update = (value) => {
     return setModel((prev) => {
@@ -72,7 +71,6 @@ const EditUser = () => {
     };
     if (isPasswordChanged === true) editedUser["password"] = model.password;
 
-    console.log(validPassword && validEmailB && validUsername === true);
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -84,6 +82,7 @@ const EditUser = () => {
         window.alert(error);
         return;
       });
+      window.location.href = "/user/edit";
     }
   }
 
@@ -106,11 +105,20 @@ const EditUser = () => {
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
     if (isEmailChanged !== false) {
-      if (email.value.match(emailExpression)) {
-        setValidEmail(true);
-        return true;
+      const existent = users.filter(
+        (user) => user.email === email.value && user._id !== model._id
+      );
+      if (existent.length === 0) {
+        setNotExistentEmail(true);
+        if (email.value.match(emailExpression)) {
+          setValidEmail(true);
+          return true;
+        } else {
+          setValidEmail(false);
+          return false;
+        }
       } else {
-        setValidEmail(false);
+        setNotExistentEmail(false);
         return false;
       }
     } else {
@@ -122,11 +130,20 @@ const EditUser = () => {
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
     if (isUsernameChanged !== false) {
-      if (uname.value.match(username)) {
-        setValidUname(true);
-        return true;
+      const existent = users.filter(
+        (user) => user.username === uname.value && user._id !== model._id
+      );
+      if (existent.length === 0) {
+        setNotExistent(true);
+        if (uname.value.match(username)) {
+          setValidUname(true);
+          return true;
+        } else {
+          setValidUname(false);
+          return false;
+        }
       } else {
-        setValidUname(false);
+        setNotExistent(false);
         return false;
       }
     } else {
@@ -134,6 +151,7 @@ const EditUser = () => {
       return true;
     }
   };
+
   return (
     <>
       <div className="content">
@@ -229,11 +247,11 @@ const EditUser = () => {
               />
               {!nonExistent ? (
                 <span className="error" style={{ color: "red" }}>
-                  this username already exists
+                  Sorry, this username already exists.
                 </span>
               ) : !validUname ? (
                 <span className="error" style={{ color: "red" }}>
-                  username error
+                  Sorry, this username is invalid.
                 </span>
               ) : (
                 ""
@@ -257,11 +275,11 @@ const EditUser = () => {
               />
               {!nonExistentEmail ? (
                 <span className="error" style={{ color: "red" }}>
-                  this email already exists
+                  Sorry, this email already exists.
                 </span>
               ) : !validEmail ? (
                 <span className="error" style={{ color: "red" }}>
-                  this email is not correct
+                  Sorry, this email is invalid.
                 </span>
               ) : (
                 ""
@@ -284,15 +302,10 @@ const EditUser = () => {
                   update({ password: e.target.value });
                 }}
               />
-              <input
-                type="checkbox"
-                checked={showPass}
-                onClick={togglePassword}
-              ></input>
-              <label for={"showPass"}>Show password</label>
+              <br />
               {!validPass ? (
                 <span className="error" style={{ color: "red" }}>
-                  eroare password
+                  Sorry, this password is invalid.
                 </span>
               ) : (
                 ""

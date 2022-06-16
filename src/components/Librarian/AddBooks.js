@@ -10,10 +10,6 @@ const AddBook = () => {
   let day = today.getDate();
   let month = today.toLocaleString("default", { month: "2-digit" });
   let year = today.getFullYear();
-  let dueDate = new Date(new Date().setDate(today.getDate() + 31));
-  let dueDay = dueDate.getDate();
-  let dueMonth = dueDate.toLocaleString("default", { month: "2-digit" });
-  let dueYear = dueDate.getFullYear();
   today = year + "-" + month + "-" + day;
   const [bookModel, setBookModel] = useState({
     title: "",
@@ -42,8 +38,10 @@ const AddBook = () => {
   };
 
   useEffect(() => {
+    setUpdated(false);
     getGenres();
-  }, [genres]);
+  }, [updated]);
+
   const updateBook = (value) => {
     return setBookModel((prev) => {
       return { ...prev, ...value };

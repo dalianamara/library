@@ -2,147 +2,42 @@ import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
 import "../Content.css";
 import "../css/ViewBooks.css";
-import approve from "../images/approve.png";
-import reject from "../images/reject.png";
-import editIssue from "../functions/editIssue";
-import editBook from "../functions/editBook";
 import { getIssues } from "../functions/getIssues";
-const View = (props) => {
-  const handleApproval = async (approve) => {
-    const editedIssue = {
-      first: props.record.first,
-      last: props.record.last,
-      email: props.record.email,
-      phoneNumber: props.record.phoneNumber,
-      city: props.record.city,
-      street: props.record.street,
-      bookId: props.record.bookId,
-      bookTitle: props.record.bookTitle,
-      deliveryType: props.record.deliveryType,
-      returnApproval: props.record.returnApproval,
-      isReturned: props.record.isReturned,
-      isApproved: approve,
-      issueDate: props.record.issueDate,
-      returnDate: props.record.returnDate,
-      dueDate: props.record.dueDate,
-      receipt: props.record.receipt,
-      paid: props.record.paid,
-    };
-    editIssue(props.record._id, editedIssue);
-
-    const editedBook = {
-      title: props.book.title,
-      author: props.book.author,
-      genre: props.book.genre,
-      cover: props.book.cover,
-      year: props.book.year,
-      description: props.book.description,
-      pages: props.book.pages,
-      stock: approve === "true" ? props.book.stock - 1 : props.book.stock,
-      publisher: props.book.publisher,
-    };
-    editBook(props.book._id, editedBook);
-  };
-  return (
-    <tr>
-      <td>{props.record.bookTitle}</td>
-      <td>{props.record.first}</td>
-      <td>{props.record.last}</td>
-      <td>
-        {props.record.street}, {props.record.city}
-      </td>
-      <td>{props.record.phoneNumber}</td>
-      <td>{props.record.deliveryType}</td>
-      <td>
-        <button
-          id={
-            props.book === undefined || props.book.stock === 0
-              ? "disabled"
-              : "buttons"
-          }
-          onClick={async () => handleApproval("true")}
-          style={{ color: "black", height: "21px" }}
-        >
-          <img
-            src={approve}
-            alt="approve"
-            className="image"
-            style={{ width: "20px" }}
-          />
-        </button>
-        <button
-          id="buttons"
-          onClick={async () => handleApproval("false")}
-          style={{ color: "black", height: "21px" }}
-        >
-          <img
-            src={reject}
-            alt="reject"
-            className="image"
-            style={{ width: "20px" }}
-          />
-        </button>
-      </td>
-    </tr>
-  );
-};
+import { ViewPendingBooksTable } from "./ViewPendingBooksTable";
+import { getBooks } from "../functions/getBooks";
 
 export default function Viewbooks() {
-  const [records, setRecords] = useState([]);
+  const [issues, setIssues] = useState([]);
   const [books, setBooks] = useState([]);
-
+  const [approved, setIsApproved] = useState(false);
   useEffect(() => {
-    async function getRecords() {
-      const response = await fetch(`http://localhost:5000/issue/`);
-      if (response.status !== 200) {
-        const message = `An error occured: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
-      const records = await response.json();
-      const pendingIssues = records.filter(
+    setIsApproved(false);
+    let issues = getIssues();
+    issues.then((issue) => {
+      const pendingIssues = issue.filter(
         (el) =>
           (el.isApproved === undefined || el.isApproved === null) &&
           (el.isReserved === false ||
             el.isReserved === null ||
             el.isReserved === "false")
       );
-      setRecords(pendingIssues);
-    }
-    getRecords();
+      setIssues(pendingIssues);
+    });
     return;
-  }, [records.length]);
+  }, [approved]);
 
   const getBook = (id) => {
     return books.filter((book) => book._id === id);
   };
 
   useEffect(() => {
-    const getBooks = async () => {
-      const response = await fetch(`http://localhost:5000/book/`);
-      if (response.status !== 200) {
-        const message = `An error occured: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
-      const books = await response.json();
-      setBooks(books);
-    };
-    getBooks();
-    return;
-  }, [books.length]);
-
-  function recordList() {
-    return records.map((record) => {
-      return (
-        <View
-          record={record}
-          key={record._id}
-          book={getBook(record.bookId)[0]}
-        />
-      );
+    setIsApproved(false);
+    let books = getBooks();
+    books.then((book) => {
+      setBooks(book);
     });
-  }
+    return;
+  }, [approved]);
 
   return (
     <>
@@ -161,7 +56,19 @@ export default function Viewbooks() {
               <th></th>
             </tr>
           </thead>
-          <tbody>{recordList()}</tbody>
+
+          <tbody>
+            {issues.map((record) => {
+              return (
+                <ViewPendingBooksTable
+                  record={record}
+                  key={record._id}
+                  book={getBook(record.bookId)[0]}
+                  setIsApproved={setIsApproved}
+                />
+              );
+            })}
+          </tbody>
         </table>
       </div>
       <Footer></Footer>
