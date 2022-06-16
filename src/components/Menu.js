@@ -54,13 +54,14 @@ class Menu extends Component {
     super(props);
     this.rerenderCallback = this.rerenderCallback.bind(this);
     this.rerenderLogoutCallback = this.rerenderLogoutCallback.bind(this);
+    this.setUserCallback = this.setUserCallback.bind(this);
     this.state = {
       user: "",
       isLoading: false,
     };
   }
 
-  async componentWillMount() {
+  async componentDidMount() {
     this.setState({ isLoading: true, user: "" });
     const response = await fetch(`http://localhost:5000/user/`);
     if (response.status !== 200) {
@@ -70,7 +71,6 @@ class Menu extends Component {
     }
     const users = await response.json();
     const user = users.find((user) => user._id === localStorage.id);
-
     if (user !== undefined)
       this.setState({ isLoading: false, user: user.user });
     else {
@@ -78,23 +78,9 @@ class Menu extends Component {
     }
   }
 
-  // checkUser() {
-  //   const auth = localStorage.isLoggedIn;
-  //   const userType = localStorage.getItem("user");
-  //   if (this.state.user === "" && this.state.isLoading === false)
-  //     return "loading";
-  //   else if (this.state.isLoading === true) return "loading";
-  //   else if (auth === "true" && this.state.user === userType)
-  //     return this.state.user;
-  //   else if (
-  //     (this.state.isLoading === true && this.state.user === "") ||
-  //     (this.state.isLoading === true && this.state.user !== userType) ||
-  //     (this.state.isLoading === false && this.state.user !== userType) ||
-  //     (this.state.isLoading === true && this.state.user === "none") ||
-  //     (this.state.isLoading === false && this.state.user === "none")
-  //   )
-  //     return "none";
-  // }
+  setUserCallback(isLoading, user) {
+    this.setState({ isLoading: isLoading, user: user });
+  }
 
   rerenderCallback() {
     this.forceUpdate();
@@ -119,7 +105,6 @@ class Menu extends Component {
           <Link to="/" className={"menuButton"}>
             HOME
           </Link>
-
           {/* check if user is admin then show admin related menu */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
             this.state.user === "" && this.state.isLoading === false ? (
@@ -683,7 +668,12 @@ class Menu extends Component {
 
             <Route
               path="/login"
-              element={<Login rerenderCallback={this.rerenderCallback} />}
+              element={
+                <Login
+                  rerenderCallback={this.rerenderCallback}
+                  setUserCallback={this.setUserCallback}
+                />
+              }
             />
 
             <Route path="/faq" element={<Faq />} />

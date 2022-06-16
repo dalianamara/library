@@ -71,7 +71,7 @@ export default function ViewBooksAsUser() {
   const [title, setTitle] = useState("");
   const [genres, setGenres] = useState([]);
   const [isFiltered, setIsFiltered] = useState(false);
-
+  const [isCategoryFiltered, setIsCategoryFiltered] = useState(false);
   const getGenres = () => {
     const genres = getGenre();
     genres.then((result) => {
@@ -97,7 +97,7 @@ export default function ViewBooksAsUser() {
             el.title.toLowerCase().includes(title.toLowerCase()))
         : title === ""
         ? el.genre === category
-        : (setIsFiltered(true),
+        : (setIsCategoryFiltered(true),
           el.title.toLowerCase().includes(title.toLowerCase()))
     );
     console.log(filteredBooks);
@@ -115,7 +115,11 @@ export default function ViewBooksAsUser() {
   }
 
   function recordList() {
-    return (isFiltered === true ? filteredBooks : records).map((record) => {
+    return (
+      isFiltered === true || isCategoryFiltered === true
+        ? filteredBooks
+        : records
+    ).map((record) => {
       return (
         <>
           <View
@@ -130,7 +134,7 @@ export default function ViewBooksAsUser() {
 
   const onChangeSelect = (value, filter) => {
     setCategory(value);
-    setIsFiltered(filter);
+    setIsCategoryFiltered(filter);
   };
 
   return (
@@ -139,7 +143,12 @@ export default function ViewBooksAsUser() {
         <h1 style={{ marginBlockEnd: "0em" }}>Catalogue</h1>
         Filter by category{" "}
         <select onChange={(e) => onChangeSelect(e.target.value, true)}>
-          <option value="" selected={!isFiltered} disabled hidden></option>
+          <option
+            value=""
+            selected={!isCategoryFiltered}
+            disabled
+            hidden
+          ></option>
           {genres.map((genre) => (
             <option value={genre.name}>{genre.name}</option>
           ))}

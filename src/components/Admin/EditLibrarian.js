@@ -21,37 +21,29 @@ const EditLibrarian = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [records, setRecords] = useState([]);
   const [showPass, setShowPass] = useState(false);
-  const [isChanged, setIsChanged] = useState(false);
+  const [isPasswordChanged, setIsPasswordChanged] = useState(false);
+  const [isEmailChanged, setIsEmailChanged] = useState(false);
+  const [isUsernameChanged, setIsUsernameChanged] = useState(false);
   const togglePassword = () => {
     setShowPass(!showPass);
   };
   useEffect(() => {
-    const id = url.id.toString();
-    let users = getUsers();
-    users.then((result) => {
-      setRecords(result);
-    });
+    async function getUsers() {
+      const id = url.id.toString();
+      const response = await fetch(`http://localhost:5000/user/`);
+      if (response.status !== 200) {
+        const message = `An error occured: ${response.statusText}`;
+        window.alert(message);
+        return;
+      }
 
-    records.map((record) => (record._id === id ? setModel(record) : ""));
-    setRecords(records);
+      const records = await response.json();
+      records.map((record) => (record._id === id ? setModel(record) : ""));
+      setRecords(records);
+    }
+    getUsers();
+
     return;
-
-    // async function getUsers() {
-    //   const id = url.id.toString();
-    //   const response = await fetch(`http://localhost:5000/user/`);
-    //   if (response.status !== 200) {
-    //     const message = `An error occured: ${response.statusText}`;
-    //     window.alert(message);
-    //     return;
-    //   }
-
-    //   const records = await response.json();
-    //   records.map((record) => (record._id === id ? setModel(record) : ""));
-    //   setRecords(records);
-    // }
-    // getUsers();
-
-    // return;
   }, [records.length]);
 
   const update = (value) => {
@@ -75,10 +67,9 @@ const EditLibrarian = () => {
       street: model.street,
       city: model.city,
       phoneNumber: model.phoneNumber,
-      password: model.password,
       user: model.user,
     };
-
+    if (isPasswordChanged === true) editedUser["password"] = model.password;
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -96,7 +87,7 @@ const EditLibrarian = () => {
 
   const validatePassword = (pass) => {
     const password = /^[A-Za-z]\w{6,14}$/;
-    if (isChanged !== false) {
+    if (isPasswordChanged !== false) {
       if (pass.value.match(password)) {
         setValidPass(true);
         return true;
@@ -113,12 +104,7 @@ const EditLibrarian = () => {
 
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    const existent = records.filter(
-      (user) =>
-        (user.email === email.value && url.id.toString() !== user._id) === true
-    );
-    if (existent.length === 0) {
-      setNotExistentEmail(true);
+    if (isEmailChanged !== false) {
       if (email.value.match(emailExpression)) {
         setValidEmail(true);
         return true;
@@ -127,20 +113,14 @@ const EditLibrarian = () => {
         return false;
       }
     } else {
-      setNotExistentEmail(false);
-      return false;
+      setValidEmail(true);
+      return true;
     }
   };
 
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
-    const existent = records.filter(
-      (user) =>
-        (user.username === uname.value && url.id.toString() !== user._id) ===
-        true
-    );
-    if (existent.length === 0) {
-      setNotExistent(true);
+    if (isUsernameChanged !== false) {
       if (uname.value.match(username)) {
         setValidUname(true);
         return true;
@@ -149,10 +129,11 @@ const EditLibrarian = () => {
         return false;
       }
     } else {
-      setNotExistent(false);
-      return false;
+      setValidUname(true);
+      return true;
     }
   };
+
   return (
     <>
       <div className="content">
@@ -202,7 +183,10 @@ const EditLibrarian = () => {
                 name="uname"
                 value={model.username}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ username: e.target.value })}
+                onChange={(e) => {
+                  setIsUsernameChanged(true);
+                  update({ username: e.target.value });
+                }}
               />
               {!nonExistent ? (
                 <span className="error" style={{ color: "red" }}>
@@ -228,7 +212,10 @@ const EditLibrarian = () => {
                 id="email"
                 name="email"
                 value={model.email}
-                onChange={(e) => update({ email: e.target.value })}
+                onChange={(e) => {
+                  setIsEmailChanged(true);
+                  update({ email: e.target.value });
+                }}
               />
               {!nonExistentEmail ? (
                 <span className="error" style={{ color: "red" }}>
@@ -255,7 +242,7 @@ const EditLibrarian = () => {
                 value={model.password}
                 style={{ width: "100%" }}
                 onChange={(e) => {
-                  setIsChanged(true);
+                  setIsPasswordChanged(true);
                   update({ password: e.target.value });
                 }}
               />

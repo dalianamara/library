@@ -10,7 +10,7 @@ const getById = queryByAttribute.bind(null, "id");
 const renderLoginPage = (container) => {
   const loginPage = screen.getByText("LOGIN");
   fireEvent.click(loginPage);
-  const signUpButton = screen.getByText("Don't have an account?");
+  const signUpButton = screen.getByText("Register");
   fireEvent.click(signUpButton);
 };
 describe("Login tests", () => {

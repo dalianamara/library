@@ -88,19 +88,36 @@ user.route("/user/add").post(async (request, response) => {
 user.route("/user/update/:id").post((request, response) => {
   let dbConnection = db.getDatabase();
   let condition = { _id: ObjectId(request.params.id) };
-  let newUser = {
-    $set: {
-      first: request.body.first,
-      last: request.body.last,
-      email: request.body.email,
-      username: request.body.username,
-      password: bcrypt.hashSync(request.body.password, bcrypt.genSaltSync()),
-      street: request.body.street,
-      phoneNumber: request.body.phoneNumber,
-      city: request.body.city,
-      user: request.body.user,
-    },
-  };
+  let newUser;
+  if (request.body.password !== undefined) {
+    newUser = {
+      $set: {
+        first: request.body.first,
+        last: request.body.last,
+        email: request.body.email,
+        username: request.body.username,
+        password: bcrypt.hashSync(request.body.password, bcrypt.genSaltSync()),
+        street: request.body.street,
+        phoneNumber: request.body.phoneNumber,
+        city: request.body.city,
+        user: request.body.user,
+      },
+    };
+  } else {
+    newUser = {
+      $set: {
+        first: request.body.first,
+        last: request.body.last,
+        email: request.body.email,
+        username: request.body.username,
+        street: request.body.street,
+        phoneNumber: request.body.phoneNumber,
+        city: request.body.city,
+        user: request.body.user,
+      },
+    };
+  }
+
   dbConnection
     .collection("users")
     .updateOne(condition, newUser, (error, result) => {

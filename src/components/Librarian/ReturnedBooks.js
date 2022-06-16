@@ -128,15 +128,13 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const pendingIssues = records.filter(
-        (el) =>
-          el.isReturned === "true" &&
-          (el.returnApproval === null || el.returnApproval === "false")
+        (el) => el.isReturned === "true" && el.returnApproval === null
       );
       setRecords(pendingIssues);
     }
     getRecords();
     return;
-  });
+  }, [records.length]);
 
   function recordList() {
     return records.map((record) => {

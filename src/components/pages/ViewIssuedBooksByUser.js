@@ -17,29 +17,35 @@ const View = (props) => {
   let mili = dueDate.getTime() - todayDate.getTime();
   let miliReturnDate = dueDate.getTime() - returnDate.getTime();
   let days = mili / (1000 * 3600 * 24);
-  let daysReturn = miliReturnDate / (1000 * 3600 * 24);
-  if (props.record.returnDate !== null && daysReturn > 0) {
-    days = 0;
+  let daysReturn = 0;
+  if (props.record.returnDate !== null) {
+    daysReturn = miliReturnDate / (1000 * 3600 * 24);
+  } else {
+    if (props.record.returnApproval) daysReturn = 0;
+    else daysReturn = days;
   }
 
+  if (props.record.returnDate !== null && daysReturn > 0) {
+    console.log(daysReturn, props.record.bookTitle);
+    days = 0;
+  }
+  fine = 0;
   useEffect(() => {
     setDays(days);
     if (daysReturn < 0) {
       fine = (0.3 * -daysReturn).toFixed(2);
       setDays(daysReturn);
-    } else if (
-      (days < 0 && props.record.isReturned === "false") ||
-      props.record.isReturned === null
-    ) {
+    } else if (days < 0 && props.record.isReturned === null) {
       fine = (0.3 * -days).toFixed(2);
     } else if (days === 0 && props.record.isReturned === "true") {
       fine = 0;
     } else if (days > 0) {
       fine = 0;
     }
+
     props.updateFine(props.record, fine);
   }, [days, daysReturn, noDays, props]);
-
+  console.log(props.record.paid, fine);
   return (
     <tr>
       <td style={{ width: "200px" }}>{props.record.bookTitle}</td>
@@ -53,8 +59,16 @@ const View = (props) => {
       <td>{props.record.returnApproval === "true" ? "yes" : "no"}</td>
       <td>{props.record.issueDate}</td>
       <td>{props.record.dueDate}</td>
+      <td>{props.record.returnDate}</td>
       <td>{Math.round(noDays)}</td>
       <td>{props.record.fine + " lei"}</td>
+      <td>
+        {Math.round(noDays) < 0
+          ? props.record.paid === null && props.record.fine > 0
+            ? "no"
+            : "yes"
+          : ""}
+      </td>
       <td>
         <Link
           id={
@@ -65,7 +79,14 @@ const View = (props) => {
           to={`/issue/edit/${props.record._id}`}
           style={{ color: "black", height: "21px" }}
         >
-          {props.record.fine > 0 || props.record.returnApproval === "true"
+          {/* {console.log(
+            props.record.fine,
+            props.record.returnDate,
+            props.record.returnApproval,
+            Math.round(noDays),
+            Math.round(noDays) > 0
+          )} */}
+          {Math.round(noDays) <= 0 && props.record.isReturned !== "false"
             ? ""
             : "Renew"}
         </Link>
@@ -157,7 +178,7 @@ export default function ViewUsers() {
               <th>Delivery Type</th>
               <th>Returned</th>
               <th>Issue Date</th>
-              <th>Due Date</th>
+              <th>Due Date</th> <th>Return Date</th>
               <th>Days left</th>
               <th>Fine</th>
               <th></th>

@@ -28,6 +28,6 @@ describe("Login tests", () => {
     const loginButton = screen.getAllByText("Login");
     fireEvent.click(loginButton[1]);
     const error = screen.getByTestId("error");
-    expect(error.textContent).toBe("invalid username");
+    expect(error.textContent).toBe("Sorry, your username is inccorect.");
   });
 });

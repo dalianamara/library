@@ -8,6 +8,7 @@ import {
   screen,
 } from "@testing-library/react";
 import Login from "../../pages/Login";
+const getById = queryByAttribute.bind(null, "id");
 
 const mockObject = {
   _id: "62a0a6d1ae3d08b41231965a",
@@ -42,6 +43,7 @@ const mockObjects = [
     user: "user",
   },
 ];
+
 beforeEach(() => {
   jest
     .spyOn(global, "fetch")
@@ -58,44 +60,12 @@ beforeEach(() => {
       })
     );
 });
+
 afterEach(() => {
   global.fetch.mockClear();
-  jest.clearAllMocks();
 });
 
 describe("Login tests", () => {
-  test("Given invalid username then it returns an error", async () => {
-    await act(async () => {
-      render(<Login />, { wrapper: App });
-    });
-    const loginPage = screen.getByText("LOGIN");
-    fireEvent.click(loginPage);
-    const username = await screen.findByTestId("username");
-    fireEvent.change(username, { target: { value: "luciangeos" } });
-    const password = await screen.findByTestId("password");
-    fireEvent.change(password, { target: { value: "luciangeo" } });
-    const loginButton = await screen.findByTestId("loginButton");
-    fireEvent.submit(loginButton);
-    const error = screen.getByTestId("error");
-    expect(error.textContent).toBe("Sorry, your username is inccorect.");
-  });
-
-  test("Given invalid password then it returns an error", async () => {
-    await act(async () => {
-      render(<Login />, { wrapper: App });
-    });
-    const loginPage = screen.getByText("LOGIN");
-    fireEvent.click(loginPage);
-    const username = await screen.findByTestId("username");
-    fireEvent.change(username, { target: { value: "luciangeo" } });
-    const password = await screen.findByTestId("password");
-    fireEvent.change(password, { target: { value: "luciangeos" } });
-    const loginButton = await screen.findByTestId("loginButton");
-    fireEvent.submit(loginButton);
-    const error = screen.getByTestId("error");
-    expect(error.textContent).toBe("Sorry, your password is inccorect.");
-  });
-
   test("Given valid username and password then the user logins in application", async () => {
     await act(async () => {
       render(<Login />, { wrapper: App });

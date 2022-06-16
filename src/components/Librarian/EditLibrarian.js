@@ -18,7 +18,9 @@ const EditLibrarian = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [records, setRecords] = useState([]);
   const [showPass, setShowPass] = useState(false);
-
+  const [isPasswordChanged, setIsPasswordChanged] = useState(false);
+  const [isEmailChanged, setIsEmailChanged] = useState(false);
+  const [isUsernameChanged, setIsUsernameChanged] = useState(false);
   const togglePassword = () => {
     setShowPass(!showPass);
   };
@@ -55,6 +57,7 @@ const EditLibrarian = () => {
     const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
     const validEmailB = validateEmail(email);
+
     const editedUser = {
       first: model.first,
       last: model.last,
@@ -63,10 +66,9 @@ const EditLibrarian = () => {
       street: model.street,
       city: model.city,
       phoneNumber: model.phoneNumber,
-      password: model.password,
       user: model.user,
     };
-
+    if (isPasswordChanged === true) editedUser["password"] = model.password;
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -78,30 +80,30 @@ const EditLibrarian = () => {
         window.alert(error);
         return;
       });
+      window.location.href = "/librarian/edit";
     }
   }
 
   const validatePassword = (pass) => {
     const password = /^[A-Za-z]\w{6,14}$/;
-    if (pass.value.match(password)) {
+    if (isPasswordChanged !== false) {
+      if (pass.value.match(password)) {
+        setValidPass(true);
+        return true;
+      } else {
+        setValidPass(false);
+
+        return false;
+      }
+    } else {
       setValidPass(true);
       return true;
-    } else {
-      setValidPass(false);
-
-      return false;
     }
   };
 
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    const existent = records.filter(
-      (user) =>
-        (user.email === email.value && localStorage.email !== email.value) ===
-        true
-    );
-    if (existent.length === 0) {
-      setNotExistentEmail(true);
+    if (isEmailChanged !== false) {
       if (email.value.match(emailExpression)) {
         setValidEmail(true);
         return true;
@@ -110,20 +112,14 @@ const EditLibrarian = () => {
         return false;
       }
     } else {
-      setNotExistentEmail(false);
-      return false;
+      setValidEmail(true);
+      return true;
     }
   };
 
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
-    const existent = records.filter(
-      (user) =>
-        (user.username === uname.value &&
-          localStorage.username !== uname.value) === true
-    );
-    if (existent.length === 0) {
-      setNotExistent(true);
+    if (isUsernameChanged !== false) {
       if (uname.value.match(username)) {
         setValidUname(true);
         return true;
@@ -132,10 +128,10 @@ const EditLibrarian = () => {
         return false;
       }
     } else {
-      setNotExistent(false);
-      return false;
+      return true;
     }
   };
+
   return (
     <>
       <div className="content">
@@ -185,7 +181,10 @@ const EditLibrarian = () => {
                 name="uname"
                 value={model.username}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ username: e.target.value })}
+                onChange={(e) => {
+                  setIsUsernameChanged(true);
+                  update({ username: e.target.value });
+                }}
               />
               {!nonExistent ? (
                 <span className="error" style={{ color: "red" }}>
@@ -210,7 +209,10 @@ const EditLibrarian = () => {
                 id="email"
                 name="email"
                 value={model.email}
-                onChange={(e) => update({ email: e.target.value })}
+                onChange={(e) => {
+                  setIsEmailChanged(true);
+                  update({ email: e.target.value });
+                }}
               />
               {!nonExistentEmail ? (
                 <span className="error" style={{ color: "red" }}>
@@ -236,7 +238,10 @@ const EditLibrarian = () => {
                 name="pass"
                 value={model.password}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ password: e.target.value })}
+                onChange={(e) => {
+                  setIsPasswordChanged(true);
+                  update({ password: e.target.value });
+                }}
               />
               <input
                 type="checkbox"
@@ -245,9 +250,12 @@ const EditLibrarian = () => {
               ></input>
               <label for={"showPass"}>Show password</label>
               {!validPass ? (
-                <span className="error" style={{ color: "red" }}>
-                  eroare password
-                </span>
+                <>
+                  <span className="error" style={{ color: "red" }}>
+                    eroare password
+                  </span>
+                  <br />
+                </>
               ) : (
                 ""
               )}
@@ -256,7 +264,7 @@ const EditLibrarian = () => {
               <input
                 type="submit"
                 value="Edit librarian"
-                className="btn btn-primary"
+                className="editButton"
               />
             </div>
           </form>

@@ -75,6 +75,7 @@ const View = (props) => {
       return;
     });
   };
+
   return (
     <tr>
       <td>{props.record.bookTitle}</td>
@@ -139,7 +140,7 @@ export default function ViewUsers() {
     }
     getRecords();
     return;
-  });
+  }, [records.length]);
 
   useEffect(() => {
     const getBooks = async () => {

@@ -2,10 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getGenre } from "../functions/getGenre";
 import Footer from "../Footer";
-import IssuePopup from "../pages/IssuePopup";
-import { ErrorBoundary } from "react-error-boundary";
 const EditDetails = () => {
-  const [error, setError] = useState(false);
   const [model, setModel] = useState({
     title: "",
     author: "",
@@ -52,6 +49,7 @@ const EditDetails = () => {
     fetchBooks();
     return;
   }, [url.id, navigate]);
+
   const update = (value) => {
     return setModel((prev) => {
       return { ...prev, ...value };
@@ -60,7 +58,7 @@ const EditDetails = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const editedUser = {
+    const editedBook = {
       title: model.title,
       author: model.author,
       genre: model.genre,
@@ -71,33 +69,23 @@ const EditDetails = () => {
       publisher: model.publisher,
       stock: model.stock,
     };
-    await fetch(`http://localhost:5000/book/edit/${url.id}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(editedUser),
-    }).catch((error) => {
+    const resp = await fetch(
+      `http://localhost:5000/book/edit/${url.id.toString()}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editedBook),
+      }
+    ).catch((error) => {
       window.alert(error);
       return;
     });
+    console.log(resp);
     navigate(-1);
   }
-  const ErrorFallback = ({ errorMess, resetError }) => {
-    return (
-      <IssuePopup
-        isOpen={error}
-        title="Error"
-        content={errorMess}
-        deliveryType={"Home"}
-        onOk={resetError}
-      />
-    );
-  };
 
-  const onOk = () => {
-    setError(!error);
-  };
   return (
     <>
       <div className="content">
@@ -218,7 +206,13 @@ const EditDetails = () => {
                 id="pages"
                 value={model.pages}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ pages: e.target.value })}
+                onChange={(e) =>
+                  update({
+                    pages: e.target.value
+                      .replace(/[^0-9.]/g, "")
+                      .replace(/(\..*?)\..*/g, "$1"),
+                  })
+                }
               />
             </div>
             {/* input for publisher */}
@@ -247,7 +241,13 @@ const EditDetails = () => {
                 className="form-control"
                 id="stock"
                 value={model.stock}
-                onChange={(e) => update({ stock: e.target.value })}
+                onChange={(e) =>
+                  update({
+                    stock: e.target.value
+                      .replace(/[^0-9.]/g, "")
+                      .replace(/(\..*?)\..*/g, "$1"),
+                  })
+                }
               />
             </div>
             {/* input for genre */}

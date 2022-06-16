@@ -3,7 +3,7 @@ import Footer from "../Footer";
 import { Link } from "react-router-dom";
 import "../Content.css";
 import "../css/ViewUsers.css";
-const View = (props) => (
+const ViewTable = (props) => (
   <tr>
     <td>{props.record.first}</td>
     <td>{props.record.last}</td>
@@ -45,32 +45,19 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const users = records.filter((user) => user.user === "user");
-
       setRecords(users);
     }
     getRecords();
     return;
-  });
+  }, [records.length]);
 
   async function deleteUser(id) {
-    await fetch(`http://localhost:5000/${id}`, {
+    const resp = await fetch(`http://localhost:5000/${id}`, {
       method: "DELETE",
     });
-
+    console.log(await resp.json());
     const newRecords = records.filter((el) => el._id !== id);
     setRecords(newRecords);
-  }
-
-  function recordList() {
-    return records.map((record) => {
-      return (
-        <View
-          record={record}
-          deleteRecord={() => deleteUser(record._id)}
-          key={record._id}
-        />
-      );
-    });
   }
 
   return (
@@ -87,7 +74,15 @@ export default function ViewUsers() {
               <th></th>
             </tr>
           </thead>
-          <tbody>{recordList()}</tbody>
+          <tbody>
+            {records.map((record) => (
+              <ViewTable
+                record={record}
+                deleteRecord={() => deleteUser(record._id)}
+                key={record._id}
+              />
+            ))}
+          </tbody>
         </table>
       </div>
       <Footer></Footer>

@@ -111,7 +111,8 @@ export default function Viewbooks() {
     }
     getRecords();
     return;
-  });
+  }, [records.length]);
+
   const getBook = (id) => {
     return books.filter((book) => book._id === id);
   };
@@ -129,7 +130,7 @@ export default function Viewbooks() {
     };
     getBooks();
     return;
-  }, [books]);
+  }, [books.length]);
 
   function recordList() {
     return records.map((record) => {

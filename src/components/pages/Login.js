@@ -54,10 +54,11 @@ const Login = (props) => {
       if (records !== undefined) {
         if (model.username === records.username) {
           if (bcrypt.compareSync(model.password, records.password)) {
+            localStorage.setItem("id", records._id);
             localStorage.setItem("isLoggedIn", true);
             localStorage.setItem("email", records.email);
             localStorage.setItem("user", records.user);
-            localStorage.setItem("id", records._id);
+            props.setUserCallback(false, records.user);
             setSuccess(true);
             setValidPass(true);
             setValidUsername(true);
@@ -78,7 +79,7 @@ const Login = (props) => {
         setValidUsername(true);
       }
     }
-    window.location.href = "/";
+    // window.location.href = "/";
   };
 
   const renderForm = () => {
@@ -147,12 +148,12 @@ const Login = (props) => {
               <br />
               <button
                 type="submit"
-                block
+                // block
                 id="loginButton"
                 size="lg"
                 data-testid={"loginButton"}
                 disabled={!valid()}
-                submit={handleSubmit}
+                onSubmit={handleSubmit}
               >
                 Login
               </button>

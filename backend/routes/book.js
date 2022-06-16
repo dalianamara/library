@@ -56,8 +56,8 @@ record.route("/book/add").post((req, response) => {
 //update a record by id.
 record.route("/book/edit/:id").post((request, response) => {
   let dbConnection = db.getDatabase();
-  let myquery = { _id: ObjectId(request.params.id) };
-  let newvalues = {
+  let condition = { _id: ObjectId(request.params.id) };
+  let newBook = {
     $set: {
       author: request.body.author,
       genre: request.body.genre,
@@ -71,16 +71,8 @@ record.route("/book/edit/:id").post((request, response) => {
   };
   dbConnection
     .collection("books")
-    .updateOne(myquery, newvalues, (error, result) => {
-      if (error) {
-        throw error;
-      }
-      if (result.matchedCount === 0) {
-        return (
-          (result["status"] = 115),
-          (result["statusMessage"] = "erroror to update book!")
-        );
-      }
+    .updateOne(condition, newBook, (error, result) => {
+      if (error) throw error;
       response.json(result);
     });
 });
@@ -91,8 +83,6 @@ record.route("/book/delete/:id").delete((request, response) => {
   let myquery = { _id: ObjectId(request.params.id) };
   dbConnection.collection("books").deleteOne(myquery, (error, result) => {
     if (error) throw error;
-    result["method"] = request.method;
-    result["status"] = response.status;
     response.status(result);
   });
 });

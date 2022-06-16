@@ -21,7 +21,9 @@ const EditUser = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [records, setRecords] = useState([]);
   const [showPass, setShowPass] = useState(false);
-  const [isChanged, setIsChanged] = useState(false);
+  const [isPasswordChanged, setIsPasswordChanged] = useState(false);
+  const [isEmailChanged, setIsEmailChanged] = useState(false);
+  const [isUsernameChanged, setIsUsernameChanged] = useState(false);
   const togglePassword = () => {
     setShowPass(!showPass);
   };
@@ -66,10 +68,11 @@ const EditUser = () => {
       street: model.street,
       city: model.city,
       phoneNumber: model.phoneNumber,
-      password: model.password,
       user: model.user,
     };
+    if (isPasswordChanged === true) editedUser["password"] = model.password;
 
+    console.log(validPassword && validEmailB && validUsername === true);
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -86,7 +89,7 @@ const EditUser = () => {
 
   const validatePassword = (pass) => {
     const password = /^[A-Za-z]\w{6,14}$/;
-    if (isChanged !== false) {
+    if (isPasswordChanged !== false) {
       if (pass.value.match(password)) {
         setValidPass(true);
         return true;
@@ -102,13 +105,7 @@ const EditUser = () => {
 
   const validateEmail = (email) => {
     const emailExpression = /\S+@\S+\.\S+/;
-    const existent = records.filter(
-      (user) =>
-        (user.email === email.value && localStorage.email !== email.value) ===
-        true
-    );
-    if (existent.length === 0) {
-      setNotExistentEmail(true);
+    if (isEmailChanged !== false) {
       if (email.value.match(emailExpression)) {
         setValidEmail(true);
         return true;
@@ -117,20 +114,14 @@ const EditUser = () => {
         return false;
       }
     } else {
-      setNotExistentEmail(false);
-      return false;
+      setValidEmail(true);
+      return true;
     }
   };
 
   const validateUsername = (uname) => {
     const username = /^[A-Za-z]\w{5,30}$/;
-    const existent = records.filter(
-      (user) =>
-        (user.username === uname.value &&
-          localStorage.username !== uname.value) === true
-    );
-    if (existent.length === 0) {
-      setNotExistent(true);
+    if (isUsernameChanged !== false) {
       if (uname.value.match(username)) {
         setValidUname(true);
         return true;
@@ -139,8 +130,8 @@ const EditUser = () => {
         return false;
       }
     } else {
-      setNotExistent(false);
-      return false;
+      setValidUname(true);
+      return true;
     }
   };
   return (
@@ -231,7 +222,10 @@ const EditUser = () => {
                 name="uname"
                 value={model.username}
                 style={{ width: "100%" }}
-                onChange={(e) => update({ username: e.target.value })}
+                onChange={(e) => {
+                  setIsUsernameChanged(true);
+                  update({ username: e.target.value });
+                }}
               />
               {!nonExistent ? (
                 <span className="error" style={{ color: "red" }}>
@@ -256,7 +250,10 @@ const EditUser = () => {
                 id="email"
                 name="email"
                 value={model.email}
-                onChange={(e) => update({ email: e.target.value })}
+                onChange={(e) => {
+                  setIsEmailChanged(true);
+                  update({ email: e.target.value });
+                }}
               />
               {!nonExistentEmail ? (
                 <span className="error" style={{ color: "red" }}>
@@ -283,7 +280,7 @@ const EditUser = () => {
                 value={model.password}
                 style={{ width: "100%" }}
                 onChange={(e) => {
-                  setIsChanged(true);
+                  setIsPasswordChanged(true);
                   update({ password: e.target.value });
                 }}
               />

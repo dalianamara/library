@@ -116,7 +116,8 @@ export default function ViewUsers() {
           el.email === localStorage.email &&
           el.fine !== 0 &&
           (el.paid === null || el.paid === "false") &&
-          el.receipt === null
+          el.receipt === null &&
+          el.returnApproval === "true"
       );
       setRecords(issuedBooks);
     }

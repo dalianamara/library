@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import Footer from "../Footer";
-import "../css/SignUp.css";
+import "../css/AddBooks.css";
 import blank from "../images/blank.jpg";
 import addBooks from "../functions/addBooks";
 import addGenre from "../functions/addGenre";
 import { getGenre } from "../functions/getGenre";
 const AddBook = () => {
+  let today = new Date();
+  let day = today.getDate();
+  let month = today.toLocaleString("default", { month: "2-digit" });
+  let year = today.getFullYear();
+  let dueDate = new Date(new Date().setDate(today.getDate() + 31));
+  let dueDay = dueDate.getDate();
+  let dueMonth = dueDate.toLocaleString("default", { month: "2-digit" });
+  let dueYear = dueDate.getFullYear();
+  today = year + "-" + month + "-" + day;
   const [bookModel, setBookModel] = useState({
     title: "",
     author: "",
     genre: "",
     cover: "",
-    year: 0,
+    year: "",
     description: "",
     pages: 0,
     publisher: "",
@@ -24,6 +33,7 @@ const AddBook = () => {
   const [cover, setCover] = useState(false);
   const [genres, setGenres] = useState([]);
   const [genre, setGenre] = useState(false);
+  const [updated, setUpdated] = useState(false);
   const getGenres = () => {
     const genres = getGenre();
     genres.then((result) => {
@@ -56,7 +66,7 @@ const AddBook = () => {
       author: "",
       genre: "",
       cover: "",
-      year: 0,
+      year: "",
       description: "",
       pages: 0,
       publisher: "",
@@ -64,9 +74,11 @@ const AddBook = () => {
     });
   }
 
-  async function handleAddGenre() {
+  async function handleAddGenre(e) {
+    e.preventDefault();
     const newGenre = { ...genreModel };
     addGenre(newGenre);
+    setUpdated(true);
     setGenreModel({
       name: "",
     });
@@ -90,6 +102,7 @@ const AddBook = () => {
               {cover === false ? (
                 <img
                   id="coverImage"
+                  data-testid="coverImage"
                   alt="coverImage"
                   src={blank}
                   style={{
@@ -102,6 +115,7 @@ const AddBook = () => {
               ) : (
                 <img
                   id="coverImage"
+                  data-testid="coverImage"
                   alt="coverImage"
                   src={bookModel.cover}
                   style={{
@@ -115,6 +129,7 @@ const AddBook = () => {
               <input
                 type="file"
                 required
+                data-testid="cover"
                 className="form-control"
                 id="cover"
                 style={{ color: "transparent" }}
@@ -142,6 +157,7 @@ const AddBook = () => {
               <textarea
                 required
                 className="form-control"
+                data-testid="description"
                 id="description"
                 value={bookModel.description}
                 style={{ width: "95%", height: "267px" }}
@@ -157,6 +173,7 @@ const AddBook = () => {
               <input
                 required
                 type="text"
+                data-testid="title"
                 className="form-control"
                 id="title"
                 value={bookModel.title}
@@ -174,6 +191,7 @@ const AddBook = () => {
                 type="text"
                 className="form-control"
                 id="author"
+                data-testid="author"
                 value={bookModel.author}
                 style={{ width: "100%" }}
                 onChange={(e) => updateBook({ author: e.target.value })}
@@ -188,6 +206,7 @@ const AddBook = () => {
               <input
                 required
                 type="date"
+                data-testid="year"
                 className="form-control"
                 id="year"
                 value={bookModel.year}
@@ -206,9 +225,16 @@ const AddBook = () => {
                 type="text"
                 className="form-control"
                 id="pages"
+                data-testid="pages"
                 value={bookModel.pages}
                 style={{ width: "100%" }}
-                onChange={(e) => updateBook({ pages: e.target.value })}
+                onChange={(e) =>
+                  updateBook({
+                    pages: e.target.value
+                      .replace(/[^0-9.]/g, "")
+                      .replace(/(\..*?)\..*/g, "$1"),
+                  })
+                }
               />
             </div>
             {/* input for stock */}
@@ -220,11 +246,18 @@ const AddBook = () => {
               <input
                 required
                 type="text"
+                data-testid="stock"
                 className="form-control"
                 id="stock"
                 value={bookModel.stock}
                 style={{ width: "100%" }}
-                onChange={(e) => updateBook({ stock: e.target.value })}
+                onChange={(e) =>
+                  updateBook({
+                    stock: e.target.value
+                      .replace(/[^0-9.]/g, "")
+                      .replace(/(\..*?)\..*/g, "$1"),
+                  })
+                }
               />
             </div>
             {/* input for publisher */}
@@ -238,6 +271,7 @@ const AddBook = () => {
                 type="text"
                 className="form-control"
                 id="publisher"
+                data-testid="publisher"
                 value={bookModel.publisher}
                 style={{ width: "100%" }}
                 onChange={(e) => updateBook({ publisher: e.target.value })}
@@ -250,54 +284,73 @@ const AddBook = () => {
               </label>
               <br />
               <select
+                key={bookModel.genre}
                 id="genre"
                 style={{ width: "103%" }}
                 required
+                data-testid="genre"
+                value={bookModel.genre}
                 onChange={(e) => updateBook({ genre: e.target.value })}
               >
                 <option value="" selected disabled hidden></option>
                 {genres.map((genre) => (
-                  <option value={genre.name}>{genre.name}</option>
+                  <option key={genre.name} value={genre.name}>
+                    {genre.name}
+                  </option>
                 ))}
               </select>
             </div>
-            <div>
-              <input
-                style={{ marginLeft: "-100px" }}
-                type="checkbox"
-                checked={genre}
-                onChange={() => setGenre(!genre)}
-              />
-              <label htmlFor="genre">Add new genre</label>
-            </div>
-            {genre && (
-              <div>
-                <input
-                  required
-                  type="text"
-                  className="form-control"
-                  id="newGenre"
-                  style={{ width: "30%", marginLeft: "-330px" }}
-                  onChange={(e) => addNewGenre({ name: e.target.value })}
-                />
-                <br />
-                <button
-                  onClick={handleAddGenre}
-                  style={{ marginLeft: "-60px", marginTop: "10px" }}
-                >
-                  Add genre
-                </button>
-              </div>
-            )}
+
             {/* button for submit */}
             <div className="form-group">
-              <input
-                type="submit"
-                value="Add book"
-                className="btn btn-primary"
-              />
+              <input type="submit" value="Add book" className="editButton" />
             </div>
           </form>
+          <div>
+            <input
+              style={{ marginLeft: "-100px" }}
+              type="checkbox"
+              data-testid="genreCheckbox"
+              checked={genre}
+              onChange={() => setGenre(!genre)}
+            />
+            <label htmlFor="genre">Add new genre</label>
+          </div>
+          {genre && (
+            <div>
+              <input
+                required
+                type="text"
+                className="form-control"
+                id="newGenre"
+                style={{ width: "30%", marginLeft: "-330px" }}
+                onChange={(e) => addNewGenre({ name: e.target.value })}
+              />
+              <br />
+              {updated ? (
+                <>
+                  <span
+                    className="error"
+                    data-testid="error"
+                    style={{ color: "green", marginLeft: "-340px" }}
+                  >
+                    Genre added successfully.
+                  </span>
+                  <br />
+                </>
+              ) : (
+                ""
+              )}
+
+              <button
+                onClick={handleAddGenre}
+                className="addNewGenreButton"
+                style={{ marginLeft: "-60px", marginTop: "10px" }}
+              >
+                Add genre
+              </button>
+            </div>
+          )}
           <br />
           <br />
           <br />

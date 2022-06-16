@@ -53,7 +53,7 @@ export default function ViewIssuedBooks() {
     }
     getRecords();
     return;
-  });
+  }, [records.length]);
 
   async function deleteIssue(id) {
     await fetch(`http://localhost:5000/issue/delete/${id}`, {

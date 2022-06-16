@@ -115,7 +115,7 @@ export default function ViewPaidFines() {
     }
     getFines();
     return;
-  });
+  }, [records.length]);
 
   function recordList() {
     return records.map((record) => {
