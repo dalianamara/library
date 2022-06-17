@@ -7,6 +7,7 @@ import reject from "../images/reject.png";
 export const ViewPendingReservationTable = (props) => {
   const handleApproval = async (approve) => {
     const editedIssue = {
+      userId: props.record.userId,
       first: props.record.first,
       last: props.record.last,
       email: props.record.email,

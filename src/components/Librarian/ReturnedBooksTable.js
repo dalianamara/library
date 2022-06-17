@@ -7,6 +7,7 @@ import reject from "../images/reject.png";
 export const ViewReturnedBooksTable = (props) => {
   const handleApproval = async (approve) => {
     const editedUser = {
+      userId: props.record.userId,
       first: props.record.first,
       last: props.record.last,
       email: props.record.email,
@@ -17,11 +18,11 @@ export const ViewReturnedBooksTable = (props) => {
       bookTitle: props.record.bookTitle,
       deliveryType: props.record.deliveryType,
       isApproved: props.record.isApproved,
-      isReturned: approve ? props.record.isReturned : null,
+      isReturned: approve === "true" ? props.record.isReturned : null,
       returnApproval: approve,
       fine: props.record.fine,
       issueDate: props.record.issueDate,
-      returnDate: props.record.returnDate,
+      returnDate: approve === "true" ? props.record.returnDate : null,
       dueDate: props.record.dueDate,
       isReserved: false,
       receipt: undefined,

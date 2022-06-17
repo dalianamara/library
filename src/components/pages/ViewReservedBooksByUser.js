@@ -18,7 +18,7 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const issuedBooks = records.filter(
-        (el) => el.isReserved === "true" && el.email === localStorage.email
+        (el) => el.isReserved === "true" && el.userId === localStorage.id
       );
       setRecords(issuedBooks);
     }
@@ -31,7 +31,7 @@ export default function ViewUsers() {
       method: "DELETE",
     });
   }
-  console.log(records);
+
   return (
     <>
       <div className="content">

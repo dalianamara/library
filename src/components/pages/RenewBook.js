@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Footer from "../Footer";
 const RenewBook = () => {
   const [model, setModel] = useState({
+    userId: "",
     first: "",
     last: "",
     email: "",
@@ -53,10 +54,11 @@ const RenewBook = () => {
       return { ...prev, ...value };
     });
   };
-  console.log(model);
+
   async function handleSubmit(e) {
     e.preventDefault();
     const editedissue = {
+      userId: model.userId,
       first: model.first,
       last: model.last,
       email: model.email,
@@ -84,7 +86,7 @@ const RenewBook = () => {
       window.alert(error);
       return;
     });
-    navigate(-1);
+    window.location.href = "/issuedBooks";
   }
 
   return (
@@ -192,11 +194,7 @@ const RenewBook = () => {
               />
             </div>
             <div className="form-group">
-              <input
-                type="submit"
-                value="Renew issue"
-                className="btn btn-primary"
-              />
+              <input type="submit" value="Renew issue" className="editButton" />
             </div>
           </form>
           <br />

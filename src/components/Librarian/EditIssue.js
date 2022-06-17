@@ -4,6 +4,7 @@ import "../css/EditIssue.css";
 import Footer from "../Footer";
 const EditDetails = () => {
   const [model, setModel] = useState({
+    userId: "",
     first: "",
     last: "",
     email: "",
@@ -59,6 +60,7 @@ const EditDetails = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const editedIssue = {
+      userId: model.userId,
       first: model.first,
       last: model.last,
       email: model.email,
@@ -185,12 +187,13 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <select
+                  key={model.isApproved}
                   id="isApproved"
                   style={{ width: "170px", marginLeft: "-7px" }}
                   required
                   onChange={(e) => update({ isApproved: e.target.value })}
                 >
-                  <option value={model.isApproved} selected hidden>
+                  <option value={model.isApproved} hidden>
                     {model.isApproved === "true" ? "yes" : "no"}
                   </option>
                   <option value="true">yes</option>
@@ -208,7 +211,7 @@ const EditDetails = () => {
                   type="text"
                   className="form-control"
                   id="street"
-                  value={model.street}
+                  value={model.street === null ? "" : model.street}
                   style={{ width: "163px" }}
                   onChange={(e) => update({ street: e.target.value })}
                 />
@@ -222,12 +225,13 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <select
+                  key={model.isReturned}
                   id="isReturned"
                   style={{ width: "170px", marginLeft: "-7px" }}
                   required
                   onChange={(e) => update({ isReturned: e.target.value })}
                 >
-                  <option value={model.isReturned} selected hidden>
+                  <option value={model.isReturned} hidden>
                     {model.isReturned === "true" ? "yes" : "no"}
                   </option>
                   <option value="true">yes</option>
@@ -259,12 +263,13 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <select
+                  key={model.returnApproval}
                   id="returnApproval"
                   style={{ width: "170px", marginLeft: "-7px" }}
                   required
                   onChange={(e) => update({ returnApproval: e.target.value })}
                 >
-                  <option value={model.returnApproval} selected hidden>
+                  <option value={model.returnApproval} hidden>
                     {model.returnApproval === "true" ? "yes" : "no"}
                   </option>
                   <option value="true">yes</option>
@@ -331,12 +336,15 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <select
+                  key={model.isReserved}
                   id="isReserved"
                   style={{ width: "170px", marginLeft: "-7px" }}
-                  required
                   onChange={(e) => update({ isReserved: e.target.value })}
                 >
-                  <option value={model.isReserved} selected hidden>
+                  <option
+                    value={model.isReserved === null ? "" : model.isReserved}
+                    hidden
+                  >
                     {model.isReserved === "true" ? "yes" : "no"}
                   </option>
                   <option value="true">yes</option>
@@ -370,12 +378,13 @@ const EditDetails = () => {
                 </label>
                 <br />
                 <select
+                  key={model.deliveryType}
                   id="deliveryType"
                   style={{ width: "200%", marginLeft: "-7px" }}
                   required
                   onChange={(e) => update({ deliveryType: e.target.value })}
                 >
-                  <option value={model.deliveryType} selected hidden>
+                  <option value={model.deliveryType} hidden>
                     {model.deliveryType}
                   </option>
                   <option value="home">home</option>

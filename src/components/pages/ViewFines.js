@@ -56,6 +56,7 @@ const ViewFinesTable = (props) => {
 };
 async function updateReceipt(props, receipt) {
   const editedissue = {
+    userId: props.userId,
     first: props.first,
     last: props.last,
     email: props.email,
@@ -104,11 +105,11 @@ export default function ViewUsers() {
       const issuedBooks = records.filter(
         (el) =>
           el.isApproved === "true" &&
-          el.email === localStorage.email &&
+          el.userId === localStorage.id &&
           el.fine !== 0 &&
           (el.paid === null || el.paid === "false") &&
           (el.receipt === null || el.receipt === "") &&
-          (el.returnApproval === null || el.returnApproval === "false")
+          (el.returnApproval === "true" || el.returnApproval === "false")
       );
       setRecords(issuedBooks);
     }

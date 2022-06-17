@@ -71,7 +71,7 @@ const SignUp = () => {
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z0-9]\w{6,14}$/;
+    const password = /^[A-Za-z0-9]\w{6,30}$/;
     if (pass.value.match(password)) {
       setValidPass(true);
       return true;
@@ -167,7 +167,7 @@ const SignUp = () => {
                 ) : !validUname ? (
                   <span className="error" style={{ color: "red" }}>
                     Sorry, this username is invalid. <br />
-                    Use only letters and decimals.
+                    Use only from 5 to 30 letters and decimals.
                   </span>
                 ) : (
                   ""
@@ -217,6 +217,8 @@ const SignUp = () => {
                 {!validPass ? (
                   <span className="error" style={{ color: "red" }}>
                     Sorry, this password is invalid.
+                    <br />
+                    Use only from 6 to 30 letters and decimals.
                   </span>
                 ) : (
                   ""

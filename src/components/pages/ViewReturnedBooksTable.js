@@ -11,6 +11,7 @@ export const ViewReturnedBooksTable = (props) => {
     let year = today.getFullYear();
     today = year + "-" + month + "-" + day;
     const editedUser = {
+      userId: props.record.userId,
       first: props.record.first,
       last: props.record.last,
       email: props.record.email,

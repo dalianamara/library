@@ -1,13 +1,10 @@
 import React from "react";
 import "../Content.css";
 import "../css/ViewBooks.css";
-import approve from "../images/approve.png";
-import reject from "../images/reject.png";
 
 export const ViewFinesTable = (props) => {
   return (
     <tr>
-      {console.log(props.record.receipt)}
       <td>{props.record.bookTitle}</td>
       <td>{props.record.first}</td>
       <td>{props.record.last}</td>

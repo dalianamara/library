@@ -257,11 +257,12 @@ const EditDetails = () => {
               </label>
               <br />
               <select
+                key={model.genre}
                 id="genre"
                 style={{ width: "103%" }}
                 onChange={(e) => update({ genre: e.target.value })}
               >
-                <option value="" selected disabled hidden>
+                <option value="" disabled hidden>
                   {model.genre}
                 </option>
                 {genres.map((genre) => (
@@ -270,11 +271,7 @@ const EditDetails = () => {
               </select>
             </div>
             <div className="form-group">
-              <input
-                type="submit"
-                value="Edit book"
-                className="btn btn-primary"
-              />
+              <input type="submit" value="Edit book" className="editButton" />
             </div>
           </form>
           <br />

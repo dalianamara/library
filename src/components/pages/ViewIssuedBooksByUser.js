@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import "../Content.css";
 import "../css/ViewBooks.css";
 let fine = 0;
-const View = (props) => {
+const ViewIssuedBooksTable = (props) => {
   const [noDays, setDays] = useState(0);
   const dueDate = new Date(props.record.dueDate);
   let today = new Date();
@@ -26,25 +26,24 @@ const View = (props) => {
   }
 
   if (props.record.returnDate !== null && daysReturn > 0) {
-    console.log(daysReturn, props.record.bookTitle);
     days = 0;
   }
-  fine = 0;
+
   useEffect(() => {
     setDays(days);
     if (daysReturn < 0) {
-      fine = (0.3 * -daysReturn).toFixed(2);
+      fine = (0.3 * -Math.round(daysReturn)).toFixed(2);
       setDays(daysReturn);
     } else if (days < 0 && props.record.isReturned === null) {
-      fine = (0.3 * -days).toFixed(2);
+      fine = (0.3 * -Math.round(days)).toFixed(2);
     } else if (days === 0 && props.record.isReturned === "true") {
       fine = 0;
     } else if (days > 0) {
       fine = 0;
     }
-
     props.updateFine(props.record, fine);
-  }, [days, daysReturn, noDays, props]);
+    props.setIsApproved(true);
+  }, [fine]);
 
   return (
     <tr>
@@ -75,7 +74,7 @@ const View = (props) => {
           to={`/issue/edit/${props.record._id}`}
           style={{ color: "black", height: "21px" }}
         >
-          {props.record.fine > 0 || props.record.returnDate !== null
+          {Math.round(noDays) < 0 || props.record.returnDate !== null
             ? ""
             : "Renew"}
         </Link>
@@ -86,8 +85,9 @@ const View = (props) => {
 
 export default function ViewUsers() {
   const [records, setRecords] = useState([]);
-
+  const [approved, setIsApproved] = useState(false);
   useEffect(() => {
+    setIsApproved(false);
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
       if (response.status !== 200) {
@@ -97,16 +97,18 @@ export default function ViewUsers() {
       }
       const records = await response.json();
       const issuedBooks = records.filter(
-        (el) => el.isApproved === "true" && el.email === localStorage.email
+        (el) => el.isApproved === "true" && el.userId === localStorage.id
       );
+
       setRecords(issuedBooks);
     }
     getRecords();
     return;
-  }, []);
+  }, [approved]);
 
   async function updateFine(props, fine) {
     const editedissue = {
+      userId: props.userId,
       first: props.first,
       last: props.last,
       email: props.email,
@@ -153,9 +155,10 @@ export default function ViewUsers() {
               <th>Address</th>
               <th>Phone Number</th>
               <th>Delivery Type</th>
-              <th>Returned</th>
+              <th>Return approval</th>
               <th>Issue Date</th>
-              <th>Due Date</th> <th>Return Date</th>
+              <th>Due Date</th>
+              <th>Return Date</th>
               <th>Days left</th>
               <th>Fine</th>
               <th></th>
@@ -164,10 +167,11 @@ export default function ViewUsers() {
           <tbody>
             {records.map((record) => {
               return (
-                <View
+                <ViewIssuedBooksTable
                   record={record}
                   updateFine={() => updateFine(record, fine)}
                   key={record._id}
+                  setIsApproved={setIsApproved}
                 />
               );
             })}

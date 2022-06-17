@@ -49,6 +49,7 @@ const View = (props) => {
       currentUser.phoneNumber !== null
     ) {
       const newIssue = {
+        userId: currentUser._id,
         first: currentUser.first,
         last: currentUser.last,
         email: currentUser.email,
@@ -91,9 +92,10 @@ const View = (props) => {
       setErrorVisibility(!errorVisibility);
     }
   }
-
+  console.log(currentUser);
   async function handleSubmitPickup() {
     const newIssue = {
+      userId: currentUser._id,
       first: currentUser.first,
       last: currentUser.last,
       email: currentUser.email,
@@ -129,7 +131,6 @@ const View = (props) => {
     setPickupVisibility(e);
   };
 
-  // props.type === "reserve"
   return (
     <>
       <h1 style={{ marginBlockEnd: "0em" }}>Delivery address</h1>
@@ -207,7 +208,6 @@ const View = (props) => {
           </Link>
           <br />
           <button
-            // to={`/${props.record._id}/issue/home`}
             onClick={handleSubmitHome}
             id="adressButton"
             style={{ marginTop: "120px", height: "30px", color: "#FFFFFF" }}

@@ -64,25 +64,37 @@ const IssuePopup = (props) => {
         </div>
         <br />
         <div style={{ width: "800px", marginLeft: "120px" }}>
-          <span
-            style={{
-              float: "left",
-              marginLeft: "70px",
-              marginTop: "-80px",
-              textAlign: "left",
-            }}
-          >
-            {props.type !== "reserve"
-              ? `${props.content.title} can arrive at your address on
-             ${deliveryDay}, ${deliveryNumericDay} ${deliveryMonth}, if the issue will be approved today`
-              : "The issued book will be issued after a copy will be available and the librarian confirmed the reservation."}
-          </span>
+          {props.type !== "reserve" ? (
+            <span
+              style={{
+                float: "left",
+                marginLeft: "70px",
+                marginTop: "20px",
+                textAlign: "left",
+              }}
+            >
+              {`The book can arrive at your address on
+             ${deliveryDay}, ${deliveryNumericDay} ${deliveryMonth}, if the issue will be approved today`}{" "}
+            </span>
+          ) : (
+            <span
+              style={{
+                float: "left",
+                marginLeft: "70px",
+                marginTop: "-100px",
+                textAlign: "left",
+              }}
+            >
+              The issued book will be issued after a copy will be available and
+              the librarian confirmed the reservation.
+            </span>
+          )}
         </div>
         <br />
         <br />
         <button
           onClick={handleOk}
-          style={{ marginTop: "50px", width: "50px", height: "30px" }}
+          style={{ marginTop: "4%", width: "50px", height: "30px" }}
           id={"adressButton"}
         >
           OK

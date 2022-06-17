@@ -6,8 +6,9 @@ import "../css/ViewBooks.css";
 
 export default function ViewIssuedBooks() {
   const [records, setRecords] = useState([]);
-
+  const [approved, setIsApproved] = useState(false);
   useEffect(() => {
+    setIsApproved(false);
     async function getRecords() {
       const response = await fetch(`http://localhost:5000/issue/`);
       if (response.status !== 200) {
@@ -21,7 +22,7 @@ export default function ViewIssuedBooks() {
     }
     getRecords();
     return;
-  }, []);
+  }, [approved]);
 
   async function deleteIssue(id) {
     await fetch(`http://localhost:5000/issue/delete/${id}`, {
@@ -53,6 +54,7 @@ export default function ViewIssuedBooks() {
                   record={record}
                   deleteRecord={() => deleteIssue(record._id)}
                   key={record._id}
+                  setIsApproved={setIsApproved}
                 />
               );
             })}

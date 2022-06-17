@@ -162,6 +162,7 @@ const AddLibrarian = () => {
                 className="form-control"
                 id="username"
                 name="uname"
+                minLength="5"
                 data-testid="username"
                 value={model.username}
                 style={{ width: "100%" }}
@@ -174,7 +175,7 @@ const AddLibrarian = () => {
               ) : !validUname ? (
                 <span className="error" style={{ color: "red" }}>
                   Sorry, this username is invalid. <br />
-                  Use only letters and decimals.
+                  Use only letters and decimals as name and add the @domain.
                 </span>
               ) : (
                 ""
@@ -192,6 +193,8 @@ const AddLibrarian = () => {
                 className="form-control"
                 id="phoneNumber"
                 name="phoneNumber"
+                minLength="10"
+                maxLength="10"
                 data-testid="phoneNumber"
                 value={model.phoneNumber}
                 style={{ width: "100%" }}

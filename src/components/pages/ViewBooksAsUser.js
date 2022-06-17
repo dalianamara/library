@@ -49,7 +49,7 @@ const View = (props) => (
           id="issueButton"
           value="Reserve"
         >
-          Reserve
+          Reserve book
         </Link>
       </>
     ) : (
@@ -72,6 +72,7 @@ export default function ViewBooksAsUser() {
   const [genres, setGenres] = useState([]);
   const [isFiltered, setIsFiltered] = useState(false);
   const [isCategoryFiltered, setIsCategoryFiltered] = useState(false);
+  let counter = 0;
   const getGenres = () => {
     const genres = getGenre();
     genres.then((result) => {
@@ -98,9 +99,10 @@ export default function ViewBooksAsUser() {
         : title === ""
         ? el.genre === category
         : (setIsCategoryFiltered(true),
-          el.title.toLowerCase().includes(title.toLowerCase()))
+          el.title.toLowerCase().includes(title.toLowerCase()) &&
+            el.genre === category)
     );
-    console.log(filteredBooks);
+
     setFilteredBooks(newRecords);
     return;
   }, [category, title]);
@@ -114,24 +116,6 @@ export default function ViewBooksAsUser() {
     setRecords(newRecords);
   }
 
-  function recordList() {
-    return (
-      isFiltered === true || isCategoryFiltered === true
-        ? filteredBooks
-        : records
-    ).map((record) => {
-      return (
-        <>
-          <View
-            record={record}
-            deleteRecord={() => getBook(record._id)}
-            key={record._id}
-          />
-        </>
-      );
-    });
-  }
-
   const onChangeSelect = (value, filter) => {
     setCategory(value);
     setIsCategoryFiltered(filter);
@@ -142,19 +126,28 @@ export default function ViewBooksAsUser() {
       <div className="content">
         <h1 style={{ marginBlockEnd: "0em" }}>Catalogue</h1>
         Filter by category{" "}
-        <select onChange={(e) => onChangeSelect(e.target.value, true)}>
+        <select
+          key={`category-${counter}`}
+          value={category}
+          onChange={(e) => onChangeSelect(e.target.value, true)}
+        >
+          <option value="" key={"empty"} disabled hidden></option>
           <option
-            value=""
-            selected={!isCategoryFiltered}
+            value={!isCategoryFiltered}
+            defaultValue=""
             disabled
             hidden
+            key={`${isCategoryFiltered}`}
           ></option>
           {genres.map((genre) => (
-            <option value={genre.name}>{genre.name}</option>
+            <option value={genre.name} key={`${genre.name}-${counter++}`}>
+              {genre.name}
+            </option>
           ))}
         </select>
         <button id="buttons" onClick={() => onChangeSelect("", false)}>
           <img
+            key="image"
             src={close}
             alt="close"
             // className="image"
@@ -169,12 +162,33 @@ export default function ViewBooksAsUser() {
         ></input>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table style={{ marginTop: 20 }} cols="3">
-          <div
-            className={"container"}
-            style={{ display: "flex", flexWrap: "wrap" }}
-          >
-            {recordList()}
-          </div>
+          <tbody key={`tbody-${counter++}`}>
+            <tr
+              style={{ backgroundColor: "transparent" }}
+              key={`tr-${counter++}`}
+            >
+              <td key={`td-${counter++}`}>
+                <div
+                  key={`container-${counter++}`}
+                  className={"container"}
+                  style={{ display: "flex", flexWrap: "wrap" }}
+                >
+                  {(isFiltered === true || isCategoryFiltered === true
+                    ? filteredBooks
+                    : records
+                  ).map((record) => {
+                    return (
+                      <View
+                        record={record}
+                        deleteRecord={() => getBook(record._id)}
+                        key={record._id}
+                      />
+                    );
+                  })}
+                </div>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
       <Footer></Footer>

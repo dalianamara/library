@@ -19,18 +19,24 @@ const Faq = () => {
           new account in the Site and using the facilities that it offers means
           full acceptance of these Terms and Conditions. The Terms and
           Conditions can be modified anytime without notice.
-          <p>
-            <p style={{ fontSize: "20px" }}>
+          <br />
+          <br />
+          <span>
+            <span style={{ fontSize: "20px", lineHeight: "1.6" }}>
               <b>GENERAL USAGE CONDITIONS:</b>
-            </p>
+              <br />
+            </span>
             • The library is a public site accesible to everyone interested in
             reading from our library. <br />• We reserve the right to rescrict
             or deny access by visitors to certain functions of the site if
             there's a suspicious of fraud.
-          </p>
-          <p style={{ fontSize: "20px" }}>
+            <br />
+            <br />
+          </span>
+          <span style={{ fontSize: "20px", lineHeight: "1.6" }}>
             <b>CONFIDENTIALITY:</b>
-          </p>
+            <br />
+          </span>
           We are maintaining the confidentiality of the information you provide
           to us. We respect and protect the data provided to us by our readers
           and take all necessary measures to ensure a high level of security.

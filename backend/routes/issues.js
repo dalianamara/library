@@ -27,6 +27,7 @@ record.route("/issue/:id").get((req, res) => {
 record.route("/issue/add").post((req, response) => {
   let dbConnection = db.getDatabase();
   let myobj = {
+    userId: req.body.userId,
     first: req.body.first,
     last: req.body.last,
     email: req.body.email,
@@ -60,6 +61,7 @@ record.route("/issue/edit/:id").post((req, response) => {
   let myquery = { _id: ObjectId(req.params.id) };
   let newvalues = {
     $set: {
+      userId: req.body.userId,
       first: req.body.first,
       last: req.body.last,
       email: req.body.email,

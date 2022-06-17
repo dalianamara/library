@@ -21,7 +21,7 @@ export const ViewBooksTable = (props) => (
       >
         Edit
       </Link>
-      |{" "}
+      |
       <button
         id="buttons"
         onClick={() => {

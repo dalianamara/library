@@ -8,20 +8,25 @@ const Contact = () => {
         <h1 style={{ marginBlockEnd: "0em" }}>Contact</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <p>
-          <p style={{ fontSize: "20px" }}>
+          <span style={{ fontSize: "20px", lineHeight: "1.6" }}>
             <b>Address</b>
-          </p>
+          </span>
+          <br />
           Ioan Slavici Street, nr. 20
           <br /> Timisoara, 300077
           <br /> Timis, Romania
           <br />
-          <p style={{ fontSize: "20px" }}>
+          <br />
+          <span style={{ fontSize: "20px", lineHeight: "1.6" }}>
             <b>Phone number</b>
-          </p>
-          +40 (0)342 192 651
-          <p style={{ fontSize: "20px" }}>
+          </span>{" "}
+          <br />
+          +40 (0)342 192 651 <br />
+          <br />
+          <span style={{ fontSize: "20px", lineHeight: "1.6" }}>
             <b>Email</b>
-          </p>
+          </span>{" "}
+          <br />
           contact@librarymanagement.ro
         </p>
       </div>

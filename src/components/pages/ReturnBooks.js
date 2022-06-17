@@ -20,12 +20,11 @@ export default function ReturnBooks() {
 
       const pendingIssues = records.filter(
         (el) =>
-          (el.isReturned === null || el.isReturned === "true") &&
+          (el.isReturned === null || el.isReturned !== "true") &&
           el.isApproved !== null &&
           el.isApproved !== undefined &&
           el.isApproved !== "false" &&
-          el.email === localStorage.email &&
-          el.fine === 0 &&
+          el.userId === localStorage.id &&
           (el.returnApproval === "false" || el.returnApproval === null)
       );
       console.log(pendingIssues);
@@ -34,7 +33,7 @@ export default function ReturnBooks() {
     getRecords();
     return;
   }, [approved]);
-
+  console.log(records);
   return (
     <>
       <div className="content">

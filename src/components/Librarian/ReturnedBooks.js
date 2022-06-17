@@ -13,10 +13,7 @@ export default function ViewReturnedBooks() {
     let issues = getIssues();
     issues.then((issue) => {
       const pendingIssues = issue.filter(
-        (el) =>
-          el.isReturned === "true" &&
-          el.returnApproval === null &&
-          el.fine === 0
+        (el) => el.isReturned === "true" && el.returnApproval === null
       );
       setRecords(pendingIssues);
     });

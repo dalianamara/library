@@ -189,14 +189,27 @@ const DisplayLayout = (props) => (
         }}
       ></hr>
       <br />
-      <Link
-        to={`/${props.record._id}/issue`}
-        id="issueButton"
-        value="Issue book"
-        style={{ marginLeft: "400px" }}
-      >
-        Issue book
-      </Link>
+      {props.record.stock === 0 ? (
+        <>
+          <Link
+            to={`/${props.record._id}/reserve`}
+            id="issueButton"
+            value="Reserve"
+            style={{ marginLeft: "500px" }}
+          >
+            Reserve book
+          </Link>
+        </>
+      ) : (
+        <Link
+          to={`/${props.record._id}/issue`}
+          id="issueButton"
+          value="Issue book"
+          style={{ marginLeft: "500px" }}
+        >
+          Issue book
+        </Link>
+      )}
       <br />
       <br />
     </div>
@@ -216,7 +229,7 @@ const DisplayReviewsLayout = (props) => (
   </div>
 );
 
-export default function ProductPage(props) {
+export default function BookPage(props) {
   const [records, setRecords] = useState([]);
   const location = useLocation().pathname.split("/");
   const [reviewContent, setReviewContent] = useState("");
@@ -247,7 +260,7 @@ export default function ProductPage(props) {
     let userId =
       props.user._id === undefined ? localStorage.id : props.user._id;
     let currentUser = await getUser(userId);
-    console.log(currentUser, currentBook);
+
     const review = {
       bookId: currentBook._id,
       userId: currentUser[0]._id,

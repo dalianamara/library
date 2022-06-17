@@ -5,7 +5,7 @@ import "../css/ViewBooks.css";
 
 export const ViewIssuedBooksTable = (props) => (
   <tr>
-    <td>{props.record.bookTitle}</td>
+    <td style={{ width: "450px" }}>{props.record.bookTitle}</td>
     <td>{props.record.first}</td>
     <td>{props.record.last}</td>
     <td>
@@ -21,14 +21,15 @@ export const ViewIssuedBooksTable = (props) => (
       >
         Edit
       </Link>
-      |{" "}
+      |
       <button
         id="buttons"
         onClick={() => {
           props.deleteRecord(props.record._id);
-          window.location.href = "/viewIssuedBooks";
+          // window.location.href = "/viewIssuedBooks";
+          props.setIsApproved(true);
         }}
-        style={{ color: "black", height: "25px" }}
+        style={{ color: "black", height: "25px", marginLeft: "5px" }}
       >
         Delete
       </button>

@@ -267,11 +267,11 @@ describe("Login user tests", () => {
     });
     const loginPage = screen.getByText("LOGIN");
     fireEvent.click(loginPage);
-    const username = await screen.findByTestId("username");
+    const username = screen.getByTestId("username");
     fireEvent.change(username, { target: { value: "luciangeos" } });
-    const password = await screen.findByTestId("password");
+    const password = screen.getByTestId("password");
     fireEvent.change(password, { target: { value: "luciangeo" } });
-    const loginButton = await screen.findByTestId("loginButton");
+    const loginButton = screen.getByTestId("loginButton");
     fireEvent.submit(loginButton);
     const error = screen.getByTestId("error");
     expect(error.textContent).toBe("Sorry, your username is inccorect.");
@@ -283,11 +283,11 @@ describe("Login user tests", () => {
     });
     const loginPage = screen.getByText("LOGIN");
     fireEvent.click(loginPage);
-    const username = await screen.findByTestId("username");
+    const username = screen.getByTestId("username");
     fireEvent.change(username, { target: { value: "luciangeo" } });
-    const password = await screen.findByTestId("password");
+    const password = screen.getByTestId("password");
     fireEvent.change(password, { target: { value: "luciangeos" } });
-    const loginButton = await screen.findByTestId("loginButton");
+    const loginButton = screen.getByTestId("loginButton");
     fireEvent.submit(loginButton);
     const error = screen.getByTestId("error");
     expect(error.textContent).toBe("Sorry, your password is inccorect.");
@@ -298,11 +298,11 @@ describe("Login user tests", () => {
     });
     const loginPage = screen.getByText("LOGIN");
     fireEvent.click(loginPage);
-    const username = await screen.findByTestId("username");
+    const username = screen.getByTestId("username");
     fireEvent.change(username, { target: { value: "luciangeo" } });
-    const password = await screen.findByTestId("password");
+    const password = screen.getByTestId("password");
     fireEvent.change(password, { target: { value: "luciangeo" } });
-    const loginButton = await screen.findByTestId("loginButton");
+    const loginButton = screen.getByTestId("loginButton");
     await act(async () => {
       fireEvent.submit(loginButton);
     });
@@ -359,7 +359,7 @@ describe("Menu buttons tests", () => {
       const viewUsersButton = screen.getByText("Issued books");
       fireEvent.click(viewUsersButton);
     });
-    const existentBook = screen.getByText("A day to remember");
+    const existentBook = screen.getByText("Return Date");
     expect(existentBook).toBeInTheDocument();
   });
 
@@ -379,10 +379,8 @@ describe("Menu buttons tests", () => {
       const viewUsersButton = screen.getByText("Returned books");
       fireEvent.click(viewUsersButton);
     });
-    const existentBook = screen.getAllByText(
-      "Fossil Future: Why Global Human Flourishing Requires More Oil, Coal, and Natural Gas--Not Less"
-    );
-    expect(existentBook[0]).toBeInTheDocument();
+    const existentColumn = screen.getByText("Delivery Type");
+    expect(existentColumn).toBeInTheDocument();
   });
 
   test("Given any input then the reserved books table loads", async () => {
@@ -401,8 +399,8 @@ describe("Menu buttons tests", () => {
       const viewUsersButton = screen.getByText("Reserved books");
       fireEvent.click(viewUsersButton);
     });
-    const existentBook = screen.getByText("The Winter Rose");
-    expect(existentBook).toBeInTheDocument();
+    const existentColumn = screen.getByText("Phone Number");
+    expect(existentColumn).toBeInTheDocument();
   });
 
   test("Given any input then the fines table loads", async () => {
@@ -421,8 +419,8 @@ describe("Menu buttons tests", () => {
       const finesButton = screen.getByText("Fine and Fees");
       fireEvent.click(finesButton);
     });
-    const existentBook = screen.getByText("A day to remember");
-    expect(existentBook).toBeInTheDocument();
+    const existentColumn = screen.getByText("Returned");
+    expect(existentColumn).toBeInTheDocument();
   });
 
   test("Given any input then the Borrows and returns page loads", async () => {

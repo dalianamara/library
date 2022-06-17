@@ -7,16 +7,17 @@ const About = () => {
       <div className="content">
         <h1 style={{ marginBlockEnd: "0em" }}>About</h1>
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
-        <p style={{ fontSize: "17px" }}>
+        <p style={{ fontSize: "17px", lineHeight: "1.6" }}>
           The library was founded in November 1st, 2009 having 10.000 books.
           Nowadays, the library offers the reader over 500.000 books. The main
           reason this library was founded was to help the readers issue books
           easier.
           <br />
-          <p style={{ fontSize: "20px" }}>
+          <span style={{ fontSize: "20px" }}>
             <b>OBJECTIVES:</b>
-          </p>
-          <p style={{ fontSize: "17px" }}>
+          </span>
+          <br />
+          <span style={{ fontSize: "17px", lineHeight: "1.6" }}>
             o Possibility to create an account within the application
             <br />
             o Ability to authenticate within the application
@@ -47,7 +48,7 @@ const About = () => {
             <br />
             o Ability to search by book title
             <br />
-          </p>
+          </span>
         </p>
       </div>
       <Footer></Footer>

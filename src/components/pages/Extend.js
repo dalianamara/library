@@ -9,10 +9,12 @@ const Extend = () => {
         • The user is obligated to return the issued books before due date or to
         extend the due date.
         <br />
-        <p style={{ fontSize: "20px" }}>
+        <br />
+        <span style={{ fontSize: "20px" }}>
           <b>The steps for extending the due date:</b>
-        </p>
-        <p style={{ marginLeft: "10px", marginTop: "-10px" }}>
+        </span>
+        <br />
+        <span style={{ marginTop: "-10px", lineHeight: "1.6" }}>
           1. Log into your account.
           <br />
           2. Hover the "MY LIBRARY" menu item
@@ -28,7 +30,7 @@ const Extend = () => {
           date.
           <br />
           7. Click "Renew issue" button.
-        </p>
+        </span>
       </p>
       <Footer></Footer>
     </div>

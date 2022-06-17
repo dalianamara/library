@@ -10,6 +10,7 @@ const AddBook = () => {
   let day = today.getDate();
   let month = today.toLocaleString("default", { month: "2-digit" });
   let year = today.getFullYear();
+  let counter = 0;
   today = year + "-" + month + "-" + day;
   const [bookModel, setBookModel] = useState({
     title: "",
@@ -282,7 +283,7 @@ const AddBook = () => {
               </label>
               <br />
               <select
-                key={bookModel.genre}
+                key={`${bookModel.genre} - ${counter++}`}
                 id="genre"
                 style={{ width: "103%" }}
                 required
@@ -290,9 +291,12 @@ const AddBook = () => {
                 value={bookModel.genre}
                 onChange={(e) => updateBook({ genre: e.target.value })}
               >
-                <option value="" selected disabled hidden></option>
+                <option value="" disabled hidden></option>
                 {genres.map((genre) => (
-                  <option key={genre.name} value={genre.name}>
+                  <option
+                    key={`${genre.name} - ${counter++}`}
+                    value={genre.name}
+                  >
                     {genre.name}
                   </option>
                 ))}

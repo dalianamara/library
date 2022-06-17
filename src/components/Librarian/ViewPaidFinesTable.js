@@ -7,6 +7,7 @@ import reject from "../images/reject.png";
 export const ViewPaidFinesTable = (props) => {
   const handleApproval = async (approve) => {
     const editedIssue = {
+      userId: props.record.userId,
       first: props.record.first,
       last: props.record.last,
       email: props.record.email,
@@ -23,7 +24,7 @@ export const ViewPaidFinesTable = (props) => {
       issueDate: props.record.issueDate,
       returnDate: props.record.returnDate,
       dueDate: props.record.dueDate,
-      receipt: approve ? props.record.receipt : null,
+      receipt: approve === "true" ? props.record.receipt : null,
       paid: approve,
       verified: true,
     };

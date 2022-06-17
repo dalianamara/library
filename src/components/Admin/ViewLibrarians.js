@@ -29,19 +29,23 @@ export default function ViewUsers() {
         <hr style={{ border: "1px solid black", borderColor: "#A04000" }}></hr>
         <table className="table table-striped" style={{ marginTop: 20 }}>
           <thead>
-            <th>First name</th>
-            <th>Last name</th>
-            <th>Email</th>
-            <th>Username</th>
-            <th></th>
+            <tr>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
+              <th>Username</th>
+              <th></th>
+            </tr>
           </thead>
-          {librarians.map((librarian) => (
-            <ViewLibrariansTable
-              record={librarian}
-              deleteRecord={() => deleteUser(librarian._id)}
-              key={librarian._id}
-            />
-          ))}
+          <tbody>
+            {librarians.map((librarian) => (
+              <ViewLibrariansTable
+                record={librarian}
+                deleteRecord={() => deleteUser(librarian._id)}
+                key={librarian._id}
+              />
+            ))}
+          </tbody>
         </table>
       </div>
       <Footer></Footer>

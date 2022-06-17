@@ -128,11 +128,7 @@ const EditDetails = () => {
               />
             </div>
             <div className="form-group">
-              <input
-                type="submit"
-                value="Update user"
-                className="btn btn-primary"
-              />
+              <input type="submit" value="Update user" className="editButton" />
             </div>
           </form>
           <br />

@@ -187,12 +187,13 @@ const AddReview = (props) => {
               </label>
               <br />
               <select
+                key={model.genre}
                 id="genre"
                 style={{ width: "103%" }}
                 required
                 onChange={(e) => update({ genre: e.target.value })}
               >
-                <option value="" selected disabled hidden></option>
+                <option value="" disabled hidden></option>
                 <option value="Romance">Romance</option>
                 <option value="Drama">Drama</option>
                 <option value="Children">Children</option>

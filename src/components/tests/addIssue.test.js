@@ -3,6 +3,7 @@ import addIssue from "../functions/addIssue";
 describe("AddIssue tests", () => {
   test("Given any input the issue is added in db", async () => {
     const model = {
+      userId: "76523562347",
       first: "alina",
       last: "maria",
       email: "alinamaria@yahoo.com",
