@@ -40,7 +40,7 @@ const mockUsers = [
     username: "alinamaria",
     password: "$2a$10$4.qHjp2JEmZoPr5XZedFtekwr/KYRj40BeI/Coz/qNAj873ndW1VC",
     phoneNumber: "076452718",
-    user: "user",
+    user: "librarian",
   },
 ];
 

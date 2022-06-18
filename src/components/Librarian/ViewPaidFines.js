@@ -29,7 +29,7 @@ export default function ViewPaidFines() {
     getFines();
     return;
   }, [approved]);
-  console.log(records);
+
   return (
     <>
       <div className="content">

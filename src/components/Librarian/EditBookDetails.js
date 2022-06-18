@@ -82,7 +82,7 @@ const EditDetails = () => {
       window.alert(error);
       return;
     });
-    console.log(resp);
+
     navigate(-1);
   }
 

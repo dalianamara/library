@@ -16,8 +16,8 @@ review.route("/review").get((req, res) => {
 
 review.route("/review/:id").get((req, res) => {
   let dbConnection = db.getDatabase();
-  let myquery = { _id: ObjectId(req.params.id) };
-  dbConnection.collection("reviews").findOne(myquery, (err, result) => {
+  let condition = { _id: ObjectId(req.params.id) };
+  dbConnection.collection("reviews").findOne(condition, (err, result) => {
     if (err) throw err;
     res.json(result);
   });
@@ -26,9 +26,8 @@ review.route("/review/:id").get((req, res) => {
 //create a new review.
 review.route("/review/add").post((req, response) => {
   let dbConnection = db.getDatabase();
-  let myobj = {
+  let newReview = {
     bookId: req.body.bookId,
-    userId: req.body.userId,
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     date: req.body.date,
@@ -36,7 +35,7 @@ review.route("/review/add").post((req, response) => {
     stars: req.body.stars,
     isApproved: req.body.isApproved,
   };
-  dbConnection.collection("reviews").insertOne(myobj, (err, res) => {
+  dbConnection.collection("reviews").insertOne(newReview, (err, res) => {
     if (err) throw err;
     response.json(res);
   });
@@ -45,11 +44,10 @@ review.route("/review/add").post((req, response) => {
 //update a review by id.
 review.route("/review/edit/:id").post((req, response) => {
   let dbConnection = db.getDatabase();
-  let myquery = { _id: ObjectId(req.params.id) };
+  let condition = { _id: ObjectId(req.params.id) };
   let newvalues = {
     $set: {
       bookId: req.body.bookId,
-      userId: req.body.userId,
       firstName: req.body.firstName,
       lastName: req.body.lastName,
       date: req.body.date,
@@ -60,9 +58,8 @@ review.route("/review/edit/:id").post((req, response) => {
   };
   dbConnection
     .collection("reviews")
-    .updateOne(myquery, newvalues, (err, res) => {
+    .updateOne(condition, newvalues, (err, res) => {
       if (err) throw err;
-      console.log("1 review updated");
       response.json(res);
     });
 });
@@ -70,10 +67,9 @@ review.route("/review/edit/:id").post((req, response) => {
 //delete a review
 review.route("/review/delete/:id").delete((req, response) => {
   let dbConnection = db.getDatabase();
-  let myquery = { _id: ObjectId(req.params.id) };
-  dbConnection.collection("reviews").deleteOne(myquery, (err, obj) => {
+  let condition = { _id: ObjectId(req.params.id) };
+  dbConnection.collection("reviews").deleteOne(condition, (err, obj) => {
     if (err) throw err;
-    console.log("1 review deleted");
     response.status(obj);
   });
 });

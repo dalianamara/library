@@ -20,14 +20,17 @@ const ViewIssuedBooksTable = (props) => {
   let daysReturn = 0;
   if (props.record.returnDate !== null) {
     daysReturn = miliReturnDate / (1000 * 3600 * 24);
+    if (daysReturn > 0) {
+      days = 0;
+    }
   } else {
     if (props.record.returnApproval) daysReturn = 0;
     else daysReturn = days;
   }
 
-  if (props.record.returnDate !== null && daysReturn > 0) {
-    days = 0;
-  }
+  // if (props.record.returnDate !== null && daysReturn > 0) {
+  //   days = 0;
+  // }
 
   useEffect(() => {
     setDays(days);

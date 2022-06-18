@@ -34,7 +34,7 @@ export default function ViewUsers() {
   const getBook = (id) => {
     return books.filter((book) => book._id === id);
   };
-  console.log(records, books);
+
   return (
     <>
       <div className="content">

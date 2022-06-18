@@ -38,6 +38,7 @@ import ViewFines from "./pages/ViewFines";
 import ViewPaidFines from "./Librarian/ViewPaidFines";
 import ViewFinesLibrarian from "./Librarian/ViewFines";
 import EditUserAdmin from "./Admin/EditLibrarian";
+import ViewFeedback from "./Admin/ViewFeedback";
 import EditUserLibrarian from "./Librarian/EditLibrarian";
 import EditUserByLibrarian from "./Librarian/EditUser";
 import EditIssue from "./Librarian/EditIssue";
@@ -64,7 +65,7 @@ class Menu extends Component {
   }
 
   async componentDidMount() {
-    this.setState({ isLoading: true, user: "" });
+    this.setState({ isLoading: true, user: "", userInfo: {} });
     const response = await fetch(`http://localhost:5000/user/`);
     if (response.status !== 200) {
       const message = `An error occured: ${response.statusText}`;
@@ -73,6 +74,7 @@ class Menu extends Component {
     }
     const users = await response.json();
     const user = users.find((user) => user._id === localStorage.id);
+
     if (user !== undefined)
       this.setState({ isLoading: false, user: user.user, userInfo: user });
     else {
@@ -92,8 +94,6 @@ class Menu extends Component {
 
   rerenderLogoutCallback() {
     localStorage.setItem("isLoggedIn", false);
-    localStorage.removeItem("username");
-    localStorage.removeItem("firstName");
     localStorage.removeItem("user");
     localStorage.removeItem("email");
     localStorage.removeItem("id");
@@ -141,7 +141,7 @@ class Menu extends Component {
                   </Link>
 
                   <Link to="/pending" className={"menuButton"}>
-                    PENDING ISSUE BOOKS
+                    PENDING ISSUED BOOKS
                   </Link>
 
                   <Link to="/returned" className={"menuButton"}>
@@ -170,7 +170,7 @@ class Menu extends Component {
                   </Link>
 
                   <Link to="/return" className={"menuButton"}>
-                    Returned books
+                    Return books
                   </Link>
 
                   <Link to="/reserved" className={"menuButton"}>
@@ -289,6 +289,14 @@ class Menu extends Component {
             ""
           )}
 
+          {this.state.user === "admin" &&
+          localStorage.getItem("isLoggedIn") === "true" ? (
+            <Link to="/viewFeedbacks" className={"menuButton"}>
+              VIEW FEEDBACK
+            </Link>
+          ) : (
+            ""
+          )}
           {/* check if user is logged in then show logout button instead of login  */}
           {localStorage.getItem("isLoggedIn") === "true" ? (
             <a id="login" data-testid="login">
@@ -329,6 +337,18 @@ class Menu extends Component {
                   isLoading={this.state.isLoading}
                 >
                   <AddLibrarian />
+                </PrivateAdminRoute>
+              }
+            />
+
+            <Route
+              path="/viewFeedbacks"
+              element={
+                <PrivateAdminRoute
+                  type={this.state.user}
+                  isLoading={this.state.isLoading}
+                >
+                  <ViewFeedback />
                 </PrivateAdminRoute>
               }
             />
@@ -572,7 +592,7 @@ class Menu extends Component {
                 </PrivateRoute>
               }
             />
-            {console.log(this.state.userInfo)}
+
             <Route
               path={`/:id`}
               element={
@@ -580,10 +600,7 @@ class Menu extends Component {
                   type={this.state.user}
                   isLoading={this.state.isLoading}
                 >
-                  <BookPage
-                    id={window.location}
-                    user={this.state.userInfo !== {} ? this.state.userInfo : {}}
-                  />
+                  <BookPage id={window.location} user={this.state.userInfo} />
                 </PrivateRoute>
               }
             />

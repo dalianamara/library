@@ -33,7 +33,7 @@ const ViewFinesTable = (props) => {
           }}
         ></input>
         <button>
-          <label for="receipt">Choose image</label>
+          <label htmlFor="receipt">Choose image</label>
         </button>
         <button
           id={"buttons"}
@@ -62,6 +62,7 @@ async function updateReceipt(props, receipt) {
     email: props.email,
     phoneNumber: props.phoneNumber,
     city: props.city,
+    street: props.street,
     bookId: props.bookId,
     bookTitle: props.bookTitle,
     deliveryType: props.deliveryType,
@@ -116,7 +117,7 @@ export default function ViewUsers() {
     getRecords();
     return;
   }, [approved]);
-  console.log(records);
+
   return (
     <>
       <div className="content">

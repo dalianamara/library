@@ -27,13 +27,13 @@ export default function ReturnBooks() {
           el.userId === localStorage.id &&
           (el.returnApproval === "false" || el.returnApproval === null)
       );
-      console.log(pendingIssues);
+
       setRecords(pendingIssues);
     }
     getRecords();
     return;
   }, [approved]);
-  console.log(records);
+
   return (
     <>
       <div className="content">

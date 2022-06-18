@@ -87,7 +87,7 @@ const EditUser = () => {
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z]\w{6,14}$/;
+    const password = /^[A-Za-z0-9]\w{6,30}$/;
     if (isPasswordChanged !== false) {
       if (pass.value.match(password)) {
         setValidPass(true);

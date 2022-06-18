@@ -211,7 +211,7 @@ const EditDetails = () => {
                   type="text"
                   className="form-control"
                   id="street"
-                  value={model.street === null ? "" : model.street}
+                  value={model.street}
                   style={{ width: "163px" }}
                   onChange={(e) => update({ street: e.target.value })}
                 />

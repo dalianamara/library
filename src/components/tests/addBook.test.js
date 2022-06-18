@@ -1,6 +1,5 @@
 import addBooks from "../functions/addBooks";
-import request from "supertest";
-describe("AddBook tests", () => {
+describe("AddBook test", () => {
   test("Given any input the book is added in database", async () => {
     const bookModel = {
       title: "HTML & CSS: Design and Build Websites",
@@ -14,13 +13,13 @@ describe("AddBook tests", () => {
       stock: 3,
     };
 
-    global.fetch = jest.fn(() =>
+    jest.spyOn(global, "fetch").mockImplementation(() =>
       Promise.resolve({
+        status: 200,
         json: () => Promise.resolve(bookModel),
       })
     );
-    const res = request("http://localhost:5000").get("/book");
-    console.log(res);
+
     await addBooks(bookModel);
     expect(fetch).toHaveBeenCalledTimes(1);
   });

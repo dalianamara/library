@@ -216,18 +216,33 @@ const DisplayLayout = (props) => (
   </div>
 );
 
-const DisplayReviewsLayout = (props) => (
-  <div className="reviewContainer">
-    <span style={{ fontFamily: "Times New Roman", fontSize: "18px" }}>
-      {props.review.firstName} {props.review.lastName}
-    </span>
-    <span style={{ fontFamily: "Times New Roman", fontSize: "15px" }}>
-      , {props.review.date}
-    </span>
-    <br />
-    <span>{props.review.content}</span>
-  </div>
-);
+const DisplayReviewsLayout = (props) => {
+  const defaultStars = [1, 2, 3, 4, 5];
+
+  return (
+    <div className="reviewContainer">
+      <span style={{ fontFamily: "Times New Roman", fontSize: "18px" }}>
+        {props.review.firstName} {props.review.lastName}
+      </span>
+      <span style={{ fontFamily: "Times New Roman", fontSize: "15px" }}>
+        , {props.review.date}
+      </span>
+      <br />
+      {defaultStars.map((star) => {
+        return (
+          <span
+            className={star >= props.review.stars + 1 ? "on" : "off"}
+            key={star}
+          >
+            ★
+          </span>
+        );
+      })}
+      <br />
+      <span>{props.review.content}</span>
+    </div>
+  );
+};
 
 export default function BookPage(props) {
   const [records, setRecords] = useState([]);
@@ -242,7 +257,7 @@ export default function BookPage(props) {
   let year = today.getFullYear();
   const defaultStars = [1, 2, 3, 4, 5];
   let currentBook = {};
-  console.log(props);
+
   useEffect(() => {
     let record = getBooks();
     let review = getReviews();
@@ -257,13 +272,12 @@ export default function BookPage(props) {
 
   today = day + " " + month + " " + year;
   const handleAddReview = async () => {
-    let userId =
-      props.user._id === undefined ? localStorage.id : props.user._id;
+    let userId = localStorage.id;
     let currentUser = await getUser(userId);
 
     const review = {
       bookId: currentBook._id,
-      userId: currentUser[0]._id,
+      userId: userId,
       firstName: currentUser[0].first,
       lastName: currentUser[0].last,
       date: today.toString(),
@@ -302,9 +316,10 @@ export default function BookPage(props) {
             <DisplayReviewsLayout review={review} key={review._id} />
           </>
         );
-      } else <p>not found</p>;
+      } else <p>Review not found</p>;
     });
   }
+
   return (
     <>
       <div className="content">{displayBook()}</div>
@@ -317,6 +332,7 @@ export default function BookPage(props) {
           <button
             className={star <= stars ? "on" : "off"}
             onClick={() => setStars(star)}
+            key={`star-${star}`}
           >
             ★
           </button>
@@ -324,7 +340,7 @@ export default function BookPage(props) {
       })}
       <br />
       <textarea
-        placeholder={`${props.user.first}, share your opinion!`}
+        placeholder={`Share your opinion...`}
         style={{ width: "99%" }}
         onChange={(e) => setReviewContent(e.target.value)}
       ></textarea>

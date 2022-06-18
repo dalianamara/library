@@ -50,7 +50,7 @@ const EditUser = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const { uname, pass, email } = document.forms[0];
-    console.log("email", email);
+
     const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
     const validEmailB = validateEmail(email);
@@ -65,7 +65,7 @@ const EditUser = () => {
       user: model.user,
     };
     if (isPasswordChanged === true) editedUser["password"] = model.password;
-    console.log(validPassword, validEmailB, validUsername);
+
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -82,7 +82,7 @@ const EditUser = () => {
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z]\w{6,14}$/;
+    const password = /^[A-Za-z0-9]\w{6,30}$/;
     if (isPasswordChanged !== false) {
       if (pass.value.match(password)) {
         setValidPass(true);

@@ -13,7 +13,7 @@ export default function Viewbooks() {
   useEffect(() => {
     setIsApproved(false);
     let issues = getIssues();
-    console.log(issues);
+
     issues.then((issue) => {
       const pendingIssues = issue.filter(
         (el) =>

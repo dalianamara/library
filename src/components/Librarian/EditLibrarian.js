@@ -21,9 +21,7 @@ const EditLibrarian = () => {
   const [isPasswordChanged, setIsPasswordChanged] = useState(false);
   const [isEmailChanged, setIsEmailChanged] = useState(false);
   const [isUsernameChanged, setIsUsernameChanged] = useState(false);
-  const togglePassword = () => {
-    setShowPass(!showPass);
-  };
+
   useEffect(() => {
     async function getUsers() {
       const response = await fetch(`http://localhost:5000/user/`);
@@ -69,7 +67,6 @@ const EditLibrarian = () => {
       user: model.user,
     };
     if (isPasswordChanged === true) editedUser["password"] = model.password;
-
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -86,7 +83,7 @@ const EditLibrarian = () => {
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z]\w{6,14}$/;
+    const password = /^[A-Za-z0-9]\w{6,30}$/;
     if (isPasswordChanged !== false) {
       if (pass.value.match(password)) {
         setValidPass(true);
@@ -146,6 +143,9 @@ const EditLibrarian = () => {
         setNotExistent(false);
         return false;
       }
+    } else {
+      setNotExistent(true);
+      return true;
     }
   };
 

@@ -26,7 +26,7 @@ record.route("/issue/:id").get((req, res) => {
 //create a new record.
 record.route("/issue/add").post((req, response) => {
   let dbConnection = db.getDatabase();
-  let myobj = {
+  let issue = {
     userId: req.body.userId,
     first: req.body.first,
     last: req.body.last,
@@ -49,7 +49,7 @@ record.route("/issue/add").post((req, response) => {
     paid: null,
     verified: req.body.verified,
   };
-  dbConnection.collection("issues").insertOne(myobj, (err, res) => {
+  dbConnection.collection("issues").insertOne(issue, (err, res) => {
     if (err) throw err;
     response.json(res);
   });

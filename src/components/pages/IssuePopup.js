@@ -69,11 +69,14 @@ const IssuePopup = (props) => {
               style={{
                 float: "left",
                 marginLeft: "70px",
-                marginTop: "20px",
+                marginTop: props.deliveryType === "Home" ? "20px" : "-90px",
                 textAlign: "left",
               }}
             >
-              {`The book can arrive at your address on
+              {props.deliveryType === "Home"
+                ? `The book can arrive at your address on
+             ${deliveryDay}, ${deliveryNumericDay} ${deliveryMonth}, if the issue will be approved today`
+                : `You can pickup the book at our library's address on
              ${deliveryDay}, ${deliveryNumericDay} ${deliveryMonth}, if the issue will be approved today`}{" "}
             </span>
           ) : (

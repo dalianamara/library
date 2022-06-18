@@ -39,6 +39,7 @@ export default function ViewFines() {
               <th>Address</th>
               <th>Phone Number</th>
               <th>Delivery Type</th>
+
               <th>Fine</th>
               <th>Receipt</th>
             </tr>

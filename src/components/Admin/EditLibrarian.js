@@ -24,9 +24,7 @@ const EditLibrarian = () => {
   const [isPasswordChanged, setIsPasswordChanged] = useState(false);
   const [isEmailChanged, setIsEmailChanged] = useState(false);
   const [isUsernameChanged, setIsUsernameChanged] = useState(false);
-  const togglePassword = () => {
-    setShowPass(!showPass);
-  };
+
   useEffect(() => {
     async function getUsers() {
       const id = url.id.toString();
@@ -55,7 +53,6 @@ const EditLibrarian = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     const { uname, pass, email } = document.forms[0];
-    console.log(uname, pass, email);
     const validPassword = validatePassword(pass);
     const validUsername = validateUsername(uname);
     const validEmailB = validateEmail(email);
@@ -70,7 +67,6 @@ const EditLibrarian = () => {
       user: model.user,
     };
     if (isPasswordChanged === true) editedUser["password"] = model.password;
-    console.log(isPasswordChanged, validPassword, validEmailB, validUsername);
     if (validPassword && validEmailB && validUsername === true) {
       await fetch(`http://localhost:5000/user/update/${model._id}`, {
         method: "POST",
@@ -87,9 +83,10 @@ const EditLibrarian = () => {
   }
 
   const validatePassword = (pass) => {
-    const password = /^[A-Za-z]\w{6,14}$/;
+    const password = /^[A-Za-z0-9]\w{6,30}$/;
+    const otherPassword = /\S+@\S+\.\S+/;
     if (isPasswordChanged !== false) {
-      if (pass.value.match(password)) {
+      if (pass.value.match(password) || pass.value.match(otherPassword)) {
         setValidPass(true);
         return true;
       } else {
@@ -214,7 +211,7 @@ const EditLibrarian = () => {
               ) : !validUname ? (
                 <span className="error" style={{ color: "red" }}>
                   Sorry, this username is invalid. <br />
-                  Use only letters and decimals.
+                  Use only letters and decimals as name and add the @domain.
                 </span>
               ) : (
                 ""

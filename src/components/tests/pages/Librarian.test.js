@@ -217,9 +217,7 @@ const mockObjects = [
     email: "luciangeo@gmail.com",
     username: "luciangeo",
     password: "$2a$10$FlFuTDSh02.VF31.A4Lr/.y5w0BW/cvnC8XzWbrxeCu/FFZHcPJy.",
-    street: "Cozia",
-    phoneNumber: "074812421",
-    city: "Timisoara",
+    phoneNumber: "0748124271",
     user: "librarian",
   },
 
@@ -230,7 +228,9 @@ const mockObjects = [
     email: "alinamaria@yahoo.com",
     username: "alinamaria",
     password: "$2a$10$4.qHjp2JEmZoPr5XZedFtekwr/KYRj40BeI/Coz/qNAj873ndW1VC",
-    phoneNumber: "076452718",
+    street: "Cozia",
+    city: "Timisoara",
+    phoneNumber: "0764527188",
     user: "user",
   },
 ];
@@ -504,7 +504,7 @@ describe("Menu buttons tests", () => {
     const booksButton = screen.getByText("BOOKS");
 
     fireEvent.mouseOver(booksButton);
-    const viewBooksButton = screen.getByText("PENDING ISSUE BOOKS");
+    const viewBooksButton = screen.getByText("PENDING ISSUED BOOKS");
     fireEvent.click(viewBooksButton);
 
     await act(async () => {

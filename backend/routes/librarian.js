@@ -8,8 +8,8 @@ record.route("/librarian").get((req, res) => {
   dbConnection
     .collection("librarians")
     .find()
-    .toArray((err, result) => {
-      if (err) throw err;
+    .toArray((error, result) => {
+      if (error) throw error;
       res.json(result);
     });
 });
@@ -17,8 +17,8 @@ record.route("/librarian").get((req, res) => {
 record.route("/librarian/:id").get((req, res) => {
   let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
-  dbConnection.collection("librarians").findOne(myquery, (err, result) => {
-    if (err) throw err;
+  dbConnection.collection("librarians").findOne(myquery, (error, result) => {
+    if (error) throw error;
     res.json(result);
   });
 });
@@ -26,7 +26,7 @@ record.route("/librarian/:id").get((req, res) => {
 //create a new record.
 record.route("/librarian/add").post((req, response) => {
   let dbConnection = db.getDatabase();
-  let myobj = {
+  let librarian = {
     first: req.body.first,
     last: req.body.last,
     email: req.body.email,
@@ -35,9 +35,9 @@ record.route("/librarian/add").post((req, response) => {
     phoneNumber: req.body.phoneNumber,
     user: req.body.user,
   };
-  dbConnection.collection("users").insertOne(myobj, (err, res) => {
-    if (err) throw err;
-    response.json(res);
+  dbConnection.collection("users").insertOne(librarian, (error, result) => {
+    if (error) throw error;
+    response.json(result);
   });
 });
 
@@ -56,9 +56,8 @@ record.route("/update/:id").post((req, response) => {
   };
   dbConnection
     .collection("librarians")
-    .updateOne(myquery, newvalues, (err, res) => {
-      if (err) throw err;
-      console.log("1 record updated");
+    .updateOne(myquery, newvalues, (error, res) => {
+      if (error) throw error;
       response.json(res);
     });
 });
@@ -67,9 +66,8 @@ record.route("/update/:id").post((req, response) => {
 record.route("/:id").delete((req, response) => {
   let dbConnection = db.getDatabase();
   let myquery = { _id: ObjectId(req.params.id) };
-  dbConnection.collection("librarians").deleteOne(myquery, (err, obj) => {
-    if (err) throw err;
-    console.log("1 record deleted");
+  dbConnection.collection("librarians").deleteOne(myquery, (error, obj) => {
+    if (error) throw error;
     response.status(obj);
   });
 });

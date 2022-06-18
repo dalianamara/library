@@ -92,7 +92,7 @@ const View = (props) => {
       setErrorVisibility(!errorVisibility);
     }
   }
-  console.log(currentUser);
+
   async function handleSubmitPickup() {
     const newIssue = {
       userId: currentUser._id,

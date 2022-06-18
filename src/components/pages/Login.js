@@ -10,7 +10,7 @@ const Login = (props) => {
   const [user, setUser] = useState([]);
   const [validPass, setValidPass] = useState(true);
   const [validUsername, setValidUsername] = useState(true);
-  const [model, setModel] = useState({
+  const [userModel, setUserModel] = useState({
     username: "",
     password: "",
   });
@@ -19,8 +19,11 @@ const Login = (props) => {
   };
 
   useEffect(() => {
-    const newUser = { username: model.username, password: model.password };
-    async function getRecords() {
+    const newUser = {
+      username: userModel.username,
+      password: userModel.password,
+    };
+    async function getUsers() {
       const response = await fetch(`http://localhost:5000/user/login`, {
         method: "POST",
         headers: {
@@ -36,12 +39,12 @@ const Login = (props) => {
       const user = await response.json();
       setUser(user);
     }
-    getRecords();
+    getUsers();
     return;
-  }, [model, user.length]);
+  }, [userModel, user.length]);
 
   const update = (value) => {
-    return setModel((prev) => {
+    return setUserModel((prev) => {
       return { ...prev, ...value };
     });
   };
@@ -50,8 +53,8 @@ const Login = (props) => {
     event.preventDefault();
     try {
       if (user !== undefined) {
-        if (model.username === user.username) {
-          if (bcrypt.compareSync(model.password, user.password)) {
+        if (userModel.username === user.username) {
+          if (bcrypt.compareSync(userModel.password, user.password)) {
             localStorage.setItem("id", user._id);
             localStorage.setItem("isLoggedIn", true);
             localStorage.setItem("email", user.email);
@@ -77,7 +80,6 @@ const Login = (props) => {
         setValidUsername(true);
       }
     }
-    // window.location.href = "/";
   };
 
   const renderForm = () => {
@@ -91,7 +93,7 @@ const Login = (props) => {
               style={{ border: "1px solid black", borderColor: "#A04000" }}
             ></hr>
             <form onSubmit={handleSubmit}>
-              <label>Username</label>
+              <label style={{ marginLeft: "-280px" }}>Username</label>
               <br />
               <input
                 type="text"
@@ -99,7 +101,7 @@ const Login = (props) => {
                 data-testid="username"
                 required
                 id={"username"}
-                value={model.username}
+                value={userModel.username}
                 onChange={(e) => {
                   setUsername(e.target.value);
                   update({ username: e.target.value });
@@ -118,14 +120,14 @@ const Login = (props) => {
                 ""
               )}
               <br />
-              <label>Password</label>
+              <label style={{ marginLeft: "-280px" }}>Password</label>
               <br />
               <input
                 id={"password"}
                 data-testid="password"
                 name="pass"
                 type="password"
-                value={model.password}
+                value={userModel.password}
                 onChange={(e) => {
                   setPassword(e.target.value);
                   update({ password: e.target.value });

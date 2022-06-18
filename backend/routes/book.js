@@ -26,8 +26,6 @@ record.route("/book/:id").get((req, res) => {
         statusMessage: "Not found",
       });
     } else {
-      result["status"] = res.statusCode;
-      result["statusMessage"] = "Success";
       res.json(result);
     }
   });
@@ -36,7 +34,7 @@ record.route("/book/:id").get((req, res) => {
 //create a new record.
 record.route("/book/add").post((req, response) => {
   let dbConnection = db.getDatabase();
-  let myobj = {
+  let book = {
     title: req.body.title,
     author: req.body.author,
     genre: req.body.genre,
@@ -47,9 +45,9 @@ record.route("/book/add").post((req, response) => {
     publisher: req.body.publisher,
     stock: req.body.stock,
   };
-  dbConnection.collection("books").insertOne(myobj, (error, res) => {
+  dbConnection.collection("books").insertOne(book, (error, result) => {
     if (error) throw error;
-    response.json(res);
+    response.json(result);
   });
 });
 
@@ -59,6 +57,7 @@ record.route("/book/edit/:id").post((request, response) => {
   let condition = { _id: ObjectId(request.params.id) };
   let newBook = {
     $set: {
+      title: request.body.title,
       author: request.body.author,
       genre: request.body.genre,
       cover: request.body.cover,

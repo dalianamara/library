@@ -2,26 +2,26 @@ const express = require("express");
 const genre = express.Router();
 const db = require("../database/DatabaseConnection");
 
-genre.route("/genre").get((req, res) => {
+genre.route("/genre").get((req, response) => {
   let dbConnection = db.getDatabase("genres");
   dbConnection
     .collection("genres")
     .find()
-    .toArray((err, result) => {
-      if (err) throw err;
-      res.json(result);
+    .toArray((error, result) => {
+      if (error) throw error;
+      response.json(result);
     });
 });
 
 //create a new genre.
 genre.route("/genre/add").post((req, response) => {
   let dbConnection = db.getDatabase();
-  let myobj = {
+  let genre = {
     name: req.body.name,
   };
-  dbConnection.collection("genres").insertOne(myobj, (err, res) => {
-    if (err) throw err;
-    response.json(res);
+  dbConnection.collection("genres").insertOne(genre, (error, result) => {
+    if (error) throw error;
+    response.json(result);
   });
 });
 

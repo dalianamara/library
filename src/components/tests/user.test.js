@@ -376,7 +376,7 @@ describe("Menu buttons tests", () => {
     const usersButton = screen.getByText("MY LIBRARY");
     await act(async () => {
       fireEvent.mouseOver(usersButton);
-      const viewUsersButton = screen.getByText("Returned books");
+      const viewUsersButton = screen.getByText("Return books");
       fireEvent.click(viewUsersButton);
     });
     const existentColumn = screen.getByText("Delivery Type");

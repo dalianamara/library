@@ -64,6 +64,7 @@ const RenewBook = () => {
       email: model.email,
       phoneNumber: model.phoneNumber,
       city: model.city,
+      street: model.street,
       bookId: model.bookId,
       bookTitle: model.bookTitle,
       deliveryType: model.deliveryType,

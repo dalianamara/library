@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Footer from "../Footer";
 import "../css/SignUp.css";
-import blank from "../images/blank.jpg";
 const AddReview = (props) => {
   const [model, setModel] = useState({
     firstName: "",
